@@ -1,0 +1,14 @@
+/* src/Components-Log_In/Color-Animation.css */
+.color-animation {
+  flex: 1;
+  animation: gradientShift 10s ease infinite;
+  background:
+    radial-gradient(circle at bottom left, rgba(124,58,237,0.3), transparent 40%),
+    radial-gradient(circle at top right,   rgba(96,165,250,0.3), transparent 70%);
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 100%, 100% 0%; }
+  50%  { background-position: 20% 80%,  80% 20%; }
+  100% { background-position: 0% 100%, 100% 0%; }
+}

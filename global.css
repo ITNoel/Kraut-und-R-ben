@@ -1,0 +1,606 @@
+/* global.css (refactored common styles) */
+
+/* ===== CSS-VARIABLEN ===== */
+:root {
+  /* Farbpalette */
+  --color-bg: #ffffff;
+  --color-border: #ddd;
+  --color-primary: #6b36c6;
+  --color-primary-dark: #1f4eb0;
+  --color-page-bg: #d7d7d7;
+
+  /* Statusfarben */
+  --status-active-bg: #d1fae5;
+  --status-active-text: #065f46;
+  --status-disabled-bg: #fee2e2;
+  --status-disabled-text: #991b1b;
+  --status-draft-bg: #fef3c7;
+  --status-draft-text: #854d0e;
+
+  /* Abstände & Radien */
+  --radius-sm: 8px;
+  --radius-md: 24px;
+  --radius-full: 9999px;
+
+  /* Schatten */
+  --shadow-sm: 0 ;
+
+  /* ===== Spacing-Variablen ===== */
+  --page-padding-vertical: 0px;
+  --page-padding-horizontal: 80px;
+  --page-gap: 24px;
+  --column-gap: 24px;
+  --page-margin-vertical: 36px;
+
+  /* ===== Innenabstand für weiße Boxen ===== */
+  --box-padding: 24px;
+
+  /* ===== Form-Label & Content-Text Variablen ===== */
+  --label-color: #333333;
+  --label-opacity: 0.8;
+  --label-font-weight: 500;
+
+  /* Header-Abstände und -Schriftgröße */
+  --header-padding-top: 0px;
+  --header-padding-bottom: 10px;
+  --header-height: 80px;
+  --header-font-size: 24px; /* angepasst auf 24px */
+}
+
+/* ===== Global Reset ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: var(--color-page-bg);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: var(--radius-md);
+  transition: background 0.3s ease, color 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.btn.cancel {
+  background: #e5e7eb;
+  color: #000;
+}
+
+.btn.save,
+.btn.change-password,
+.btn.logout,
+.btn.add,
+.btn.services-new {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+.btn.cancel:hover {
+  background: #fff;
+  color: #000;
+  border-color: var(--color-primary);
+}
+
+.btn.save:hover,
+.btn.change-password:hover,
+.btn.logout:hover,
+.btn.add:hover,
+.btn.services-new:hover {
+  background: #fff;
+  color: #000;
+  border-color: var(--color-primary);
+}
+
+.btn.more-actions {
+  /* gleiche Grundmaße wie .btn.save/.btn.add */
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: var(--radius-md);
+  
+  /* immer weißer Hintergrund, violetter Text */
+  background-color: #fff;
+  color: black;
+  border: 2px solid transparent;
+
+  /* sanfter Übergang beim Hover */
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.btn.more-actions:hover {
+  /* beim Hover lilaner Rahmen, Hintergrund bleibt weiß */
+  border-color: var(--color-primary);
+}
+
+/* ===== Overflow-button variant ===== */
+.btn.overflow {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 20px;
+}
+
+/* ===== Content Box ===== */
+.content-box {
+  background: white;
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+/* ===== Section Headings with Stripe ===== */
+.heading-stripe {
+  position: relative;
+  padding-left: 30px;
+  margin: 0 0 16px;
+}
+
+.heading-stripe::before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 5px;
+  background-color: #2dd4bf;
+}
+
+/* ===== Form Grid ===== */
+.form-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.form-grid.two-col {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.form-grid.three-col {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.form-grid input,
+.form-grid textarea {
+  width: 100%;
+  padding: 0px;
+  padding-left: 10px;
+  margin: 10px 0px;
+  border: 1px solid #bdbdbd;
+  border-radius: 17px;
+  font-size: 14px;
+  background: white;
+  color: #000;
+  box-sizing: border-box;
+  height: 40px;
+}
+
+/* ===== Service Box (inline-expandable) ===== */
+.service-box {
+  display: block;
+  width: 100%;
+  border: 2px dashed #ccc;
+  padding: 16px;
+  background: white;
+  cursor: pointer;
+  color: #666;
+  border-radius: var(--radius-md);
+  position: relative;
+  text-align: center;
+  transition: border-color 0.2s ease;
+  overflow-x: hidden;
+}
+
+.service-box:not(.open) {
+  max-height: 40px;
+  overflow-y: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.service-box.open,
+.service-box.dashed.open {
+  border: 2px solid var(--color-primary);
+  max-height: none;
+  overflow: visible;
+}
+
+.service-box .dropdown-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  border-top: 1px solid #eee;
+}
+
+.service-box .dropdown-list li {
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.service-box .dropdown-list li + li {
+  border-top: 1px solid #eee;
+}
+
+.service-box .dropdown-list li:hover {
+  background: #f5f5f5;
+}
+
+.service-box .calendar-dropdown {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ===== Toggle/Switch ===== */
+.toggle-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: white;
+  border-radius: var(--radius-sm);
+  margin: 8px 0;
+}
+
+.toggle-box span {
+  margin: 0;
+  line-height: 24px;
+}
+
+.toggle-box .switch {
+  position: relative;
+  width: 50px;
+  height: 24px;
+}
+
+.toggle-box .switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-box .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #ccc;
+  transition: 0.4s;
+  border-radius: var(--radius-sm);
+}
+
+.toggle-box .slider::before {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 2px;
+  background: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.toggle-box .switch input:checked + .slider {
+  background: var(--color-primary);
+}
+
+.toggle-box .switch input:checked + .slider::before {
+  transform: translateX(26px);
+}
+
+/* ===== Globale UI-Komponenten ===== */
+.card {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: #fff;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* ===== Page Container für alle Seiten ===== */
+.page-container {
+  background-color: var(--color-bg);
+  border-radius: var(--radius-md);
+  padding: var(--box-padding);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--page-gap);
+  color: var(--label-color);
+}
+
+.page-container h2 {
+  margin-top: 0;
+}
+
+/* ===== Global: Form-Label & Content-Text in weißen Boxen ===== */
+.page-container label {
+  font-weight: var(--label-font-weight);
+  margin-bottom: 0.25rem;
+  opacity: var(--label-opacity);
+}
+
+h2 {
+  font-size: 1.25rem;  /* 24px */
+  line-height: 1.3;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+/* ====== Seiten-Layout (vormals Department.css) ====== */
+
+/* Grundcontainer für Seiten mit Header, Body und Sidebar */
+.department-page {
+  display: flex;
+  flex-direction: column;
+  padding: var(--page-padding-vertical) var(--page-padding-horizontal);
+  gap: var(--page-gap);
+  overflow-y: auto;
+}
+
+/* Hauptbereich: links Content, rechts Sidebar */
+.department-body {
+  display: flex;
+  gap: var(--column-gap);
+}
+
+/* Linke Spalte nimmt 70%, enthält Content-Container gestapelt */
+.left-column {
+  flex: 0 0 70%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--page-gap);
+}
+
+/* Rechte Sidebar nimmt 30%, enthält ggf. zusätzliche Blöcke */
+.right-sidebar {
+  flex: 0 0 30%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--page-gap);
+  padding-right: var(--column-gap);
+}
+
+/* Bereits vorhandene Grid-Varianten */
+.form-grid.two-col {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* ===== Generischer Seiten-Header ===== */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--header-padding-top);
+  padding-bottom: var(--header-padding-bottom);
+}
+
+.page-header__title {
+  margin: 0;
+  font-size: var(--header-font-size);
+  font-weight: 600;
+}
+
+.page-header__actions {
+  display: flex;
+  align-items: center;
+}
+
+.page-header__actions .btn {
+  margin-left: 8px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;      /* horizontal zentrieren */
+  justify-content: center;  /* vertikal zentrieren */
+  text-align: center;       /* Text in der Mitte ausrichten */
+  gap: var(--page-gap);     /* definierter Abstand zwischen Kindelementen */
+}
+
+/* ===== Flat-Button-Default: keine Unterstreichung, Primärfarbe beibehalten ===== */
+.btn.flat,
+.btn.flat:hover {
+  text-decoration: none !important;
+  color: var(--color-primary) !important;
+}
+
+.list-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border: 2px solid var(--color-bg);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+}
+.list-item:hover {
+   border-color: #666;
+}
+
+.list-item.add {
+  border: 2px dashed #ccc;
+  color: #666;
+  cursor: pointer;
+}
+
+.list-item.add:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.service-box:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* ===== Labeled Inputs (z. B. für Department.js) ===== */
+.form-grid.labeled-inputs label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: var(--label-color);
+  font-weight: var(--label-font-weight);
+  opacity: var(--label-opacity);
+  gap: 4px;
+}
+
+.form-grid.labeled-inputs input {
+  width: 100%;
+  padding: 10px;
+  margin: 0;
+  border-radius: 17px;
+  border: 1px solid #bdbdbd;
+  font-size: 14px;
+  background: white;
+  color: #000;
+  box-sizing: border-box;
+  height: 40px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  aspect-ratio: 3 / 2; /* ⬅️ Breiter als hoch */
+  width: 90%;
+  max-width: 700px;
+  padding: 40px 32px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.modal-image {
+  max-width: 180px;
+  width: 100%;
+  margin: 16px auto;
+  display: block;
+}
+
+.modal-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.modal-subheading {
+  margin-bottom: 8px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+}
+
+.btn.save {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center; /* <-- Text + Icon zentrieren */
+  text-align: center;
+  gap: 8px; /* falls Icon + Text */
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: #fff;
+  border: 2px solid var(--color-primary);
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto; /* zentriert den Button innerhalb des Containers */
+}
+
+.actions-dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.actions-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 10;
+  background: white;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+  min-width: 200px;
+  border: 1px solid #ccc;
+}
+
+.actions-dropdown__item {
+  background: white;
+  border: 1px solid #ccc;
+  width: 100%;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  color: #333;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.actions-dropdown__item:hover {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}

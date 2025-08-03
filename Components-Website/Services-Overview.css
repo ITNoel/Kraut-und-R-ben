@@ -1,0 +1,68 @@
+/* src/Services-Overview.css */
+
+/* Marker für Layout aus .department-page */
+.services-overview {}
+
+/* Inhalt-Box */
+.services-overview__content {
+  background-color: var(--color-bg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Tabelle */
+.services-overview__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.services-overview__table th,
+.services-overview__table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.services-overview__table td {
+  font-weight: var(--label-font-weight);
+  color: var(--label-color);
+  opacity: var(--label-opacity);
+}
+
+/* Status-Pillen */
+.services-overview__status {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--radius-full);
+}
+.services-overview__status--active {
+  background-color: var(--status-active-bg);
+  color: var(--status-active-text);
+}
+.services-overview__status--disabled {
+  background-color: var(--status-disabled-bg);
+  color: var(--status-disabled-text);
+}
+.services-overview__status--draft {
+  background-color: var(--status-draft-bg);
+  color: var(--status-draft-text);
+}
+
+/* Footer */
+.services-overview__footer {
+  text-align: center;
+  padding: 1rem 0;
+}
+.services-overview__footer .btn.flat {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--color-primary);
+  font-weight: var(--label-font-weight);
+  text-decoration: underline;
+}
+.services-overview__footer .btn.flat:hover {
+  color: var(--color-primary-dark);
+}
