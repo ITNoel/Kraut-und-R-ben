@@ -1,19 +1,14 @@
-/* src/Department-Overview.css */
-
-/* Marker-Klasse, übernimmt das Layout von .department-page */
-
-
-/* Karte mit Hintergrund, Rundungen und Schatten */
-.department-overview__content {
-  background-color: var(--color-bg);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-}
-
 /* Tabelle über volle Breite */
 .department-overview__table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Tabellen-Layout: Immer Platz für Markierung lassen */
+.department-overview__table {
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 /* Kopf- und Datenzellen */
@@ -22,6 +17,39 @@
   padding: 1rem;
   text-align: left;
   border-bottom: 1px solid var(--color-border);
+}
+
+/* Tabellenkopf fett, dunkelgrau */
+.department-overview__table th {
+  font-weight: 700;
+  color: #222;
+  background: none;
+  border-bottom: 1.5px solid #ececec;
+  font-size: 1rem;
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
+
+/* Tabellenzellen: KEINE dicke Schrift für Name, Personen, Status */
+.department-overview__table td,
+.department-overview__table td.persons,
+.department-overview__table td.status,
+.department-overview__status {
+  font-weight: 400 !important;
+}
+
+/* Tabellenzellen: kein vertikales Raster, nur horizontale Linien */
+.department-overview__table td {
+  border-bottom: 1px solid #ececec;
+  border-right: none;
+  border-left: none;
+  border-top: none;
+  background: none;
+  font-size: 1rem;
+  color: #222;
+  font-weight: 500;
+  padding-top: 18px;
+  padding-bottom: 18px;
 }
 
 /* Datenzellen leichte Schrift */
@@ -34,27 +62,111 @@
 /* Status-Pillen */
 .department-overview__status {
   display: inline-block;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: var(--radius-full);
-}
-.department-overview__status--active {
-  background-color: var(--status-active-bg);
-  color: var(--status-active-text);
-}
-.department-overview__status--disabled {
-  background-color: var(--status-disabled-bg);
-  color: var(--status-disabled-text);
-}
-.department-overview__status--draft {
-  background-color: var(--status-draft-bg);
-  color: var(--status-draft-text);
+  padding: 0.25rem 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 400 !important;
+  border-radius: 9999px;
+  letter-spacing: 0.01em;
+  min-width: 70px;
+  text-align: center;
+  border: none;
 }
 
-/* Neuer Abteilung-Button im Header */
+/* Entwurf: gelbe Markierung */
+.department-overview__status--draft {
+  background-color: #fdf0bb;
+  color: #ffa704;
+  border: 2px solid #fdf0bb;
+}
+
+/* Aktiv: grüne Markierung */
+.department-overview__status--active {
+  background-color: #cfffe5;
+  color: #00513a;
+  border: 2px solid #cfffe5;
+}
+
+/* Inaktiv: rote Umrandung, weißer Hintergrund */
+.department-overview__status--disabled {
+  background-color: #ffabab;
+  color: #980303;
+  border: 2px solid #ffabab;
+}
+
+/* Kopfbereich: Buttons */
 .btn.department-new {
-  margin-left: 8px;
+  display: none;
+}
+
+.btn.departments-new {
+  background: var(--color-primary);
+  color: #fff;
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.btn.departments-new:hover,
+.btn.departments-new:focus {
+  background: #fff;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary); /* Lila Umrandung beim Hover */
+}
+
+/* Dreipunkt-Icon rechts in der Zeile: noch mehr Abstand nach rechts */
+.department-overview__table td:last-child {
+  padding-right: 1.2rem; /* etwas weniger Abstand nach rechts */
+  position: relative;
+}
+
+
+/* Tabelle: Checkboxen optisch mittig, Standardgröße, schwarzer Rand und mehr Abstand zum Rand */
+.department-overview__table td:first-child,
+.department-overview__table th:first-child {
+  padding-left: 2rem; /* Abstand von links zur Checkbox */
+}
+
+.department-overview__table input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+  vertical-align: middle;
+  border: 2px solid #111;
+  border-radius: 3px;
+  margin-right: 0.5rem;
+  box-shadow: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background: #fff;
+  position: relative;
+}
+.department-overview__table input[type="checkbox"]:checked {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.department-overview__table input[type="checkbox"]:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Custom checkmark (optional, für schöneres Aussehen) */
+.department-overview__table input[type="checkbox"]:checked::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Zeilenabstand */
+.department-overview__table tr {
+  border: none;
+  margin-bottom: 0;
 }
 
 /* Footer-Link unter der Tabelle */
@@ -79,4 +191,232 @@
   margin: 24px auto 0 auto;
   max-width: 300px;
   text-align: center;
+}
+
+/* Tabellenzeile: Spalten "Personen" und "Status" rechtsbündig, mittlere Spalte flex */
+.department-overview__table tbody tr {
+  /* Flex-Layout für die Zeile */
+  display: table-row;
+}
+
+.department-overview__table td,
+.department-overview__table th {
+  /* Standard: linksbündig */
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* Spaltenausrichtung: Name links, alle anderen rechtsbündig (wie bei Services-Overview) */
+.department-overview__table th,
+.department-overview__table td {
+  /* Standard: linksbündig */
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* Name-Spalte bleibt links, alle anderen (außer erster Checkbox-Spalte) rechts */
+.department-overview__table th:not(:first-child):not(:nth-child(2)),
+.department-overview__table td:not(:first-child):not(:nth-child(2)) {
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Name-Spalte bleibt links, Personen und Status rechts */
+.department-overview__table td.persons,
+.department-overview__table th.persons,
+.department-overview__table td.status,
+.department-overview__table th.status {
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* Zeile optisch hervorheben, wenn ausgewählt */
+.department-overview__table tr.row-selected {
+  background: #f3f4f6;
+  position: relative;
+}
+
+.department-overview__table tr.row-selected::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 5px;
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 3px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Immer Platz für den Strich lassen, damit sich der Content nicht verschiebt */
+.department-overview__table td:first-child,
+.department-overview__table th:first-child {
+  padding-left: 2.5rem;
+  position: relative;
+}
+
+/* Unsichtbarer Platzhalter für alle Zeilen */
+.department-overview__table tr::before {
+  content: '';
+  display: block;
+  width: 5px;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: transparent;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Sichtbare lila Markierung nur bei ausgewählter Zeile */
+.department-overview__table tr.row-selected::before {
+  background: var(--color-primary);
+  border-radius: 3px;
+  z-index: 2;
+  /* alle anderen Eigenschaften bleiben gleich */
+}
+
+/* Tabellenkopf und Zellen: Feste Breite und Ausrichtung für Name- und Status-Spalte */
+.department-overview__table th:nth-child(2),
+.department-overview__table td:nth-child(2) {
+  min-width: 220px;
+  max-width: 340px;
+  width: 28vw;
+  text-align: left;
+  padding-left: 0.5rem; /* Abstand zur Checkbox-Spalte */
+}
+
+.department-overview__table th.status,
+.department-overview__table td.status,
+.department-overview__table th:nth-last-child(2),
+.department-overview__table td:nth-last-child(2) {
+  min-width: 120px;
+  max-width: 180px;
+  width: 10vw;
+  text-align: right;
+  padding-right: 2.2rem; /* Abstand zum "..." Button/rechten Rand */
+}
+
+/* Einheitlicher Abstand und Zentrierung für alle Spalten außer "Name" */
+.department-overview__table th,
+.department-overview__table td {
+  /* Standard: linksbündig */
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* Name-Spalte linksbündig, Abstand zur Checkbox */
+.department-overview__table th:nth-child(2),
+.department-overview__table td:nth-child(2) {
+  min-width: 220px;
+  max-width: 340px;
+  width: 28vw;
+  text-align: left;
+  padding-left: 0.5rem !important;
+}
+
+/* Alle weiteren Spalten (außer Checkbox, Name, "..."-Button) zentriert */
+.department-overview__table th:not(:first-child):not(:nth-last-child(2)):not(:last-child),
+.department-overview__table td:not(:first-child):not(:nth-last-child(2)):not(:last-child) {
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Status-Spalte rechtsbündig, Abstand zum "..."-Button */
+.department-overview__table th.status,
+.department-overview__table td.status,
+.department-overview__table th:nth-last-child(2),
+.department-overview__table td:nth-last-child(2) {
+  min-width: 120px;
+  max-width: 180px;
+  width: 10vw;
+  text-align: right;
+  padding-right: 2.2rem;
+}
+
+/* Letzte Spalte ("...") bleibt rechtsbündig */
+.department-overview__table th:last-child,
+.department-overview__table td:last-child {
+  text-align: right;
+}
+
+/* Checkbox-Spalte: immer gleicher Abstand von links */
+.department-overview__table th:first-child,
+.department-overview__table td:first-child {
+  padding-left: 2.5rem !important;
+  position: relative;
+}
+
+/* Basis-Normalisierung für Tabellenzellen (verhindert abweichende Abstände) */
+.department-overview__table th,
+.department-overview__table td {
+  box-sizing: border-box;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  padding-left: 0.5rem;
+  padding-right: 0.75rem;
+  vertical-align: middle;
+}
+
+/* Checkbox-Spalte: fester Abstand von links */
+.department-overview__table th:first-child,
+.department-overview__table td:first-child {
+  padding-left: 2.5rem !important;
+}
+
+/* Name-Spalte: fester Abstand zur Checkbox */
+.department-overview__table th:nth-child(2),
+.department-overview__table td:nth-child(2) {
+  padding-left: 0.5rem !important;
+  text-align: left;
+  min-width: 220px;
+}
+
+/* Andere Spalten: gleiche, neutrale Innenabstände */
+.department-overview__table th:not(:first-child):not(:nth-child(2)),
+.department-overview__table td:not(:first-child):not(:nth-child(2)) {
+  padding-left: 0.5rem;
+  padding-right: 0.75rem;
+  text-align: right;
+}
+
+/* Checkbox selbst: keine zusätzlichen Margins/Paddings */
+.department-overview__table input[type="checkbox"] {
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+}
+
+/* --- Status-Spalte rechts fixieren (sticky), links von den "..."-Buttons --- */
+.department-overview__table th.status,
+.department-overview__table td.status {
+  /* exakt wie Name-Spalte sticky, aber rechts anstelle von links */
+  position: sticky;
+  right: var(--action-offset);
+  z-index: 4;             /* über normalen Zellen, unter den Aktions-Buttons */
+  box-sizing: border-box;
+  /* Beibehalten der bestehenden Breiten */
+  min-width: 120px;
+  max-width: 180px;
+  width: 10vw;
+  text-align: right;
+  padding-right: 2.2rem;
+}
+
+/* Header-Zelle soll festen Hintergrund haben, damit Sticky-Header nicht durchscheint */
+.department-overview__table th.status {
+  background: var(--color-bg);
+}
+
+/* Body-Zelle transparent, damit row-selected Hintergrund sichtbar ist */
+.department-overview__table td.status {
+  background: transparent;
+}
+
+/* Sicherstellen, dass Aktions-Button über der Status-Spalte liegt */
+.department-overview__table .btn.more-actions {
+  z-index: 6 !important;
 }

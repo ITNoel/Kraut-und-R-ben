@@ -1,68 +1,322 @@
 /* src/Services-Overview.css */
 
-/* Marker für Layout aus .department-page */
-.services-overview {}
+/* Nur servicespezifische Anpassungen — gemeinsame Table/Kachel/Checkbox-/Status-Stile
+   stammen jetzt aus global.css / Department-Overview.css */
 
-/* Inhalt-Box */
-.services-overview__content {
-  background-color: var(--color-bg);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
+/* Falls Name-Spalte in Services leicht abweichen soll, hier anpassen */
+.services-specific__name-col {
+  /* optional: z.B. mehr Platz für Services */
+  /* min-width: 240px; */
 }
 
-/* Tabelle */
-.services-overview__table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
+/* Platz für weitere services-only Regeln (Leerplatz) */
 .services-overview__table th,
 .services-overview__table td {
   padding: 1rem;
   text-align: left;
   border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
 }
 
+/* Tabellenkopf fett, dunkelgrau */
+.services-overview__table th {
+  font-weight: 700 !important;
+  color: #222;
+  background: none;
+  border-bottom: 1.5px solid #ececec;
+  font-size: 1rem;
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
+
+/* Tabellenzellen: KEINE dicke Schrift für Name, Dauer, Preis, Status */
+.services-overview__table td,
+.services-overview__table td.duration,
+.services-overview__table td.price,
+.services-overview__table td.status,
+.services-overview__status {
+  font-weight: 400 !important;
+}
+
+/* Tabellenzellen: kein vertikales Raster, nur horizontale Linien */
+.services-overview__table td {
+  border-bottom: 1px solid #ececec;
+  border-right: none;
+  border-left: none;
+  border-top: none;
+  background: none;
+  font-size: 1rem;
+  color: #222;
+  font-weight: 500;
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
+
+/* Datenzellen leichte Schrift */
 .services-overview__table td {
   font-weight: var(--label-font-weight);
   color: var(--label-color);
   opacity: var(--label-opacity);
 }
 
-/* Status-Pillen */
-.services-overview__status {
-  display: inline-block;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: var(--radius-full);
-}
-.services-overview__status--active {
-  background-color: var(--status-active-bg);
-  color: var(--status-active-text);
-}
-.services-overview__status--disabled {
-  background-color: var(--status-disabled-bg);
-  color: var(--status-disabled-text);
-}
-.services-overview__status--draft {
-  background-color: var(--status-draft-bg);
-  color: var(--status-draft-text);
+/* Dreipunkt-Icon rechts in der Zeile: Abstand nach rechts, runde graue Umrandung */
+.services-overview__table td:last-child {
+  padding-right: 1.2rem;
+  position: relative;
 }
 
-/* Footer */
+/* Tabelle: Checkboxen optisch mittig, Standardgröße, schwarzer Rand und mehr Abstand zum Rand */
+.services-overview__table td:first-child,
+.services-overview__table th:first-child {
+  padding-left: 2rem; /* Abstand von links zur Checkbox */
+}
+
+.services-overview__table input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+  vertical-align: middle;
+  border: 2px solid #111;
+  border-radius: 3px;
+  margin-right: 0.5rem;
+  box-shadow: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background: #fff;
+  position: relative;
+}
+.services-overview__table input[type="checkbox"]:checked {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.services-overview__table input[type="checkbox"]:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Custom checkmark (optional, für schöneres Aussehen) */
+.services-overview__table input[type="checkbox"]:checked::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* --- Konsolidierte Normalisierung für Kopf- und Datenzellen (wie Department-Overview) --- */
+.services-overview__table th,
+.services-overview__table td {
+  box-sizing: border-box;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  padding-left: 0.5rem;
+  padding-right: 0.75rem;
+  vertical-align: middle;
+  text-align: left; /* Default: Name-Spalte links */
+  color: var(--label-color);
+  font-weight: var(--label-font-weight);
+}
+
+/* --- Checkbox/erste Spalte: fester Abstand links wie Department-Overview --- */
+.services-overview__table th:first-child,
+.services-overview__table td:first-child {
+  padding-left: 2.5rem !important;
+  position: relative;
+}
+
+/* Checkbox Styling: optisch mittig, standardisierte Größe und Rand */
+.services-overview__table input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-primary);
+  vertical-align: middle;
+  border: 2px solid #111;
+  border-radius: 4px;
+  margin: 0;
+  box-shadow: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background: #fff;
+  position: relative;
+}
+.services-overview__table input[type="checkbox"]:checked {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.services-overview__table input[type="checkbox"]:checked::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 6px;
+  height: 11px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* --- Name-Spalte (2. Spalte) Breiten & Abstand wie Department-Overview --- */
+.services-overview__table th:nth-child(2),
+.services-overview__table td:nth-child(2) {
+  min-width: 240px;
+  max-width: 340px;
+  width: 30vw;
+  text-align: left;
+  padding-left: 0.5rem !important;
+}
+
+/* --- Alle weiteren Spalten (außer Checkbox + Name + letzte Aktion) zentriert --- */
+.services-overview__table th:not(:first-child):not(:nth-child(2)):not(:last-child),
+.services-overview__table td:not(:first-child):not(:nth-child(2)):not(:last-child) {
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* --- Status-Spalte rechts fixieren (sticky), links von den "..."-Buttons --- */
+.services-overview__table th.status,
+.services-overview__table td.status {
+  position: sticky;
+  right: var(--action-offset);
+  z-index: 4;
+  box-sizing: border-box;
+  min-width: 120px;
+  max-width: 180px;
+  width: 10vw;
+  text-align: right;
+  padding-right: 2.2rem;
+}
+
+.services-overview__table th.status {
+  background: var(--color-bg);
+}
+
+.services-overview__table td.status {
+  background: transparent;
+}
+
+/* Buttons über Status halten */
+.services-overview__table .btn.more-actions {
+  z-index: 6 !important;
+}
+
+/* --- Letzte Spalte (Aktionen "..."): rechtsbündig mit etwas mehr Padding --- */
+.services-overview__table th:last-child,
+.services-overview__table td:last-child {
+  text-align: right;
+  padding-right: 1.5rem;
+}
+
+/* --- Row selected indicator / left stripe wie Department-Overview --- */
+.services-overview__table tr::before {
+  content: '';
+  display: block;
+  width: 5px;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: transparent;
+  pointer-events: none;
+  z-index: 1;
+}
+.services-overview__table tr.row-selected::before {
+  background: var(--color-primary);
+  border-radius: 3px;
+  z-index: 2;
+}
+
+/* --- Kachel / Content: gleiche Abstände und Look wie Department-Overview --- */
+.services-overview__content {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  padding: var(--box-padding);
+  padding-block: var(--box-padding, 1rem);
+  margin-top: 0;
+  margin-bottom: var(--page-gap);
+  overflow: hidden;
+}
+
+/* Footer wie Department-Overview */
 .services-overview__footer {
   text-align: center;
-  padding: 1rem 0;
+  padding: 1.5rem 0 0.5rem 0;
+  padding-right: 0.75rem;
+  vertical-align: middle;
 }
-.services-overview__footer .btn.flat {
-  background: transparent;
-  border: none;
-  padding: 0;
-  color: var(--color-primary);
-  font-weight: var(--label-font-weight);
-  text-decoration: underline;
+
+.services-overview__table th:first-child,
+.services-overview__table td:first-child {
+  padding-left: 2.5rem !important;
 }
-.services-overview__footer .btn.flat:hover {
-  color: var(--color-primary-dark);
+
+.services-overview__table th:nth-child(2),
+.services-overview__table td:nth-child(2) {
+  padding-left: 0.5rem !important;
+  text-align: left;
+  min-width: 220px;
+}
+
+.services-overview__table th:not(:first-child):not(:nth-child(2)),
+.services-overview__table td:not(:first-child):not(:nth-child(2)) {
+  padding-left: 0.5rem;
+  padding-right: 0.75rem;
+  text-align: right;
+}
+
+/* Checkbox: Angleichen an Department-Overview - kompakteres Aussehen, dezenter Rand, weißes Häkchen bei checked */
+.services-overview__table td:first-child input[type="checkbox"],
+.services-overview__table th:first-child input[type="checkbox"],
+.services-overview__table input[type="checkbox"] {
+  /* visueller Stil wie Department-Overview */
+  width: 16px !important;
+  height: 16px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  vertical-align: middle !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background: #fff !important;
+  border: 1px solid var(--color-border, #dcdcdc) !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  display: inline-block !important;
+  position: relative !important;
+}
+
+/* Checked: Primärfarbe füllen und weißes Häkchen anzeigen */
+.services-overview__table input[type="checkbox"]:checked {
+  background: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+}
+
+/* Weißes Häkchen, sauber positioniert */
+.services-overview__table input[type="checkbox"]:checked::after {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  left: 4px !important;
+  top: 1px !important;
+  width: 6px !important;
+  height: 10px !important;
+  border: solid #fff !important;
+  border-width: 0 2px 2px 0 !important;
+  transform: rotate(45deg) !important;
+}
+
+/* Fokuszustand (dezente Outline ähnlich Department-Overview) */
+.services-overview__table input[type="checkbox"]:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.04) !important;
+}
+
+/* Entferne ältere, widersprechende Margins/Größen */
+.services-overview__table input[type="checkbox"] {
+  margin-right: 0 !important;
 }

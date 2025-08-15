@@ -86,7 +86,7 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
               disabled={selectedRows.length === 0}
               style={{ opacity: selectedRows.length === 0 ? 0.5 : 1 }}
             >
-              ⋯ Weitere Aktionen
+              <span aria-hidden="true">⋯</span> Weitere Aktionen
             </button>
             {actionsOpen && (
               <div className="actions-dropdown">
@@ -102,16 +102,14 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
               </div>
             )}
           </div>
-
           <button
-            className="btn add department-new"
+            className="btn departments-new"
             onClick={() => onNew(generalEmployees)}
           >
             Neu Abteilung anlegen
           </button>
         </div>
       </div>
-
       <div className="page-container department-overview__content">
         {localDepartments.length === 0 ? (
           <div className="empty-state">
@@ -135,51 +133,85 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
                       type="checkbox"
                       checked={selectedRows.length === localDepartments.length && localDepartments.length > 0}
                       onChange={e => toggleSelectAll(e.target.checked)}
+                      aria-label="Alle auswählen"
                     />
                   </th>
                   <th>Name</th>
-                  <th>Personen</th>
-                  <th>Status</th>
+                  <th className="persons">Personen</th>
+                  <th className="status">Status</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
-                {localDepartments.map((d, i) => (
-                  <tr key={d.id || i}>
-                    <td>
-                      <input
-                        type="checkbox"
-                        checked={selectedRows.includes(d.id)}
-                        onChange={e => toggleSelectOne(d.id, e.target.checked)}
-                      />
-                    </td>
-                    <td>{d.name}</td>
-                    <td>{d.employees?.length ?? 0}</td>
-                    <td>
-                      <span className={statusClass(d.status)}>
-                        {d.status === 'active'
-                          ? 'Aktiv'
-                          : d.status === 'disabled'
-                          ? 'Inaktiv'
-                          : 'Entwurf'}
-                      </span>
-                    </td>
-                    <td>
-                      <button
-                        className="btn more-actions"
-                        aria-label="Bearbeiten"
-                        onClick={() => onEdit(d, i, generalEmployees)}
-                      >
-                        ⋯
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {localDepartments.map((d, i) => {
+                  const checked = selectedRows.includes(d.id);
+                  return (
+                    <tr
+                      key={d.id || i}
+                      className={checked ? 'row-selected' : ''}
+                      onClick={e => {
+                        // Nur Checkbox- oder Button-Klicks nicht doppelt toggeln
+                        if (
+                          e.target.tagName === 'INPUT' ||
+                          e.target.tagName === 'BUTTON' ||
+                          e.target.closest('button')
+                        ) return;
+                        toggleSelectOne(d.id, !checked);
+                      }}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={e => toggleSelectOne(d.id, e.target.checked)}
+                          aria-label={`Abteilung ${d.name} auswählen`}
+                          onClick={e => e.stopPropagation()}
+                        />
+                      </td>
+                      <td /* entfernt: fontWeight: 600 */ style={{ color: "#222" }}>{d.name}</td>
+                      <td className="persons" /* entfernt: fontWeight: 500 */ style={{ color: "#222" }}>
+                        {Array.isArray(d.employees) ? d.employees.length : d.employees ?? 0}
+                      </td>
+                      <td className="status">
+                        <span className={statusClass(d.status)}>
+                          {d.status === "active"
+                            ? "Aktiv"
+                            : d.status === "disabled"
+                            ? "Inaktiv"
+                            : "Entwurf"}
+                        </span>
+                      </td>
+                      <td>
+                        <button
+                          className="btn more-actions"
+                          aria-label="Bearbeiten"
+                          style={{
+                            background: "none",
+                            border: "none",
+                            color: "#888",
+                            fontSize: 22,
+                            padding: 0,
+                            minWidth: 32,
+                            minHeight: 32,
+                            borderRadius: "50%"
+                          }}
+                          onClick={e => {
+                            e.stopPropagation();
+                            onEdit(d, i, generalEmployees);
+                          }}
+                        >
+                          ⋯
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
             <div className="department-overview__footer">
               <button
-                className="btn flat department-view-more"
+                className="btn view-more"
                 onClick={() => onNew(generalEmployees)}
               >
                 Weitere Abteilungen anlegen

@@ -7,7 +7,7 @@
   --color-border: #ddd;
   --color-primary: #6b36c6;
   --color-primary-dark: #1f4eb0;
-  --color-page-bg: #d7d7d7;
+  --color-page-bg: rgb(238, 238, 238);
 
   /* Statusfarben */
   --status-active-bg: #d1fae5;
@@ -31,6 +31,7 @@
   --page-gap: 24px;
   --column-gap: 24px;
   --page-margin-vertical: 36px;
+  
 
   /* ===== Innenabstand für weiße Boxen ===== */
   --box-padding: 24px;
@@ -45,6 +46,10 @@
   --header-padding-bottom: 10px;
   --header-height: 80px;
   --header-font-size: 24px; /* angepasst auf 24px */
+
+  /* Sticky-Columns: Checkbox (erste Spalte) + Name (zweite Spalte) fixieren */
+  --checkbox-col-width: 56px; /* Breite der Checkbox-Spalte (Anpassen falls nötig) */
+  --action-offset: 68px; /* Platz zwischen rechtem Tabellenrand und Status-Spalte (passt links von den "..."-Buttons) */
 }
 
 /* ===== Global Reset ===== */
@@ -603,4 +608,453 @@ h2 {
   background-color: var(--color-primary);
   color: white;
   border-color: var(--color-primary);
+}
+
+.btn.more-actions[aria-label="Bearbeiten"] {
+  background: #fff;
+  color: #888;
+  border: 20px solid #d1d5db; /* HIER: runde graue Umrandung */
+  font-size: 22px;
+  padding: 0;
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: 50%;
+  position: absolute;
+  right: 2.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn.more-actions[aria-label="Bearbeiten"]:hover {
+  background: #3112be;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* Runde graue Umrandung für die "..."-Buttons in Department-Overview und Services-Overview */
+.department-overview__table .btn.more-actions,
+.services-overview__table .btn.more-actions {
+  background: #fff !important;
+  color: #888 !important;
+  border: 1px solid #d1d5db !important;
+  font-size: 22px !important;
+  padding: 0 !important;
+  min-width: 30px !important;
+  min-height: 30px !important;
+  border-radius: 50% !important;
+  transition: background 0.2s, border-color 0.2s, color 0.2s !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
+  position: absolute !important;
+  right: 2.2rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.department-overview__table .btn.more-actions:hover,
+.services-overview__table .btn.more-actions:hover {
+  border-color: var(--color-primary) !important;
+  background: #ede9fe !important;
+  color: var(--color-primary) !important;
+}
+/* Spezifischer: Button-Styles für die ...-Buttons in der Tabelle */
+.department-overview__table .btn.more-actions {
+  background: #fff !important;
+  color: #888 !important;
+  border: 1px solid #d1d5db !important;
+  font-size: 22px !important;
+  padding: 0 !important;
+  min-width: 30px !important;
+  min-height: 30px !important;
+  border-radius: 50% !important;
+  transition: background 0.2s, border-color 0.2s, color 0.2s !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
+  position: absolute !important;
+  right: 2.2rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 2;
+}
+
+.department-overview__table .btn.more-actions:hover {
+  border-color: var(--color-primary) !important;
+}
+
+/* --- Neu: Status-Spalte rechts fixieren, links von den "..." Buttons --- */
+.department-overview__table th.status,
+.department-overview__table td.status,
+.services-overview__table th.status,
+.services-overview__table td.status {
+  position: sticky;
+  right: var(--action-offset); /* bleibt links von den Aktions-Buttons */
+  z-index: 4;                   /* über normalen Zellen, unter der Aktions-Button-Ebene */
+  box-sizing: border-box;
+}
+
+/* Header-Status-Zellen behalten weißen Hintergrund, Body-Zellen transparent (Zeilen-Highlight soll durchscheinen) */
+.department-overview__table th.status,
+.services-overview__table th.status {
+  background: var(--color-bg);
+}
+.department-overview__table td.status,
+.services-overview__table td.status {
+  background: transparent;
+}
+
+/* Stelle sicher, dass die Aktions-Buttons über der Status-Spalte liegen */
+.department-overview__table .btn.more-actions,
+.services-overview__table .btn.more-actions {
+  z-index: 6 !important; /* höher als status z-index */
+}
+
+/* === Gemeinsame Tabellen- und Kachel-Styles für Department-Overview & Services-Overview === */
+
+/* Karten-Box (weißer Hintergrund, Rundungen, Schatten) */
+.common-overview__content {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+}
+
+/* Tabellen-Grundlayout */
+.common-overview__table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.common-overview__table th,
+.common-overview__table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.common-overview__table th {
+  font-weight: 700;
+  color: #222;
+  background: none;
+  border-bottom: 1.5px solid #ececec;
+  font-size: 1rem;
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
+
+.common-overview__table td,
+.common-overview__table td.persons,
+.common-overview__table td.status,
+.common-overview__table td.duration,
+.common-overview__table td.price,
+.common-overview__status {
+  font-weight: 400 !important;
+}
+
+.common-overview__table td {
+  border-bottom: 1px solid #ececec;
+  border-right: none;
+  border-left: none;
+  border-top: none;
+  background: none;
+  font-size: 1rem;
+  color: #222;
+  font-weight: 500;
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
+
+.common-overview__table td {
+  font-weight: var(--label-font-weight);
+  color: var(--label-color);
+  opacity: var(--label-opacity);
+}
+
+/* Status-Pillen */
+.common-overview__status {
+  display: inline-block;
+  padding: 0.25rem 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 400 !important;
+  border-radius: 9999px;
+  letter-spacing: 0.01em;
+  min-width: 70px;
+  text-align: center;
+  border: none;
+}
+
+.common-overview__status--draft {
+  background-color: #fdf0bb;
+  color: #ffa704;
+  border: 2px solid #fdf0bb;
+}
+.common-overview__status--active {
+  background-color: #cfffe5;
+  color: #00513a;
+  border: 2px solid #cfffe5;
+}
+.common-overview__status--disabled {
+  background-color: #ffabab;
+  color: #980303;
+  border: 2px solid #ffabab;
+}
+
+/* Dreipunkt-Icon rechts in der Zeile */
+.common-overview__table td:last-child {
+  padding-right: 1.2rem;
+  position: relative;
+}
+
+/* Footer-Link mittig, lila, unterstrichen */
+.common-overview__footer {
+  text-align: center;
+  padding: 1.5rem 0 0.5rem 0;
+}
+.common-overview__footer .btn.flat {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-weight: 500;
+  font-size: 15px;
+  text-decoration: underline;
+  margin: 0 auto;
+  display: block;
+  padding: 0;
+}
+.common-overview__footer .btn.flat:hover {
+  color: var(--color-primary-dark);
+}
+
+/* Tabelle: Checkboxen optisch mittig, Standardgröße, schwarzer Rand und mehr Abstand zum Rand */
+.common-overview__table td:first-child,
+.common-overview__table th:first-child {
+  padding-left: 2rem;
+  position: relative;
+}
+
+.common-overview__table input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+  vertical-align: middle;
+  border: 2px solid #111;
+  border-radius: 3px;
+  margin-right: 0.5rem;
+  box-shadow: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background: #fff;
+  position: relative;
+}
+.common-overview__table input[type="checkbox"]:checked {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.common-overview__table input[type="checkbox"]:focus {
+  outline: none;
+  box-shadow: none;
+}
+.common-overview__table input[type="checkbox"]:checked::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Zeilenabstand */
+.common-overview__table tr {
+  border: none;
+  margin-bottom: 0;
+}
+
+/* Optionale Mitte-Spalte für Abstand */
+.common-overview__table td.spacer {
+  width: 40px;
+  min-width: 40px;
+  border: none;
+  background: transparent;
+  pointer-events: none;
+}
+
+/* Zeile optisch hervorheben, wenn ausgewählt */
+.common-overview__table tr.row-selected {
+  background: #f3f4f6;
+  position: relative;
+}
+.common-overview__table tr.row-selected::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 5px;
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 3px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Immer Platz für den Strich lassen, damit sich der Content nicht verschiebt */
+.common-overview__table td:first-child,
+.common-overview__table th:first-child {
+  padding-left: 2.5rem;
+  position: relative;
+}
+
+/* Unsichtbarer Platzhalter für alle Zeilen */
+.common-overview__table tr::before {
+  content: '';
+  display: block;
+  width: 5px;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: transparent;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Einheitliches Styling für "Weitere Abteilungen anlegen" und "Weitere Dienste anlegen" */
+.btn.view-more {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-weight: 500;
+  font-size: 15px;
+  text-decoration: underline;
+  margin: 0 auto;
+  display: block;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.btn.view-more:hover {
+  color: var(--color-primary-dark);
+}
+.btn.department-view-more:hover,
+.btn.services-view-more:hover {
+  color: var(--color-primary-dark);
+}
+
+.department-overview__footer,
+.services-overview__footer {
+  text-align: center;
+  padding: 1.5rem 0 0.5rem 0; /* Abstand zur letzten Zeile + Luft nach unten */
+}
+
+.department-overview__content,
+.services-overview__content {
+  margin-bottom: var(--page-gap); /* Einheitlicher Abstand zum Boden */
+}
+
+.department-overview__footer .btn.view-more,
+.services-overview__footer .btn.view-more {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-weight: 500;
+  font-size: 15px;
+  text-decoration: underline;
+  margin: 0 auto;
+  display: block;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.department-overview__footer .btn.view-more:hover,
+.services-overview__footer .btn.view-more:hover {
+  color: var(--color-primary-dark);
+}
+
+.services-overview__content {
+  margin-bottom: var(--page-gap); /* explizit gesetzt */
+}
+
+/* Sticky-Columns: Checkbox (erste Spalte) + Name (zweite Spalte) fixieren */
+.department-overview__table,
+.services-overview__table {
+  /* damit sticky Zellen korrekt positioniert sind */
+  position: relative;
+}
+
+/* Erste Spalte: Checkbox-Spalte - feste Breite und sticky */
+.department-overview__table th:first-child,
+.department-overview__table td:first-child,
+.services-overview__table th:first-child,
+.services-overview__table td:first-child {
+  width: var(--checkbox-col-width) !important;
+  min-width: var(--checkbox-col-width) !important;
+  max-width: var(--checkbox-col-width) !important;
+  position: sticky;
+  left: 0;
+  z-index: 6; /* über Standard-Zellen, unter evtl. Header */
+  box-sizing: border-box;
+  /* Header soll sichtbar weiß bleiben, tbody transparent damit row-selected wirkt */
+}
+.department-overview__table th:first-child,
+.services-overview__table th:first-child {
+  background: var(--color-bg);
+}
+.department-overview__table td:first-child,
+.services-overview__table td:first-child {
+  background: transparent;
+  position: sticky; /* beibehalten, damit Checkbox immer sichtbar bleibt */
+}
+
+/* Zweite Spalte: Name-Spalte - sticky direkt rechts der Checkbox-Spalte */
+.department-overview__table th:nth-child(2),
+.department-overview__table td:nth-child(2),
+.services-overview__table th:nth-child(2),
+.services-overview__table td:nth-child(2) {
+  position: sticky;
+  left: var(--checkbox-col-width);
+  z-index: 5; /* unterhalb der Checkbox-Spalte, über normalen Zellen */
+  box-sizing: border-box;
+  /* damit der Name lesbar bleibt im Header, aber Zeilen-Highlight sichtbar ist */
+}
+.department-overview__table th:nth-child(2),
+.services-overview__table th:nth-child(2) {
+  background: var(--color-bg);
+}
+.department-overview__table td:nth-child(2),
+.services-overview__table td:nth-child(2) {
+  background: transparent;
+}
+
+/* kleine Trennkante rechts der Name-Spalte für bessere Lesbarkeit (nicht blickdicht) */
+.department-overview__table td:nth-child(2)::after,
+.services-overview__table td:nth-child(2)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  pointer-events: none;
+  box-shadow: -6px 0 12px rgba(0,0,0,0.03);
+}
+
+/* Sicherstellen, dass th/td sticky-Zellen relative Position erlauben (pseudo-Element braucht position) */
+.department-overview__table th,
+.department-overview__table td,
+.services-overview__table th,
+.services-overview__table td {
+  position: relative;
 }
