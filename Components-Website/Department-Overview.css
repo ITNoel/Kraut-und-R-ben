@@ -420,3 +420,117 @@
 .department-overview__table .btn.more-actions {
   z-index: 6 !important;
 }
+
+/* --- Stelle sicher, dass die Status-Spalte stets rechts fixiert (sticky) ist --- */
+.department-overview__table {
+  /* notwendig, damit sticky-Zellen sich korrekt relativ zum Table-Container verhalten */
+  position: relative;
+}
+
+/* Status-Spalte: sticky rechts, feste Breiten, Box-Sizing und Ausrichtung */
+.department-overview__table th.status,
+.department-overview__table td.status {
+  position: sticky;
+  right: var(--action-offset);
+  z-index: 5; /* über normalen Zellen */
+  box-sizing: border-box;
+  min-width: 120px;
+  max-width: 180px;
+  width: 10vw;
+  text-align: right;
+  padding-right: 2.2rem;
+}
+
+/* Header-Zelle hat festen Hintergrund, Body-Zelle transparent (Zeilen-Highlight soll durchscheinen) */
+.department-overview__table th.status {
+  background: var(--color-bg);
+}
+.department-overview__table td.status {
+  background: transparent;
+}
+
+/* Aktions-Buttons müssen über der Status-Spalte liegen */
+.department-overview__table .btn.more-actions {
+  z-index: 6 !important;
+  /* Positionierung der Buttons wird bereits an mehreren Stellen gesetzt; hier stellen wir nur den Stacking-Context sicher */
+}
+
+/* Überschreibe / stelle sicher: Status-Spalte sticky, exakt gleiche Logik wie Checkbox/Name (nur rechts) */
+.department-overview__table th.status,
+.department-overview__table td.status {
+  position: sticky !important;
+  right: var(--action-offset) !important;
+  width: var(--status-col-width) !important;
+  min-width: var(--status-col-width) !important;
+  max-width: var(--status-col-width) !important;
+  text-align: right !important;
+  padding-right: 2.2rem !important;
+  z-index: 7 !important;
+  background-clip: padding-box !important;
+}
+
+.department-overview__table th.status {
+  background: var(--color-bg) !important;
+}
+.department-overview__table td.status {
+  background: transparent !important;
+}
+
+/* Sicherstellen, dass Tabelle den Positioning-Context für sticky hat */
+.department-overview__table {
+  position: relative;
+}
+
+/* === Positioniere Status-Zellen absolut innerhalb der jeweiligen Zeile (anstatt sticky) === */
+/* Zeilen als Positionierungs-Container */
+.department-overview__table thead tr,
+.department-overview__table tbody tr {
+  position: relative;
+}
+
+/* Header-Status: oben in der Kopfzeile, volle Höhe */
+.department-overview__table th.status {
+  position: absolute !important;
+  right: var(--action-offset) !important;
+  top: 0 !important;
+  height: 100% !important;
+  width: var(--status-col-width) !important;
+  min-width: var(--status-col-width) !important;
+  max-width: var(--status-col-width) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  padding-right: 2.2rem !important;
+  box-sizing: border-box !important;
+  background: var(--color-bg) !important;
+  z-index: 8 !important;
+}
+
+/* Body-Status: absolut innerhalb jeder Zeile, vertikal zentriert */
+.department-overview__table td.status {
+  position: absolute !important;
+  right: var(--action-offset) !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: var(--status-col-width) !important;
+  min-width: var(--status-col-width) !important;
+  max-width: var(--status-col-width) !important;
+  padding-right: 2.2rem !important;
+  box-sizing: border-box !important;
+  background: transparent !important;
+  text-align: right !important;
+  z-index: 5 !important;
+}
+
+/* Damit andere Zellen nicht unter der absolut positionierten Status-Spalte liegen,
+   erhöhen wir rechtsseitig das Padding der normalen Zellen (ausgenommen Checkbox, Name, Status, Aktion) */
+.department-overview__table th:not(.status):not(:first-child):not(:last-child),
+.department-overview__table td:not(.status):not(:first-child):not(:last-child) {
+  padding-right: calc(var(--status-col-width) + 2.5rem) !important;
+}
+
+/* Aktions-Buttons (drei Punkte) müssen über der Status-Spalte liegen */
+.department-overview__table .btn.more-actions {
+  z-index: 10 !important;
+  /* absolute Positionierung der Buttons bleibt bestehen */
+}

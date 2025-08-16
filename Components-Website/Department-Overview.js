@@ -137,8 +137,8 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
                     />
                   </th>
                   <th>Name</th>
-                  <th className="persons">Personen</th>
                   <th className="status">Status</th>
+                  <th className="persons">Personen</th>
                   <th></th>
                 </tr>
               </thead>
@@ -169,10 +169,7 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
                           onClick={e => e.stopPropagation()}
                         />
                       </td>
-                      <td /* entfernt: fontWeight: 600 */ style={{ color: "#222" }}>{d.name}</td>
-                      <td className="persons" /* entfernt: fontWeight: 500 */ style={{ color: "#222" }}>
-                        {Array.isArray(d.employees) ? d.employees.length : d.employees ?? 0}
-                      </td>
+                      <td style={{ color: "#222" }}>{d.name}</td>
                       <td className="status">
                         <span className={statusClass(d.status)}>
                           {d.status === "active"
@@ -181,6 +178,9 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
                             ? "Inaktiv"
                             : "Entwurf"}
                         </span>
+                      </td>
+                      <td className="persons" style={{ color: "#222" }}>
+                        {Array.isArray(d.employees) ? d.employees.length : d.employees ?? 0}
                       </td>
                       <td>
                         <button

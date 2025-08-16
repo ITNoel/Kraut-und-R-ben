@@ -125,9 +125,9 @@ export default function ServicesOverview({ onSelect }) {
                 />
               </th>
               <th>Name</th>
+              <th className="status">Status</th>
               <th>Dauer</th>
               <th>Preis</th>
-              <th>Status</th>
               <th></th>
             </tr>
           </thead>
@@ -159,9 +159,7 @@ export default function ServicesOverview({ onSelect }) {
                     />
                   </td>
                   <td style={{ color: "#222" }}>{s.name}</td>
-                  <td style={{ color: "#222" }}>{s.duration}</td>
-                  <td style={{ color: "#222" }}>{s.price}</td>
-                  <td>
+                  <td className="status">
                     <span className={statusClass(s.status)}>
                       {s.status === 'active'
                         ? 'Aktiv'
@@ -170,6 +168,8 @@ export default function ServicesOverview({ onSelect }) {
                         : 'Entwurf'}
                     </span>
                   </td>
+                  <td style={{ color: "#222" }}>{s.duration}</td>
+                  <td style={{ color: "#222" }}>{s.price}</td>
                   <td>
                     <button
                       className="btn more-actions"
@@ -186,7 +186,6 @@ export default function ServicesOverview({ onSelect }) {
                       }}
                       onClick={e => {
                         e.stopPropagation();
-                        // Hier könntest du ein Edit-Modal öffnen oder onSelect('services') aufrufen
                         onSelect('services');
                       }}
                     >

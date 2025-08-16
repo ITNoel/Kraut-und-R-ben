@@ -178,31 +178,56 @@
   white-space: nowrap;
 }
 
-/* --- Status-Spalte rechts fixieren (sticky), links von den "..."-Buttons --- */
-.services-overview__table th.status,
-.services-overview__table td.status {
-  position: sticky;
-  right: var(--action-offset);
-  z-index: 4;
-  box-sizing: border-box;
-  min-width: 120px;
-  max-width: 180px;
-  width: 10vw;
-  text-align: right;
-  padding-right: 2.2rem;
+/* === Positioniere Status-Zellen absolut innerhalb der jeweiligen Zeile (anstatt sticky) === */
+/* Zeilen als Positionierungs-Container */
+.services-overview__table thead tr,
+.services-overview__table tbody tr {
+  position: relative;
 }
 
+/* Header-Status: oben in der Kopfzeile, volle Höhe */
 .services-overview__table th.status {
-  background: var(--color-bg);
+  position: absolute !important;
+  right: var(--action-offset) !important;
+  top: 0 !important;
+  height: 100% !important;
+  width: var(--status-col-width) !important;
+  min-width: var(--status-col-width) !important;
+  max-width: var(--status-col-width) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  padding-right: 2.2rem !important;
+  box-sizing: border-box !important;
+  background: var(--color-bg) !important;
+  z-index: 8 !important;
 }
 
+/* Body-Status: absolut innerhalb jeder Zeile, vertikal zentriert */
 .services-overview__table td.status {
-  background: transparent;
+  position: absolute !important;
+  right: var(--action-offset) !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: var(--status-col-width) !important;
+  min-width: var(--status-col-width) !important;
+  max-width: var(--status-col-width) !important;
+  padding-right: 2.2rem !important;
+  box-sizing: border-box !important;
+  background: transparent !important;
+  text-align: right !important;
+  z-index: 5 !important;
 }
 
-/* Buttons über Status halten */
+/* Verhindere Überlappung: mehr Abstand rechts für normale Zellen (außer Checkbox, Name, Aktion, Status) */
+.services-overview__table th:not(.status):not(:first-child):not(:last-child),
+.services-overview__table td:not(.status):not(:first-child):not(:last-child) {
+  padding-right: calc(var(--status-col-width) + 2.5rem) !important;
+}
+
+/* Aktions-Buttons (drei Punkte) müssen über der Status-Spalte liegen */
 .services-overview__table .btn.more-actions {
-  z-index: 6 !important;
+  z-index: 10 !important;
 }
 
 /* --- Letzte Spalte (Aktionen "..."): rechtsbündig mit etwas mehr Padding --- */
@@ -320,3 +345,42 @@
 .services-overview__table input[type="checkbox"] {
   margin-right: 0 !important;
 }
+
+/* --- Status-Spalte rechts sticky (wie Name links sticky) --- */
+.services-overview__table,
+.department-overview__table {
+  position: relative; /* sicherstellen, dass sticky innerhalb des Containers funktioniert */
+}
+
+/* Status-Spalte für beide Overviews vereinheitlichen */
+.services-overview__table th.status,
+.services-overview__table td.status,
+.department-overview__table th.status,
+.department-overview__table td.status {
+  position: sticky;
+  right: var(--action-offset);
+  z-index: 5;
+  box-sizing: border-box;
+  min-width: 120px;
+  max-width: 180px;
+  width: 10vw;
+  text-align: right;
+  padding-right: 2.2rem;
+}
+
+/* Header: weißer Hintergrund, Body: transparent damit row-highlight sichtbar bleibt */
+.services-overview__table th.status,
+.department-overview__table th.status {
+  background: var(--color-bg);
+}
+.services-overview__table td.status,
+.department-overview__table td.status {
+  background: transparent;
+}
+
+/* Aktions-Buttons (drei Punkte) über der Status-Spalte anzeigen */
+.services-overview__table .btn.more-actions,
+.department-overview__table .btn.more-actions {
+  z-index: 6 !important;
+}
+

@@ -50,6 +50,9 @@
   /* Sticky-Columns: Checkbox (erste Spalte) + Name (zweite Spalte) fixieren */
   --checkbox-col-width: 56px; /* Breite der Checkbox-Spalte (Anpassen falls nötig) */
   --action-offset: 68px; /* Platz zwischen rechtem Tabellenrand und Status-Spalte (passt links von den "..."-Buttons) */
+
+  /* neue, feste Breite für die Status-Spalte (gleichmäßig wie Checkbox/Name) */
+  --status-col-width: 140px;
 }
 
 /* ===== Global Reset ===== */
@@ -1057,4 +1060,47 @@ h2 {
 .services-overview__table th,
 .services-overview__table td {
   position: relative;
+}
+
+/* --- Erzwinge Status-Spalte wie die Name/Checkbox-Spalten: immer an gleicher (rechten) Position --- */
+.department-overview__table,
+.services-overview__table {
+  position: relative; /* sticky funktioniert nur relativ zum Container */
+}
+
+/* sehr spezifische Regel, damit nichts sie übersteuert */
+.department-overview__table th.status,
+.department-overview__table td.status,
+.services-overview__table th.status,
+.services-overview__table td.status {
+  position: sticky !important;
+  right: var(--action-offset) !important;         /* exakt links von den Aktion-Buttons */
+  box-sizing: border-box !important;
+  width: var(--status-col-width) !important;
+  min-width: var(--status-col-width) !important;
+  max-width: var(--status-col-width) !important;
+  text-align: right !important;
+  padding-right: 2.2rem !important;
+  z-index: 7 !important; /* über normalen Zellen, unter den action-buttons */
+  background-clip: padding-box !important;
+}
+
+/* Header-Zellen sollten festen Hintergrund haben, Body-Zellen transparent (Zeilen-Highlight bleibt sichtbar) */
+.department-overview__table th.status,
+.services-overview__table th.status {
+  background: var(--color-bg) !important;
+}
+.department-overview__table td.status,
+.services-overview__table td.status {
+  background: transparent !important;
+}
+
+/* Actions-Buttons müssen oberste Stacking-Ebene haben */
+.department-overview__table .btn.more-actions,
+.services-overview__table .btn.more-actions {
+  position: absolute !important;
+  right: 1rem !important;    /* Buttons liegen rechts; Abstand anpassen wenn nötig */
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 9 !important;     /* über der Status-Spalte */
 }
