@@ -783,29 +783,51 @@ h2 {
   opacity: var(--label-opacity);
 }
 
-/* Status-Pillen */
+/* --- moved: shared status pill styles (used by Department-Overview & Services-Overview) --- */
+
+/* Flexible, text‑width driven status pills */
+.department-overview__status,
+.services-overview__status,
 .common-overview__status {
-  display: inline-block;
-  padding: 0.25rem 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;               /* klein(er) Abstand falls Icon + Text */
+  padding: 0.22rem 0.6rem;   /* kompakter als vorher, passt sich an Text an */
   font-size: 0.95rem;
   font-weight: 400 !important;
   border-radius: 9999px;
   letter-spacing: 0.01em;
-  min-width: 70px;
+  white-space: nowrap;       /* verhindert Zeilenumbruch in der Pille */
   text-align: center;
   border: none;
+  margin: 0;
+  box-sizing: border-box;
+  width: auto;               /* wichtig: passt sich an Inhalt an */
+  max-width: 100%;
 }
 
+/* Draft */
+.department-overview__status--draft,
+.services-overview__status--draft,
 .common-overview__status--draft {
   background-color: #fdf0bb;
   color: #ffa704;
   border: 2px solid #fdf0bb;
 }
+
+/* Active */
+.department-overview__status--active,
+.services-overview__status--active,
 .common-overview__status--active {
   background-color: #cfffe5;
   color: #00513a;
   border: 2px solid #cfffe5;
 }
+
+/* Disabled */
+.department-overview__status--disabled,
+.services-overview__status--disabled,
 .common-overview__status--disabled {
   background-color: #ffabab;
   color: #980303;
@@ -1041,9 +1063,9 @@ h2 {
   background: transparent;
 }
 
-/* kleine Trennkante rechts der Name-Spalte für bessere Lesbarkeit (nicht blickdicht) */
-.department-overview__table td:nth-child(2)::after,
-.services-overview__table td:nth-child(2)::after {
+/* kleine Trennkante rechts der Name-Spalte für bessere Lesbarkeit (nur im Header, nicht in jeder Zeile) */
+.department-overview__table thead th:nth-child(2)::after,
+.services-overview__table thead th:nth-child(2)::after {
   content: '';
   position: absolute;
   right: 0;
@@ -1103,4 +1125,24 @@ h2 {
   top: 50% !important;
   transform: translateY(-50%) !important;
   z-index: 9 !important;     /* über der Status-Spalte */
+}
+
+/* Fix: entferne versehentliche Trennlinien, die als ::after oder Box‑Shadow auf jeder Zeile erscheinen.
+   Wir löschen pseudo‑Elemente nur in tbody (Kopfzeile behält ggf. die Trennkante). */
+.department-overview__table tbody td:nth-child(2)::after,
+.services-overview__table tbody td:nth-child(2)::after,
+.department-overview__table tbody td.status::after,
+.services-overview__table tbody td.status::after {
+  content: none !important;
+  display: none !important;
+  box-shadow: none !important;
+  width: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Zusätzlich: entferne die untere Rahmenlinie nur in der Status‑Spalte, damit die Pille
+   nicht von der Tabellen-Grenze "unterstrichen" wird */
+.department-overview__table td.status,
+.services-overview__table td.status {
+  border-bottom: none !important;
 }

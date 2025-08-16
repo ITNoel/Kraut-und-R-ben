@@ -59,39 +59,7 @@
   opacity: var(--label-opacity);
 }
 
-/* Status-Pillen */
-.department-overview__status {
-  display: inline-block;
-  padding: 0.25rem 0.9rem;
-  font-size: 0.95rem;
-  font-weight: 400 !important;
-  border-radius: 9999px;
-  letter-spacing: 0.01em;
-  min-width: 70px;
-  text-align: center;
-  border: none;
-}
-
-/* Entwurf: gelbe Markierung */
-.department-overview__status--draft {
-  background-color: #fdf0bb;
-  color: #ffa704;
-  border: 2px solid #fdf0bb;
-}
-
-/* Aktiv: grüne Markierung */
-.department-overview__status--active {
-  background-color: #cfffe5;
-  color: #00513a;
-  border: 2px solid #cfffe5;
-}
-
-/* Inaktiv: rote Umrandung, weißer Hintergrund */
-.department-overview__status--disabled {
-  background-color: #ffabab;
-  color: #980303;
-  border: 2px solid #ffabab;
-}
+/* Removed local .department-overview__status rules — moved to global.css */
 
 /* Kopfbereich: Buttons */
 .btn.department-new {
@@ -289,7 +257,7 @@
   padding-left: 0.5rem; /* Abstand zur Checkbox-Spalte */
 }
 
-.department-overview__table th.status,
+.department.overview__table th.status,
 .department-overview__table td.status,
 .department-overview__table th:nth-last-child(2),
 .department-overview__table td:nth-last-child(2) {
@@ -318,11 +286,22 @@
   padding-left: 0.5rem !important;
 }
 
-/* Alle weiteren Spalten (außer Checkbox, Name, "..."-Button) zentriert */
-.department-overview__table th:not(:first-child):not(:nth-last-child(2)):not(:last-child),
-.department-overview__table td:not(:first-child):not(:nth-last-child(2)):not(:last-child) {
-  text-align: center;
+/* --- Replace centered alignment for non-name columns with right alignment
+     so headers and values start on the same vertical line --- */
+.department-overview__table th:not(:first-child):not(:nth-child(2)):not(:last-child),
+.department-overview__table td:not(:first-child):not(:nth-child(2)):not(:last-child) {
+  text-align: right !important;
   white-space: nowrap;
+}
+
+/* Ensure th and td use identical horizontal padding so header text and cell
+   values align visually (start on the same line) */
+.department-overview__table th,
+.department-overview__table td {
+  padding-left: 0.5rem !important;
+  padding-right: 0.75rem !important;
+  box-sizing: border-box;
+  vertical-align: middle;
 }
 
 /* Status-Spalte rechtsbündig, Abstand zum "..."-Button */
@@ -533,4 +512,82 @@
 .department-overview__table .btn.more-actions {
   z-index: 10 !important;
   /* absolute Positionierung der Buttons bleibt bestehen */
+}
+
+/* Feintuning: mehr Abstand für Name (links) und Status (rechts) — dezent, aber sichtbar */
+.department-overview__table th:nth-child(2),
+.department-overview__table td:nth-child(2) {
+  padding-left: 3rem !important; /* vorher 0.5rem — angenehmer Abstand zum Checkbox‑Stripe */
+}
+
+.department-overview__table th.status,
+.department-overview__table td.status {
+  padding-right: 4rem !important; /* vorher 2.2rem — leicht mehr Abstand zum Rand/Aktions-Button */
+}
+
+/* Make Name column wider and prevent forced wraps; keep ellipsis on overflow */
+.department-overview__table th:nth-child(2),
+.department-overview__table td:nth-child(2) {
+  min-width: 420px !important;
+  max-width: 900px !important;
+  width: 40vw !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  padding-left: 3rem !important;
+}
+
+/* Center status column header and cell content (align left edge of pill with header center visually) */
+.department-overview__table th.status,
+.department-overview__table td.status {
+  /* keep sticky/absolute positioning from existing rules, but center inner content */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important; /* center status pill horizontally */
+  text-align: center !important;
+  padding-left: 0.5rem !important;  /* small left padding */
+  padding-right: 4rem !important;   /* ensure space to actions */
+}
+
+/* Ensure the status pill itself has no extra left margin so it's exactly centered */
+.department-overview__table th.status .department-overview__status,
+.department-overview__table td.status .department-overview__status {
+  margin: 0 !important;
+}
+
+/* Give other columns a little extra right padding to avoid overlap with status area */
+.department-overview__table th:not(:first-child):not(:nth-child(2)):not(.status),
+.department-overview__table td:not(:first-child):not(:nth-child(2)):not(.status) {
+  padding-right: calc(var(--status-col-width,140px) + 2.5rem) !important;
+}
+
+/* --- Überschreibe: Status-Spalte exakt zentrieren (horizontal + vertikal) --- */
+.department-overview__table th.status,
+.department-overview__table td.status {
+  /* sicherstellen, dass die Zellen als Flex-Container zentrieren */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important; /* horizontal zentrieren */
+  text-align: center !important;      /* Fallback für Inline-Inhalt */
+  /* keine Ränder innerhalb der Zelle, damit Pill wirklich zentriert steht */
+  padding-left: 0.5rem !important;
+  padding-right: 3rem !important;
+}
+
+/* Status-Pille selbst keinen Margin links/rechts erlauben */
+.department-overview__table th.status .department-overview__status,
+.department-overview__table td.status .department-overview__status {
+  margin: 0 !important;
+}
+
+/* kleine Trennkante rechts der Name-Spalte für bessere Lesbarkeit (nur im Header, nicht in jeder Zeile) */
+.department-overview__table thead th:nth-child(2)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  pointer-events: none;
+  box-shadow: -6px 0 12px rgba(0,0,0,0.03);
 }

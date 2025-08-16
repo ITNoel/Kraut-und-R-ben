@@ -171,11 +171,61 @@
   padding-left: 0.5rem !important;
 }
 
+/* Make Name column wider and prevent forced wraps; keep ellipsis on overflow */
+.services-overview__table th:nth-child(2),
+.services-overview__table td:nth-child(2) {
+  min-width: 420px !important;
+  max-width: 900px !important;
+  width: 40vw !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  padding-left: 3rem !important;
+}
+
+/* Feintuning: mehr Abstand für Name (links) und Status (rechts) — konsistent mit Department-Overview */
+.services-overview__table th:nth-child(2),
+.services-overview__table td:nth-child(2) {
+  padding-left: 1rem !important; /* etwas mehr Luft links der Name-Spalte */
+}
+
+.services-overview__table th.status,
+.services-overview__table td.status {
+  padding-right: 2.8rem !important; /* etwas mehr Abstand zum rechten Rand/Aktions-Button */
+}
+
+/* Center status column header and cell content */
+.services-overview__table th.status,
+.services-overview__table td.status {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important; /* center status pill horizontally */
+  text-align: center !important;
+  padding-left: 0.5rem !important;
+  padding-right: 4rem !important; /* ensure space to actions */
+}
+
+/* Ensure the status pill itself has no extra left margin */
+.services-overview__table th.status .department-overview__status,
+.services-overview__table td.status .department-overview__status {
+  margin: 0 !important;
+}
+
 /* --- Alle weiteren Spalten (außer Checkbox + Name + letzte Aktion) zentriert --- */
 .services-overview__table th:not(:first-child):not(:nth-child(2)):not(:last-child),
 .services-overview__table td:not(:first-child):not(:nth-child(2)):not(:last-child) {
-  text-align: center;
+  text-align: right !important;
   white-space: nowrap;
+}
+
+/* Ensure th and td use identical horizontal padding so header text and cell
+   values align visually (start on the same line) */
+.services-overview__table th,
+.services-overview__table td {
+  padding-left: 0.5rem !important;
+  padding-right: 0.75rem !important;
+  box-sizing: border-box;
+  vertical-align: middle;
 }
 
 /* === Positioniere Status-Zellen absolut innerhalb der jeweiligen Zeile (anstatt sticky) === */
@@ -288,13 +338,6 @@
   min-width: 220px;
 }
 
-.services-overview__table th:not(:first-child):not(:nth-child(2)),
-.services-overview__table td:not(:first-child):not(:nth-child(2)) {
-  padding-left: 0.5rem;
-  padding-right: 0.75rem;
-  text-align: right;
-}
-
 /* Checkbox: Angleichen an Department-Overview - kompakteres Aussehen, dezenter Rand, weißes Häkchen bei checked */
 .services-overview__table td:first-child input[type="checkbox"],
 .services-overview__table th:first-child input[type="checkbox"],
@@ -383,4 +426,23 @@
 .department-overview__table .btn.more-actions {
   z-index: 6 !important;
 }
+
+/* --- Überschreibe: Status-Spalte exakt zentrieren (horizontal + vertikal) --- */
+.services-overview__table th.status,
+.services-overview__table td.status {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important; /* horizontal zentrieren */
+  text-align: center !important;      /* Fallback */
+  padding-left: 0.5rem !important;
+  padding-right: 3rem !important;
+}
+
+/* Status-Pille selbst keinen Margin links/rechts erlauben */
+.services-overview__table th.status .department-overview__status,
+.services-overview__table td.status .department-overview__status {
+  margin: 0 !important;
+}
+
+/* Removed local .services-overview__status / .department-overview__status rules — moved to global.css */
 
