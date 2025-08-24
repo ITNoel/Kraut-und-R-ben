@@ -150,8 +150,8 @@ export default function Department({
       // Bestandsabfrage: vorhandene Abteilung hat eine server-id (keine local- prefix)
       const isNew = !initialData?.id || String(initialData.id).startsWith('local-');
       if (isNew) {
-        // Erstelle neue Abteilung
-        const resp = await api.post('/departments/', deptPayload);
+        // Erstelle neue Abteilung (spezifischer Create-Endpoint)
+        const resp = await api.post('/departments/create', deptPayload);
         result = resp ?? deptPayload;
       } else {
         // Update vorhandene Abteilung
@@ -176,7 +176,7 @@ export default function Department({
       let result = deptPayload;
       const isNew = !initialData?.id || String(initialData.id).startsWith('local-');
       if (isNew) {
-        const resp = await api.post('/departments/', deptPayload);
+        const resp = await api.post('/departments/create', deptPayload);
         result = resp ?? deptPayload;
       } else {
         const resp = await api.put(`/departments/${initialData.id}/`, deptPayload);

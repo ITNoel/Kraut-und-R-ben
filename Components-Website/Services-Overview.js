@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../global.css';
 import './Services-Overview.css';
+import emptyIllustration from '../assets/empty-services.png';
 
 const services = [
   { name: 'Reisepass beantragen', duration: '15 min', price: '20 €', status: 'active' },
@@ -124,96 +125,102 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
       </div>
 
       <div className="page-container department-overview__content">
-        <table className="department-overview__table">
-          <thead>
-            <tr>
-              <th>
-                <input
-                  type="checkbox"
-                  checked={selectedRows.length === localServices.length && localServices.length > 0}
-                  onChange={e => toggleSelectAll(e.target.checked)}
-                  aria-label="Alle auswählen"
-                />
-              </th>
-              <th>Name</th>
-              <th className="status">Status</th>
-              <th>Dauer</th>
-              <th>Preis</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {localServices.map((s, i) => {
-              const identifier = s.id ?? s.name;
-              const checked = selectedRows.includes(identifier);
-              return (
-                <tr
-                  key={identifier ?? i}
-                  className={checked ? 'row-selected' : ''}
-                  onClick={e => {
-                    if (
-                      e.target.tagName === 'INPUT' ||
-                      e.target.tagName === 'BUTTON' ||
-                      e.target.closest('button')
-                    ) return;
-                    toggleSelectOne(identifier, !checked);
-                  }}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <td>
+        {localServices.length === 0 ? (
+          <div className="empty-state">
+            <img src={emptyIllustration} alt="Keine Dienste" />
+            <h2>Willkommen in der Dienste Übersicht</h2>
+            <p>Sobald Sie Dienste hinzufügen, erscheinen diese hier.</p>
+            <button className="btn save department-new" onClick={() => onSelect('services')}>Neue Dienste anlegen</button>
+          </div>
+        ) : (
+          <>
+            <table className="department-overview__table">
+              <thead>
+                <tr>
+                  <th>
                     <input
                       type="checkbox"
-                      checked={checked}
-                      onChange={e => toggleSelectOne(identifier, e.target.checked)}
-                      aria-label={`Dienst ${s.name} auswählen`}
-                      onClick={e => e.stopPropagation()}
+                      checked={selectedRows.length === localServices.length && localServices.length > 0}
+                      onChange={e => toggleSelectAll(e.target.checked)}
+                      aria-label="Alle auswählen"
                     />
-                  </td>
-                  <td style={{ color: "#222" }}>{s.name}</td>
-                  <td className="status">
-                    <span className={statusClass(s.status)}>
-                      {s.status === 'active' ? 'Aktiv' : s.status === 'disabled' ? 'Deaktiviert' : 'Entwurf'}
-                    </span>
-                  </td>
-                  <td style={{ color: "#222" }}>{s.duration}</td>
-                  <td style={{ color: "#222" }}>{s.price}</td>
-                  <td>
-                    <button
-                      className="btn more-actions"
-                      aria-label="Bearbeiten"
-                      style={{
-                        background: "none",
-                        border: "none",
-                        color: "#888",
-                        fontSize: 22,
-                        padding: 0,
-                        minWidth: 32,
-                        minHeight: 32,
-                        borderRadius: "50%"
-                      }}
-                      onClick={e => {
-                        e.stopPropagation();
-                        // Editiere via App-Callback (App setzt currentService und wechselt View)
-                        if (typeof onEditService === 'function') onEditService(s, i);
-                      }}
-                    >
-                      ⋯
-                    </button>
-                  </td>
+                  </th>
+                  <th>Name</th>
+                  <th className="status">Status</th>
+                  <th>Dauer</th>
+                  <th>Preis</th>
+                  <th></th>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                {localServices.map((s, i) => {
+                  const identifier = s.id ?? s.name;
+                  const checked = selectedRows.includes(identifier);
+                  return (
+                    <tr
+                      key={identifier ?? i}
+                      className={checked ? 'row-selected' : ''}
+                      onClick={e => {
+                        if (
+                          e.target.tagName === 'INPUT' ||
+                          e.target.tagName === 'BUTTON' ||
+                          e.target.closest('button')
+                        ) return;
+                        toggleSelectOne(identifier, !checked);
+                      }}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={e => toggleSelectOne(identifier, e.target.checked)}
+                          aria-label={`Dienst ${s.name} auswählen`}
+                          onClick={e => e.stopPropagation()}
+                        />
+                      </td>
+                      <td style={{ color: "#222" }}>{s.name}</td>
+                      <td className="status">
+                        <span className={statusClass(s.status)}>
+                          {s.status === 'active' ? 'Aktiv' : s.status === 'disabled' ? 'Deaktiviert' : 'Entwurf'}
+                        </span>
+                      </td>
+                      <td style={{ color: "#222" }}>{s.duration}</td>
+                      <td style={{ color: "#222" }}>{s.price}</td>
+                      <td>
+                        <button
+                          className="btn more-actions"
+                          aria-label="Bearbeiten"
+                          style={{
+                            background: "none",
+                            border: "none",
+                            color: "#888",
+                            fontSize: 22,
+                            padding: 0,
+                            minWidth: 32,
+                            minHeight: 32,
+                            borderRadius: "50%"
+                          }}
+                          onClick={e => {
+                            e.stopPropagation();
+                            // Editiere via App-Callback (App setzt currentService und wechselt View)
+                            if (typeof onEditService === 'function') onEditService(s, i);
+                          }}
+                        >
+                          ⋯
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
 
-        <div className="department-overview__footer">
-          <button
-            className="btn view-more"
-            onClick={() => onSelect('services')}
-          >
-            Weitere Dienste anlegen
-          </button>
-        </div>
+            <div className="department-overview__footer">
+              <button className="btn view-more" onClick={() => onSelect('services')}>Weitere Dienste anlegen</button>
+            </div>
+          </>
+        )}
       </div>
 
       {showDeleteModal && (

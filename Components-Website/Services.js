@@ -5,7 +5,7 @@ import '../global.css';
 import './Services.css';
 import { api } from '../Functions/apiClient';
 
-export default function Services({ initialData = null, index = null, generalServices = [], onSaveService, onUpdateService, onCancel }) {
+export default function Services({ initialData = null, index = null, generalServices = [], onSaveService, onUpdateService, onCancel, generalDepartments = [] }) {
   const [hideService, setHideService] = useState(false);
   const [pendingSave, setPendingSave] = useState(false); // NEU
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false); // NEU
@@ -14,6 +14,7 @@ export default function Services({ initialData = null, index = null, generalServ
   const [showDeptDropdown, setShowDeptDropdown] = useState(false);
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
   const [showPaymentDropdown, setShowPaymentDropdown] = useState(false);
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
 
   const deptRef = useRef();
   const notifRef = useRef();
@@ -68,6 +69,16 @@ export default function Services({ initialData = null, index = null, generalServ
     }
   }, [initialData]);
 
+  // initialData.department (falls vorhanden) übernehmen
+  useEffect(() => {
+    if (initialData?.department != null) {
+      const found = (Array.isArray(generalDepartments) ? generalDepartments : []).find(d => String(d.id) === String(initialData.department));
+      setSelectedDepartment(found ?? { id: initialData.department, name: `Abteilung ${initialData.department}` });
+    } else {
+      setSelectedDepartment(null);
+    }
+  }, [initialData, generalDepartments]);
+
   const setFieldOption = (key, value) => {
     setFieldOptions(prev => ({ ...prev, [key]: value }));
   };
@@ -77,6 +88,13 @@ export default function Services({ initialData = null, index = null, generalServ
   };
 
   const handleChange = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  const addDepartment = (dept) => {
+    const deptObj = typeof dept === 'object' ? dept : { id: dept, name: String(dept) };
+    setSelectedDepartment(deptObj);
+    setShowDeptDropdown(false);
+  };
+  const removeDepartment = () => setSelectedDepartment(null);
 
   // Save (update only, bleibt im Editor) — ruft onUpdateService
   const handleSave = async () => {
@@ -91,6 +109,7 @@ export default function Services({ initialData = null, index = null, generalServ
       payment_method: form.payment_method || '',
       is_active: form.is_active ?? true,
       status: hideService ? 'disabled' : ((form.name && form.duration) ? 'active' : 'draft'),
+      department: selectedDepartment ? (selectedDepartment.id ?? selectedDepartment) : null,
       // Neue Feldkonfigurationen mitschicken
       fields: fieldOptions
     };
@@ -99,7 +118,7 @@ export default function Services({ initialData = null, index = null, generalServ
       let result = svcObj;
       const isNew = !initialData?.id || String(initialData?.id).startsWith('local-');
       if (isNew) {
-        const resp = await api.post('/services/', svcObj);
+        const resp = await api.post('/services/create', svcObj);
         result = resp ?? svcObj;
       } else {
         const resp = await api.put(`/services/${initialData.id}/`, svcObj);
@@ -129,6 +148,7 @@ export default function Services({ initialData = null, index = null, generalServ
       payment_method: form.payment_method || '',
       is_active: form.is_active ?? true,
       status: hideService ? 'disabled' : ((form.name && form.duration) ? 'active' : 'draft'),
+      department: selectedDepartment ? (selectedDepartment.id ?? selectedDepartment) : null,
       // Neue Feldkonfigurationen mitschicken
       fields: fieldOptions
     };
@@ -137,7 +157,7 @@ export default function Services({ initialData = null, index = null, generalServ
       let result = svcObj;
       const isNew = !initialData?.id || String(initialData?.id).startsWith('local-');
       if (isNew) {
-        const resp = await api.post('/services/', svcObj);
+        const resp = await api.post('/services/create', svcObj);
         result = resp ?? svcObj;
       } else {
         const resp = await api.put(`/services/${initialData.id}/`, svcObj);
@@ -201,24 +221,29 @@ export default function Services({ initialData = null, index = null, generalServ
             <h2>Informationen</h2>
             <div className="form-grid two-col">
               <div className="form-item">
-                <label>Art</label>
-                <input placeholder="Service" value={form.type} onChange={e => handleChange('type', e.target.value)} />
+                <label>Art
+                  <input value={form.type} onChange={e => handleChange('type', e.target.value)} />
+                </label>
               </div>
               <div className="form-item">
-                <label>Name *</label>
-                <input placeholder="Name" value={form.name} onChange={e => handleChange('name', e.target.value)} />
+                <label>Name *
+                  <input value={form.name} onChange={e => handleChange('name', e.target.value)} />
+                </label>
               </div>
               <div className="form-item">
-                <label>Dauer *</label>
-                <input placeholder="z.B. 30" value={form.duration} onChange={e => handleChange('duration', e.target.value)} />
+                <label>Dauer *
+                  <input value={form.duration} onChange={e => handleChange('duration', e.target.value)} />
+                </label>
               </div>
               <div className="form-item">
-                <label>Preis</label>
-                <input placeholder="€" value={form.price} onChange={e => handleChange('price', e.target.value)} />
+                <label>Preis
+                  <input value={form.price} onChange={e => handleChange('price', e.target.value)} />
+                </label>
               </div>
               <div className="form-item full-width">
-                <label>Hinweis</label>
-                <textarea placeholder="Hinweis" value={form.description} onChange={e => handleChange('description', e.target.value)} />
+                <label>Hinweis
+                  <textarea value={form.description} onChange={e => handleChange('description', e.target.value)} />
+                </label>
               </div>
             </div>
           </div>
@@ -273,6 +298,14 @@ export default function Services({ initialData = null, index = null, generalServ
 
           <div className="page-container" ref={deptRef}>
             <h2>Abteilung</h2>
+            <div className="list-box">
+              {selectedDepartment && (
+                <div className="list-item">
+                  <span>{selectedDepartment.name ?? selectedDepartment}</span>
+                  <button className="btn overflow" onClick={removeDepartment}>✕</button>
+                </div>
+              )}
+            </div>
             <div
               className={`service-box dashed${showDeptDropdown ? ' open' : ''}`}
               onClick={() => setShowDeptDropdown(d => !d)}
@@ -280,11 +313,10 @@ export default function Services({ initialData = null, index = null, generalServ
               Abteilung auswählen
               {showDeptDropdown && (
                 <ul className="dropdown-list">
-                  {deptOptions.map((opt, i) => (
-                    <li key={i} onClick={() => setShowDeptDropdown(false)}>
-                      {opt}
-                    </li>
-                  ))}
+                  {(Array.isArray(generalDepartments) && generalDepartments.length > 0 ? generalDepartments : deptOptions).map((opt, i) => {
+                    const label = typeof opt === 'string' ? opt : (opt.name ?? opt);
+                    return <li key={i} onClick={() => addDepartment(opt)}>{label}</li>;
+                  })}
                 </ul>
               )}
             </div>

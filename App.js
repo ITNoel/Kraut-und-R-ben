@@ -310,6 +310,7 @@ export default function App() {
             initialData={currentService}
             index={currentServiceIndex}
             generalServices={services}
+            generalDepartments={departments} // <-- Liste aller Abteilungen übergeben
             onSaveService={handleSaveServiceAndClose}
             onUpdateService={handleUpdateService}
             onCancel={() => setView('services-overview')}

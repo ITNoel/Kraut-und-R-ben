@@ -140,7 +140,7 @@ export default function Staff({
       let result = payload;
       const isNew = !initialData?.id || String(initialData?.id).startsWith('local-');
       if (isNew) {
-        const resp = await api.post('/employees/', payload);
+        const resp = await api.post('/employees/create', payload);
         result = resp ?? payload;
       } else {
         const resp = await api.put(`/employees/${initialData.id}/`, payload);
@@ -168,7 +168,7 @@ export default function Staff({
       let result = payload;
       const isNew = !initialData?.id || String(initialData?.id).startsWith('local-');
       if (isNew) {
-        const resp = await api.post('/employees/', payload);
+        const resp = await api.post('/employees/create', payload);
         result = resp ?? payload;
       } else {
         const resp = await api.put(`/employees/${initialData.id}/`, payload);
@@ -238,10 +238,18 @@ export default function Staff({
           <div className="page-container">
             <h2>Informationen</h2>
             <div className="form-grid three-col">
-              <input className="input" placeholder="Vorname" value={form.first_name} onChange={e => setForm(f => ({ ...f, first_name: e.target.value }))} />
-              <input className="input" placeholder="Nachname" value={form.last_name} onChange={e => setForm(f => ({ ...f, last_name: e.target.value }))} />
-              <input className="input" placeholder="E-Mail*" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
-              <input className="input" placeholder="Telefonnummer*" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
+              <label className="form-item">Vorname
+                <input className="input" value={form.first_name} onChange={e => setForm(f => ({ ...f, first_name: e.target.value }))} />
+              </label>
+              <label className="form-item">Nachname
+                <input className="input" value={form.last_name} onChange={e => setForm(f => ({ ...f, last_name: e.target.value }))} />
+              </label>
+              <label className="form-item">E-Mail*
+                <input className="input" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
+              </label>
+              <label className="form-item">Telefonnummer*
+                <input className="input" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
+              </label>
             </div>
           </div>
 
@@ -274,20 +282,24 @@ export default function Staff({
               </div>
 
               <div>
-                <label>Schicht beginn</label>
-                <input className="input" placeholder="Von" />
+                <label className="form-item">Schicht beginn
+                  <input className="input" />
+                </label>
               </div>
               <div>
-                <label>Schicht ende</label>
-                <input className="input" placeholder="Bis" />
+                <label className="form-item">Schicht ende
+                  <input className="input" />
+                </label>
               </div>
               <div>
-                <label>Pause beginn</label>
-                <input className="input" placeholder="Von" />
+                <label className="form-item">Pause beginn
+                  <input className="input" />
+                </label>
               </div>
               <div>
-                <label>Pause ende</label>
-                <input className="input" placeholder="Bis" />
+                <label className="form-item">Pause ende
+                  <input className="input" />
+                </label>
               </div>
             </div>
           </div>

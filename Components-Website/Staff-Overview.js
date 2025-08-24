@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../global.css';
 import './Staff-Overview.css'; // reuse overview table styles
-import emptyIllustration from '../assets/empty-departments.png';
+import emptyIllustration from '../assets/empty-staff.png';
 
 export default function StaffOverview({ employees = [], onSelect, onEditEmployee, onDeleteEmployees, onNewStaff }) {
   const [actionsOpen, setActionsOpen] = useState(false);
@@ -104,9 +104,14 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
         {localEmployees.length === 0 ? (
           <div className="empty-state">
             <img src={emptyIllustration} alt="Keine Sachbearbeiter" />
-            <h2>Keine Sachbearbeiter vorhanden</h2>
-            <p>Sobald Sie Mitarbeiter hinzufügen, erscheinen diese hier.</p>
-            <button className="btn save" onClick={() => { if (typeof onNewStaff === 'function') onNewStaff(); else onSelect?.('staff'); }}>Neuen Sachbearbeiter anlegen</button>
+            <h2>Willkommen in der Sachbearbeiter Übersicht</h2>
+            <p>Sobald Sie Sachbearbeiter hinzufügen, erscheinen diese hier.</p>
+            <button
+              className="btn save department-new"
+              onClick={() => { if (typeof onNewStaff === 'function') onNewStaff(); else onSelect?.('staff'); }}
+            >
+              Neu Sachbearbeiter anlegen
+            </button>
           </div>
         ) : (
           <>

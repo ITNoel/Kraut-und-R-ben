@@ -47,10 +47,12 @@
 
 /* Titel des Felds */
 .field-box .field-title {
-  font-weight: 400; /* nicht fett */
+  /* gleiche Größe wie Eingabefelder */
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 400;
   color: var(--label-color); /* graue Schrift */
   opacity: var(--label-opacity); /* gleiche Opazität wie andere Labels */
-  font-size: 14px;
 }
 
 /* Radio-Gruppe: vertikales (untereinander) Layout, Abstand */
@@ -59,6 +61,14 @@
   flex-direction: column; /* OPTIONEN UNTEREINANDER */
   gap: 8px;
   align-items: flex-start;
+}
+
+/* Sicherstellen, dass der Text neben dem Radio-Button dieselbe Größe hat */
+.radio-option,
+.radio-option span {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--label-color);
 }
 
 /* Einzelne Radio-Option: keine Hintergrundfarbe (transparent),
@@ -74,7 +84,7 @@
   border: none;
   cursor: pointer;
   user-select: none;
-  font-size: 13px;
+  font-size: 14px; /* angepasst: gleiche Schriftgröße wie andere UI-Elemente */
   color: #333;
   justify-content: flex-start;
 }
