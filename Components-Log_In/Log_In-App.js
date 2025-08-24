@@ -34,16 +34,23 @@ export default function Log_InApp({ onLogin }) {
     try {
       // 1) Authentifizieren
       await api.post('/users/login/', { username, password });
-     
 
       // 2) Abteilungen laden
-      const deptList = await api.get('/departments');
-      // 3) Mitarbeiter laden
-      let empList  = await api.get('/employees');
-      empList = [];
+      let deptList = await api.get('/departments');
 
-      // 4) an App.jsx weitergeben
-      onLogin(deptList, empList);
+      // 3) Mitarbeiter laden
+      let empList = await api.get('/employees');
+
+      // 4) Dienste laden und normalisieren (Array oder { results: [...] })
+      let servicesList = await api.get('/services');
+      
+
+
+      // deptList = [];
+      // empList = [];
+      // servicesList = [];
+      // 5) an App.jsx weitergeben (nun mit services)
+      onLogin(deptList, empList, servicesList);
     } catch (err) {
       setError(err.message);
     } finally {

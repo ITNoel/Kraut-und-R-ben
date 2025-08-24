@@ -454,7 +454,7 @@ h2 {
   justify-content: space-between;
   align-items: center;
   padding: 8px 12px;
-  border: 2px solid var(--color-bg);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-bg);
 }
@@ -1145,4 +1145,30 @@ h2 {
 .department-overview__table td.status,
 .services-overview__table td.status {
   border-bottom: none !important;
+}
+
+.department-overview__table tbody tr:hover,
+.services-overview__table tbody tr:hover {
+  background-color: rgb(227, 227, 227);
+}
+
+/* Zeilen-Hover: Hintergrund + linker dunkelgrauer Streifen (nur für nicht ausgewählte Zeilen) */
+.department-overview__table tbody tr:not(.row-selected):hover,
+.services-overview__table tbody tr:not(.row-selected):hover {
+  background-color: rgb(227, 227, 227);
+}
+
+/* Linker Streifen beim Hover — nutzt bereits vorhandenes ::before-Placeholder */
+.department-overview__table tbody tr:not(.row-selected):hover::before,
+.services-overview__table tbody tr:not(.row-selected):hover::before {
+  content: '';
+  display: block;
+  width: 5px;               /* gleiche Breite wie die Auswahl-Markierung */
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #555;         /* dunkelgrauer Streifen */
+  pointer-events: none;
+  z-index: 2;
 }

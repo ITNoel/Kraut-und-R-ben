@@ -591,3 +591,15 @@
   pointer-events: none;
   box-shadow: -6px 0 12px rgba(0,0,0,0.03);
 }
+
+/* Center values in all columns except the Name column (2nd) and the checkbox column (1st) */
+.department-overview__table th:not(:first-child):not(:nth-child(2)),
+.department-overview__table td:not(:first-child):not(:nth-child(2)) {
+  text-align: center !important;
+}
+
+/* Ensure Name column remains left-aligned */
+.department-overview__table th:nth-child(2),
+.department-overview__table td:nth-child(2) {
+  text-align: left !important;
+}

@@ -218,6 +218,18 @@
   white-space: nowrap;
 }
 
+/* Center values in all columns except the Name column (2nd) and the checkbox column (1st) */
+.services-overview__table th:not(:first-child):not(:nth-child(2)),
+.services-overview__table td:not(:first-child):not(:nth-child(2)) {
+  text-align: center !important;
+}
+
+/* Ensure Name column remains left-aligned */
+.services-overview__table th:nth-child(2),
+.services-overview__table td:nth-child(2) {
+  text-align: left !important;
+}
+
 /* Ensure th and td use identical horizontal padding so header text and cell
    values align visually (start on the same line) */
 .services-overview__table th,

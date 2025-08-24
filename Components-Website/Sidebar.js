@@ -116,10 +116,10 @@ export default function Sidebar({ view, onSelect }) {
                 </a>
                 <a
                   href="#"
-                  className={view === 'staff' ? 'active' : ''}
+                  className={view === 'staff-overview' ? 'active' : ''}
                   onClick={e => {
                     e.preventDefault();
-                    onSelect('staff');
+                    onSelect('staff-overview');
                   }}
                 >
                   Sachbearbeiter:innen

@@ -12,7 +12,7 @@ const services = [
   { name: 'Test', duration: '30 min', price: '25 €', status: 'draft' },
 ];
 
-export default function ServicesOverview({ onSelect }) {
+export default function ServicesOverview({ onSelect, services = [], onEditService, onDeleteServices }) {
   const [actionsOpen, setActionsOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -31,8 +31,8 @@ export default function ServicesOverview({ onSelect }) {
   }, []);
 
   useEffect(() => {
-    setLocalServices(services);
-  }, []);
+    setLocalServices(Array.isArray(services) ? services : []);
+  }, [services]);
 
   const statusClass = status => {
     switch (status) {
@@ -45,17 +45,18 @@ export default function ServicesOverview({ onSelect }) {
 
   const toggleSelectAll = (checked) => {
     if (checked) {
-      setSelectedRows(localServices.map((_, i) => i));
+      // store ids where possible, otherwise indices
+      setSelectedRows(localServices.map(s => s.id ?? s.name));
     } else {
       setSelectedRows([]);
     }
   };
 
-  const toggleSelectOne = (idx, checked) => {
+  const toggleSelectOne = (identifier, checked) => {
     if (checked) {
-      setSelectedRows(prev => [...prev, idx]);
+      setSelectedRows(prev => [...prev, identifier]);
     } else {
-      setSelectedRows(prev => prev.filter(rowIdx => rowIdx !== idx));
+      setSelectedRows(prev => prev.filter(id => id !== identifier));
     }
   };
 
@@ -64,8 +65,18 @@ export default function ServicesOverview({ onSelect }) {
     try {
       // Hier würdest du API-Calls machen, falls Services serverseitig gelöscht werden sollen
       // for (const idx of selectedRows) { ... }
-      const remaining = localServices.filter((_, i) => !selectedRows.includes(i));
+      // map selectedRows to ids
+      const idsToDelete = selectedRows;
+      const remaining = localServices.filter(s => !(idsToDelete.includes(s.id) || idsToDelete.includes(s.name)));
       setLocalServices(remaining);
+      // Informiere App über gelöschte IDs (falls vorhanden)
+      if (typeof onDeleteServices === 'function') {
+        const ids = localServices
+          .filter(s => (idsToDelete.includes(s.id) || idsToDelete.includes(s.name)))
+          .map(s => s.id)
+          .filter(Boolean);
+        onDeleteServices(ids);
+      }
       setSelectedRows([]);
       setShowDeleteModal(false);
     } catch (err) {
@@ -133,19 +144,19 @@ export default function ServicesOverview({ onSelect }) {
           </thead>
           <tbody>
             {localServices.map((s, i) => {
-              const checked = selectedRows.includes(i);
+              const identifier = s.id ?? s.name;
+              const checked = selectedRows.includes(identifier);
               return (
                 <tr
-                  key={i}
+                  key={identifier ?? i}
                   className={checked ? 'row-selected' : ''}
                   onClick={e => {
-                    // Nur Checkbox- oder Button-Klicks nicht doppelt toggeln
                     if (
                       e.target.tagName === 'INPUT' ||
                       e.target.tagName === 'BUTTON' ||
                       e.target.closest('button')
                     ) return;
-                    toggleSelectOne(i, !checked);
+                    toggleSelectOne(identifier, !checked);
                   }}
                   style={{ cursor: 'pointer' }}
                 >
@@ -153,7 +164,7 @@ export default function ServicesOverview({ onSelect }) {
                     <input
                       type="checkbox"
                       checked={checked}
-                      onChange={e => toggleSelectOne(i, e.target.checked)}
+                      onChange={e => toggleSelectOne(identifier, e.target.checked)}
                       aria-label={`Dienst ${s.name} auswählen`}
                       onClick={e => e.stopPropagation()}
                     />
@@ -161,11 +172,7 @@ export default function ServicesOverview({ onSelect }) {
                   <td style={{ color: "#222" }}>{s.name}</td>
                   <td className="status">
                     <span className={statusClass(s.status)}>
-                      {s.status === 'active'
-                        ? 'Aktiv'
-                        : s.status === 'disabled'
-                        ? 'Deaktiviert'
-                        : 'Entwurf'}
+                      {s.status === 'active' ? 'Aktiv' : s.status === 'disabled' ? 'Deaktiviert' : 'Entwurf'}
                     </span>
                   </td>
                   <td style={{ color: "#222" }}>{s.duration}</td>
@@ -186,7 +193,8 @@ export default function ServicesOverview({ onSelect }) {
                       }}
                       onClick={e => {
                         e.stopPropagation();
-                        onSelect('services');
+                        // Editiere via App-Callback (App setzt currentService und wechselt View)
+                        if (typeof onEditService === 'function') onEditService(s, i);
                       }}
                     >
                       ⋯

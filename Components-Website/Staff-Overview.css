@@ -1,0 +1,101 @@
+/* Styles speziell für Staff-Overview (nutzt gemeinsame Overview-Klassen) */
+
+/* Tabelle: wiederverwenden der gemeinsamen Übersicht-Stile */
+.department-overview__table.common-overview__table,
+.common-overview__table.department-overview__table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Wochentags-Spalten: feste, schmale Breite, zentrierter Inhalt */
+.department-overview__table th.day,
+.department-overview__table td.day {
+  width: 64px;
+  min-width: 48px;
+  max-width: 80px;
+  text-align: center;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  white-space: nowrap;
+}
+
+/* Name-Spalte: wie bei anderen Overviews linksbündig und ellipsis */
+.department-overview__table td:nth-child(2),
+.department-overview__table th:nth-child(2) {
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Checkbox: kompakter und mittig, passend zu common-overview */
+.department-overview__table input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  border: 1px solid var(--color-border, #dcdcdc);
+  background: #fff;
+}
+
+/* Zeilen-Hover / Selected wie bei anderen Overviews */
+.department-overview__table tbody tr:hover {
+  background-color: rgb(227,227,227);
+}
+.department-overview__table tr.row-selected {
+  background: #f3f4f6;
+}
+
+/* Action-Button (drei Punkte) Positionierung und Look (runde graue Umrandung) */
+.department-overview__table .btn.more-actions {
+  background: #fff !important;
+  color: #888 !important;
+  border: 1px solid #d1d5db !important;
+  font-size: 20px !important;
+  padding: 0 !important;
+  min-width: 30px !important;
+  min-height: 30px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: absolute !important;
+  right: 1rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+/* Footer / view-more Button */
+.department-overview__footer .btn.view-more {
+  display: inline-block;
+  margin: 0 auto;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* Responsive: bei sehr schmalen Bildschirmen die Tages-Spalten ausblenden */
+@media (max-width: 880px) {
+  .department-overview__table th.day,
+  .department-overview__table td.day {
+    display: none;
+  }
+  .department-overview__table th:nth-child(2),
+  .department-overview__table td:nth-child(2) {
+    min-width: 200px;
+  }
+}
+
+/* Kleinere Details: zentrierte checkmarks in day cells */
+.department-overview__table td.day {
+  font-weight: 600;
+  color: #222;
+}
+
+/* Konsistenz mit anderen Overviews: Abstand links für checkbox column */
+.department-overview__table th:first-child,
+.department-overview__table td:first-child {
+  padding-left: 2rem;
+}

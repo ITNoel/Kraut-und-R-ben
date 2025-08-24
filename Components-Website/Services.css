@@ -23,3 +23,123 @@
 */
 
 /* Du brauchst in Services.css deshalb nur das Formular-spezifische */
+
+/* Neue Styles: Felder-Box & Field-Items */
+.fields-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, 1fr); /* 2 Spalten x 3 Reihen */
+  margin-top: 8px;
+}
+
+/* Jede einzelne Feld-Box: weiße Box, Abrundung, graue Umrandung */
+.field-box {
+  background: #fff;
+  border: 1px solid #d0d0d0;
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* make boxes a bit more compact when in two-column layout */
+  min-height: 68px;
+}
+
+/* Titel des Felds */
+.field-box .field-title {
+  font-weight: 400; /* nicht fett */
+  color: var(--label-color); /* graue Schrift */
+  opacity: var(--label-opacity); /* gleiche Opazität wie andere Labels */
+  font-size: 14px;
+}
+
+/* Radio-Gruppe: vertikales (untereinander) Layout, Abstand */
+.radio-group {
+  display: flex;
+  flex-direction: column; /* OPTIONEN UNTEREINANDER */
+  gap: 8px;
+  align-items: flex-start;
+}
+
+/* Einzelne Radio-Option: keine Hintergrundfarbe (transparent),
+   nur Abstand zwischen den Optionen; der eigentliche Kreis wird gestylt */
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;           /* volle Breite innerhalb der Field-Box */
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  user-select: none;
+  font-size: 13px;
+  color: #333;
+  justify-content: flex-start;
+}
+
+/* Entferne Hover-Background vom Label — Hover beeinflusst nur das Radio-Element */
+.radio-option:hover {
+  background: transparent;
+}
+
+/* ---- Custom Radio Styling ----
+   Wir verwenden ein eigenes Aussehen für das Radio: Kreis mit Rand,
+   bei Hover dunkler Rand, bei Checked lila Hintergrund + weißer Punkt.
+*/
+.radio-option input[type="radio"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #bdbdbd;
+  background: transparent;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  transition: border-color 0.12s ease, background-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+/* Hover: radio button wird dunkler (nur der Kreis) */
+.radio-option input[type="radio"]:hover {
+  border-color: #4b5563; /* dunkleres Grau */
+  box-shadow: 0 0 0 4px rgba(75,85,99,0.06);
+}
+
+/* Checked: Hauptfarbe füllen (lila) und weißer innerer Punkt */
+.radio-option input[type="radio"]:checked {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* Weißer Punkt in der Mitte bei checked */
+.radio-option input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: none;
+}
+
+/* Focus-Visual (optional, dezent) */
+.radio-option input[type="radio"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(107,54,198,0.12); /* lila Schimmer */
+}
+
+/* Responsive: bei sehr schmalen Bildschirmen stapeln die Optionsgruppen */
+@media (max-width: 520px) {
+  .fields-grid {
+    grid-template-columns: 1fr; /* bei sehr klein wieder 1 Spalte */
+  }
+  .radio-group {
+    gap: 8px;
+  }
+}

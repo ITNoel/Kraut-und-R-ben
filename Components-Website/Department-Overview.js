@@ -6,7 +6,7 @@ import './Department-Overview.css';
 import emptyIllustration from '../assets/empty-departments.png';
 import { api } from '../Functions/apiClient';
 
-export default function DepartmentOverview({ departments, generalEmployees, onNew, onEdit }) {
+export default function DepartmentOverview({ departments, generalEmployees, onNew, onEdit, onDeleteSelected }) {
   const [actionsOpen, setActionsOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -65,6 +65,11 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
       }
       const remaining = localDepartments.filter(d => !selectedRows.includes(d.id));
       setLocalDepartments(remaining);
+      // Informiere die Elternkomponente (App) über die gelöschten IDs,
+      // damit der globale Zustand synchron entfernt wird.
+      if (typeof onDeleteSelected === 'function') {
+        onDeleteSelected(selectedRows);
+      }
       setSelectedRows([]);
       setShowDeleteModal(false);
     } catch (err) {
@@ -198,7 +203,9 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
                           }}
                           onClick={e => {
                             e.stopPropagation();
-                            onEdit(d, i, generalEmployees);
+                            // Gib die vollständige Personenliste der Abteilung mit (falls gesetzt),
+                            // ansonsten das globale generalEmployees als Fallback.
+                            onEdit(d, i, d?.allEmployees ?? generalEmployees);
                           }}
                         >
                           ⋯
