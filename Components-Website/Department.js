@@ -338,8 +338,15 @@ export default function Department({
               </div>
 
                {/* Dienste anlegen: zeigt Dropdown mit globalen Diensten oder Modal wenn keine vorhanden */}
-               <div className={`service-box dashed${showServiceDropdown ? ' open' : ''}`} ref={serviceRef}>
-                 <div onClick={handleServiceAddClick}>Dienste anlegen</div>
+               <div
+                 className={`service-box dashed${showServiceDropdown ? ' open' : ''}`}
+                 ref={serviceRef}
+                 role="button"
+                 tabIndex={0}
+                 onClick={(e) => { if (e.target.closest('.dropdown-list')) return; handleServiceAddClick(); }}
+                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleServiceAddClick(); } }}
+               >
+                 <div className="service-box__label">Dienste anlegen</div>
 
                  {showServiceDropdown && (
                    <ul className="dropdown-list">
@@ -383,8 +390,15 @@ export default function Department({
                 ))}
               </div>
 
-              <div className={`service-box dashed${showEmployeeDropdown ? ' open' : ''}`} ref={employeeRef}>
-                <div onClick={handlePersonAddClick}>Person hinzufügen</div>
+              <div
+                className={`service-box dashed${showEmployeeDropdown ? ' open' : ''}`}
+                ref={employeeRef}
+                role="button"
+                tabIndex={0}
+                onClick={(e) => { if (e.target.closest('.dropdown-list')) return; handlePersonAddClick(); }}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handlePersonAddClick(); } }}
+              >
+                <div className="service-box__label">Person hinzufügen</div>
                 {showEmployeeDropdown && (
                   <ul className="dropdown-list">
                     {employeeOptions.map((opt, i) => (

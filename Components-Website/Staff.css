@@ -75,9 +75,10 @@
 }
 
 /* ===== Service-Box („Tage hinzufügen“) ===== */
-.service-box {
-  display: inline-block;
+/* entferne dominante lokale .service-box-Regel, nur kleiner Abstand pro Komponente */
+.staff-page .service-box {
   margin-top: 12px;
+  /* keine display-/position-Änderung hier — global.css steuert layout & label */
 }
 
 .date-input-container.filled .date-input-value {

@@ -354,8 +354,15 @@ export default function Staff({
                 ))}
               </div>
 
-              <div className={`service-box dashed${showVacationPicker ? ' open' : ''}`} ref={vacationRef}>
-                {!showVacationPicker && <div onClick={() => setShowVacationPicker(true)}>Urlaub hinzufügen</div>}
+              <div
+                className={`service-box dashed${showVacationPicker ? ' open' : ''}`}
+                ref={vacationRef}
+                role="button"
+                tabIndex={0}
+                onClick={(e) => { if (e.target.closest('.calendar-dropdown')) return; setShowVacationPicker(v => !v); }}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowVacationPicker(v => !v); } }}
+              >
+                <div className="service-box__label">Urlaub hinzufügen</div>
                 {showVacationPicker && (
                   <div className="calendar-dropdown">
                     <p style={{ fontWeight: 600, marginBottom: '8px' }}>Zeitraum wählen</p>

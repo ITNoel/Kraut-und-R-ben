@@ -308,9 +308,12 @@ export default function Services({ initialData = null, index = null, generalServ
             </div>
             <div
               className={`service-box dashed${showDeptDropdown ? ' open' : ''}`}
+              role="button"
+              tabIndex={0}
               onClick={() => setShowDeptDropdown(d => !d)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowDeptDropdown(d => !d); } }}
             >
-              Abteilung auswählen
+              <div className="service-box__label">Abteilung auswählen</div>
               {showDeptDropdown && (
                 <ul className="dropdown-list">
                   {(Array.isArray(generalDepartments) && generalDepartments.length > 0 ? generalDepartments : deptOptions).map((opt, i) => {
@@ -326,9 +329,12 @@ export default function Services({ initialData = null, index = null, generalServ
             <h2>Buchungs-Benachrichtigung</h2>
             <div
               className={`service-box dashed${showNotifDropdown ? ' open' : ''}`}
+              role="button"
+              tabIndex={0}
               onClick={() => setShowNotifDropdown(n => !n)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowNotifDropdown(n => !n); } }}
             >
-              Empfänger hinzufügen
+              <div className="service-box__label">Empfänger hinzufügen</div>
               {showNotifDropdown && (
                 <ul className="dropdown-list">
                   {notifOptions.map((opt, i) => (
@@ -345,9 +351,12 @@ export default function Services({ initialData = null, index = null, generalServ
             <h2>Bezahlungs-Art</h2>
             <div
               className={`service-box dashed${showPaymentDropdown ? ' open' : ''}`}
+              role="button"
+              tabIndex={0}
               onClick={() => setShowPaymentDropdown(p => !p)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowPaymentDropdown(p => !p); } }}
             >
-              Bezahlungsart hinzufügen
+              <div className="service-box__label">Bezahlungsart hinzufügen</div>
               {showPaymentDropdown && (
                 <ul className="dropdown-list">
                   {paymentOptions.map((opt, i) => (

@@ -204,30 +204,51 @@ a {
   height: 40px;
 }
 
-/* ===== Service Box (inline-expandable) ===== */
+/* ===== Service Box (inline-expandable) — Header bleibt exakt gleich, Items starten direkt darunter ===== */
 .service-box {
-  display: block;
+  --service-header-height: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   width: 100%;
   border: 2px dashed #ccc;
-  padding: 16px;
+  /* keine vertikalen Innenabstände: Header-Höhe wird exakt eingehalten */
+  padding: 0 12px;
   background: white;
   cursor: pointer;
   color: #666;
   border-radius: var(--radius-md);
   position: relative;
   text-align: center;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, padding 0.15s ease;
   overflow-x: hidden;
+  gap: 0; /* kein Abstand zwischen Header und List */
 }
 
-.service-box:not(.open) {
-  max-height: 40px;
-  overflow-y: hidden;
+/* Header / Titelzeile: immer exakt die gleiche Höhe, zentriert */
+.service-box > :first-child {
+  box-sizing: border-box;
+  flex: 0 0 var(--service-header-height);
+  height: var(--service-header-height);
+  min-height: var(--service-header-height);
+  max-height: var(--service-header-height);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 8px;
+  line-height: 1;
+  font-size: 14px;
+  overflow: hidden;
+  z-index: 2; /* damit die Header-Inhalte über der ersten Trennlinie bleiben */
 }
 
+/* geschlossen: nur die Header-Zeile sichtbar (exakte Höhe) */
+.service-box:not(.open) {
+  max-height: var(--service-header-height);
+  overflow: hidden;
+}
+
+/* geöffnet: Liste sichtbar, Header bleibt unverändert */
 .service-box.open,
 .service-box.dashed.open {
   border: 2px solid var(--color-primary);
@@ -235,29 +256,42 @@ a {
   overflow: visible;
 }
 
+/* Header auch im offenen Zustand unverändert */
+.service-box.open > :first-child {
+  flex: 0 0 var(--service-header-height);
+  height: var(--service-header-height);
+  min-height: var(--service-header-height);
+  max-height: var(--service-header-height);
+}
+
+/* Dropdown-Liste: beginnt unmittelbar unter der Header-Zeile (keine Lücke) */
 .service-box .dropdown-list {
   list-style: none;
-  margin: 8px 0 0;
+  margin: 0;
   padding: 0;
-  border-top: 1px solid #eee;
-}
-
-.service-box .dropdown-list li {
-  padding: 10px 12px;
-  cursor: pointer;
-}
-
-.service-box .dropdown-list li + li {
-  border-top: 1px solid #eee;
-}
-
-.service-box .dropdown-list li:hover {
-  background: #f5f5f5;
-}
-
-.service-box .calendar-dropdown {
+  border-top: none;
   width: 100%;
+}
+
+/* Jedes Listenelement: exakt Header-Höhe, Trennlinie direkt am unteren Rand des Vorherigen */
+.service-box .dropdown-list > * {
+  height: var(--service-header-height);
+  min-height: var(--service-header-height);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
   box-sizing: border-box;
+  margin: 0; /* kein Außenabstand zwischen Items */
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  /* Trennlinie: sitzt direkt am oberen Rand des Items (= unterer Rand des vorherigen Elements) */
+  border-top: 1px solid #eee;
+}
+
+/* Optional: Hover-Effekt ohne Layout-Shift */
+.service-box .dropdown-list > *:hover {
+  background: rgba(0,0,0,0.03);
 }
 
 /* ===== Toggle/Switch ===== */
