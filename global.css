@@ -206,7 +206,7 @@ a {
 
 /* ===== Service Box (inline-expandable) — Header bleibt exakt gleich, Items starten direkt darunter ===== */
 .service-box {
-  --service-header-height: 36px;
+  --service-header-height: 40px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -228,18 +228,18 @@ a {
 /* Header / Titelzeile: immer exakt die gleiche Höhe, zentriert */
 .service-box > :first-child {
   box-sizing: border-box;
+  /* Button-like sizing: gleiche Innenabstände wie .list-item / .btn */
   flex: 0 0 var(--service-header-height);
-  height: var(--service-header-height);
   min-height: var(--service-header-height);
-  max-height: var(--service-header-height);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 8px;
+  padding: 8px 12px;      /* match .list-item/.btn visual spacing */
   line-height: 1;
   font-size: 14px;
+  font-weight: 600;       /* make label button-like (bold) */
   overflow: hidden;
-  z-index: 2; /* damit die Header-Inhalte über der ersten Trennlinie bleiben */
+  z-index: 2;             /* damit die Header-Inhalte über der ersten Trennlinie bleiben */
 }
 
 /* geschlossen: nur die Header-Zeile sichtbar (exakte Höhe) */
@@ -259,9 +259,7 @@ a {
 /* Header auch im offenen Zustand unverändert */
 .service-box.open > :first-child {
   flex: 0 0 var(--service-header-height);
-  height: var(--service-header-height);
   min-height: var(--service-header-height);
-  max-height: var(--service-header-height);
 }
 
 /* Dropdown-Liste: beginnt unmittelbar unter der Header-Zeile (keine Lücke) */
@@ -488,6 +486,7 @@ h2 {
   justify-content: space-between;
   align-items: center;
   padding: 8px 12px;
+  min-height: var(--service-header-height); /* ensure selected list item matches dropdown header height */
   border: 2px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-bg);

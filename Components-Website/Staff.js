@@ -109,6 +109,15 @@ export default function Staff({
 
   const areRequiredFieldsFilled = (form.first_name?.trim() || form.last_name?.trim()) !== '' && (form.email?.trim() || form.phone?.trim());
 
+  // Neue State: Schicht- & Pausenzeiten (für Buchbarkeit)
+  const [shiftStart, setShiftStart] = useState('');
+  const [shiftEnd, setShiftEnd] = useState('');
+  const [breakStart, setBreakStart] = useState('');
+  const [breakEnd, setBreakEnd] = useState('');
+
+  // Gespeicherte Buchbarkeits-Einträge (erscheinen über den Inputs)
+  const [savedAvailabilities, setSavedAvailabilities] = useState([]);
+
   const makeStaffObj = () => {
     const name = `${form.first_name || ''}${form.last_name ? ' ' + form.last_name : ''}`.trim();
     return {
@@ -126,6 +135,11 @@ export default function Staff({
       name,
       email: form.email,
       days: selectedDays,
+      // optional: persistieren der Zeitslots
+      shift_start: shiftStart,
+      shift_end: shiftEnd,
+      break_start: breakStart,
+      break_end: breakEnd,
       vacations: vacations.map(v => ({ from: v.from instanceof Date ? v.from.toISOString() : v.from, to: v.to instanceof Date ? v.to.toISOString() : v.to })),
       status: hideStaff ? 'disabled' : (areRequiredFieldsFilled ? 'active' : 'draft')
     };
@@ -213,6 +227,28 @@ export default function Staff({
     }
   };
 
+  const saveBookability = () => {
+    const entry = {
+      days: Array.isArray(selectedDays) ? selectedDays.slice() : [],
+      shiftStart: shiftStart || null,
+      shiftEnd: shiftEnd || null,
+      breakStart: breakStart || null,
+      breakEnd: breakEnd || null
+    };
+    setSavedAvailabilities(prev => [entry, ...prev]);
+
+    // Nach dem Speichern: Eingabefelder zurücksetzen und DayPicker schließen
+    setSelectedDays([]);
+    setShiftStart('');
+    setShiftEnd('');
+    setBreakStart('');
+    setBreakEnd('');
+    setShowDayPicker(false);
+  };
+
+  const removeSavedAvailability = (idx) =>
+    setSavedAvailabilities(prev => prev.filter((_, i) => i !== idx));
+
   const renderDay = (day) => selectedDays.includes(day) ? '✓' : '';
 
   return (
@@ -255,6 +291,24 @@ export default function Staff({
 
           <div className="page-container">
             <h2>Buchbarkeit</h2>
+
+            {/* Gespeicherte Buchbarkeiten (erscheinen über den Inputs) */}
+            {savedAvailabilities.length > 0 && (
+              <div className="list-box" style={{ marginBottom: 12 }}>
+                {savedAvailabilities.map((a, i) => {
+                  const daysText = (Array.isArray(a.days) && a.days.length) ? a.days.join(', ') : '—';
+                  const shiftText = a.shiftStart || a.shiftEnd ? `${a.shiftStart || '--'}–${a.shiftEnd || '--'}` : '';
+                  const breakText = a.breakStart || a.breakEnd ? ` (Pause ${a.breakStart || '--'}–${a.breakEnd || '--'})` : '';
+                  return (
+                    <div className="list-item" key={i}>
+                      <span>{daysText}{shiftText ? ` • ${shiftText}${breakText}` : ''}</span>
+                      <button className="btn overflow" onClick={() => removeSavedAvailability(i)}>✕</button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
             <div className="form-grid two-col" ref={dayRef}>
               <div>
                 <label>Wochentage</label>
@@ -283,23 +337,34 @@ export default function Staff({
 
               <div>
                 <label className="form-item">Schicht beginn
-                  <input className="input" />
+                  <input className="input" value={shiftStart} onChange={e => setShiftStart(e.target.value)} placeholder="z.B. 09:00" />
                 </label>
               </div>
               <div>
                 <label className="form-item">Schicht ende
-                  <input className="input" />
+                  <input className="input" value={shiftEnd} onChange={e => setShiftEnd(e.target.value)} placeholder="z.B. 17:00" />
                 </label>
               </div>
               <div>
                 <label className="form-item">Pause beginn
-                  <input className="input" />
+                  <input className="input" value={breakStart} onChange={e => setBreakStart(e.target.value)} placeholder="z.B. 12:00" />
                 </label>
               </div>
               <div>
                 <label className="form-item">Pause ende
-                  <input className="input" />
+                  <input className="input" value={breakEnd} onChange={e => setBreakEnd(e.target.value)} placeholder="z.B. 12:30" />
                 </label>
+              </div>
+              {/* Buchbarkeit speichern Button */}
+              <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
+                <button
+                  type="button"
+                  className="btn save"
+                  onClick={saveBookability}
+                  style={{ width: 'auto', maxWidth: 'none', padding: '8px 12px' }}
+                >
+                  Buchbarkeit speichern
+                </button>
               </div>
             </div>
           </div>
