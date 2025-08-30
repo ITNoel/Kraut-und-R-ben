@@ -99,3 +99,10 @@
 .department-overview__table td:first-child {
   padding-left: 2rem;
 }
+
+/* Force vertical padding 15px for staff overview table cells (uses department-overview table markup) */
+.department-overview__table th,
+.department-overview__table td {
+  padding-top: 20px !important;
+  padding-bottom: 20px !important;
+}

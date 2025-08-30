@@ -593,6 +593,13 @@
   box-shadow: -6px 0 12px rgba(0,0,0,0.03);
 }
 
+/* Force vertical padding 15px for department overview table cells */
+.department-overview__table th,
+.department-overview__table td {
+  padding-top: 20px !important;
+  padding-bottom: 20px !important;
+}
+
 /* Center values in all columns except the Name column (2nd) and the checkbox column (1st) */
 .department-overview__table th:not(:first-child):not(:nth-child(2)),
 .department-overview__table td:not(:first-child):not(:nth-child(2)) {
