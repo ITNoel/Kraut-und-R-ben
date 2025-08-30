@@ -156,7 +156,8 @@
 
 .empty-state .btn.department-new {
   display: block;
-  margin: 24px auto 0 auto;
+  margin: 0px auto 55px auto; /* mehr Abstand unten: top 24px, bottom 24px */
+  margin-top: 0;
   max-width: 300px;
   text-align: center;
 }

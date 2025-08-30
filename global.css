@@ -31,7 +31,8 @@
   --page-gap: 24px;
   --column-gap: 24px;
   --page-margin-vertical: 36px;
-  
+  --button-gap: 20px;
+
 
   /* ===== Innenabstand für weiße Boxen ===== */
   --box-padding: 24px;
@@ -297,21 +298,23 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  /* schlanker, pillenförmiger Container */
+  padding: 6px 12px;          /* weniger Höhe als vorher */
+  min-height: 36px;           /* garantiert kompakte Höhe */
   background: white;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-full); /* rund/pill */
   margin: 8px 0;
 }
 
 .toggle-box span {
   margin: 0;
-  line-height: 24px;
+  line-height: 20px; /* passt zur geringeren Höhe */
 }
 
 .toggle-box .switch {
   position: relative;
-  width: 50px;
-  height: 24px;
+  width: 44px;
+  height: 22px;
 }
 
 .toggle-box .switch input {
@@ -325,19 +328,19 @@ a {
   cursor: pointer;
   top: 0; left: 0; right: 0; bottom: 0;
   background: #ccc;
-  transition: 0.4s;
-  border-radius: var(--radius-sm);
+  transition: 0.28s;
+  border-radius: var(--radius-full); /* komplett rund */
 }
 
 .toggle-box .slider::before {
   content: "";
   position: absolute;
-  height: 20px;
-  width: 20px;
+  height: 18px;
+  width: 18px;
   left: 2px;
   bottom: 2px;
   background: white;
-  transition: 0.4s;
+  transition: 0.28s;
   border-radius: 50%;
 }
 
@@ -346,7 +349,8 @@ a {
 }
 
 .toggle-box .switch input:checked + .slider::before {
-  transform: translateX(26px);
+  /* Breite 44px minus knob 18px minus left/rechte 4px = 22px */
+  transform: translateX(22px);
 }
 
 /* ===== Globale UI-Komponenten ===== */
@@ -453,10 +457,7 @@ h2 {
 .page-header__actions {
   display: flex;
   align-items: center;
-}
-
-.page-header__actions .btn {
-  margin-left: 8px;
+  gap: var(--button-gap); /* Nutze gap statt margin-left an einzelnen Buttons */
 }
 
 .empty-state {
@@ -465,7 +466,13 @@ h2 {
   align-items: center;      /* horizontal zentrieren */
   justify-content: center;  /* vertikal zentrieren */
   text-align: center;       /* Text in der Mitte ausrichten */
-  gap: var(--page-gap);     /* definierter Abstand zwischen Kindelementen */
+
+}
+
+/* Extra Abstand des Buttons innerhalb einer Empty-State-Box zum unteren Rand */
+.empty-state .btn {
+  /* nur unteren Abstand hinzufügen, der Button behält sonst seine vorhandenen Margins */
+  margin-bottom: 24px;
 }
 
 /* ===== Flat-Button-Default: keine Unterstreichung, Primärfarbe beibehalten ===== */
@@ -1204,4 +1211,17 @@ h2 {
   background: #555;         /* dunkelgrauer Streifen */
   pointer-events: none;
   z-index: 2;
+}
+
+/* Empty state: group title+text and control spacing to image/button */
+.empty-state img {
+  margin: 0; /* Bild-Abstand wird vom Text-Container gesteuert */
+  margin-top: 55px;
+}
+
+.empty-state__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0px !important;     /* Zeilenabstand 10px zwischen Titel und Text */
+  margin: 30px 0; /* 30px Abstand zu Bild (oben) und zum Button (unten) */
 }

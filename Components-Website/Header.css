@@ -17,18 +17,17 @@
 }
 
 .header-buttons {
-  display: flex;
-  gap: 12px;                   /* Abstand zwischen den einzelnen Buttons */
+  display: flex;                 /* Abstand zwischen den einzelnen Buttons */
   margin-right: 24px;          /* optional: damit rechts noch 24px Platz bleibt */
   /* Wichtig: kein zusätzliches vertikales Padding oder Margin, 
      sonst passt die 100px-Höhe nicht mehr exakt. */
 }
 
+/* explizite Button-Anpassung: horizontaler Abstand zwischen Buttons */
 .header-buttons .btn {
-  padding: 12px 16px;          /* Falls das vertikale Padding zu groß ist, 
-                                   kannst du z.B. 8px oben/unten einsetzen, 
-                                   sodass der Button optisch perfekt in 100px passt */
+  padding: 12px 16px;
   font-size: 14px;
+  margin-left: var(--button-gap); /* konsistenter Abstand zwischen Buttons */
 }
 
 /*

@@ -104,8 +104,10 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
         {localEmployees.length === 0 ? (
           <div className="empty-state">
             <img src={emptyIllustration} alt="Keine Sachbearbeiter" />
-            <h2>Willkommen in der Sachbearbeiter Übersicht</h2>
-            <p>Sobald Sie Sachbearbeiter hinzufügen, erscheinen diese hier.</p>
+            <div className="empty-state__text">
+              <h2>Willkommen in der Sachbearbeiter Übersicht</h2>
+              Sobald Sie Sachbearbeiter hinzufügen, erscheinen diese hier.
+            </div>
             <button
               className="btn save department-new"
               onClick={() => { if (typeof onNewStaff === 'function') onNewStaff(); else onSelect?.('staff'); }}

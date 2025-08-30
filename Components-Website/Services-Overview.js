@@ -128,8 +128,10 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
         {localServices.length === 0 ? (
           <div className="empty-state">
             <img src={emptyIllustration} alt="Keine Dienste" />
-            <h2>Willkommen in der Dienste Übersicht</h2>
-            <p>Sobald Sie Dienste hinzufügen, erscheinen diese hier.</p>
+            <div className="empty-state__text">
+              <h2>Willkommen in der Dienste Übersicht</h2>
+              Sobald Sie Dienste hinzufügen, erscheinen diese hier.
+            </div>
             <button className="btn save department-new" onClick={() => onSelect('services')}>Neue Dienste anlegen</button>
           </div>
         ) : (

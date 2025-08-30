@@ -20,8 +20,9 @@
   font-size: 24px;
 }
 
+/* Abstand zwischen Buttons in Department-Header auf --button-gap setzen */
 .header-buttons .btn {
-  margin-left: 8px;
+  /* Abstand wird vom Container (.page-header__actions) via gap gesteuert */
 }
 
 .department-body {

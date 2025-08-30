@@ -119,8 +119,10 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
         {localDepartments.length === 0 ? (
           <div className="empty-state">
             <img src={emptyIllustration} alt="Keine Abteilungen" />
-            <h2>Willkommen in der Abteilungs Übersicht</h2>
-            <p>Sobald Sie Abteilungen hinzugefügt haben, erscheinen diese hier.</p>
+            <div className="empty-state__text">
+              <h2>Willkommen in der Abteilungs Übersicht</h2>
+              Sobald Sie Abteilungen hinzugefügt haben, erscheinen diese hier.
+            </div>
             <button
               className="btn save department-new"
               onClick={() => onNew(generalEmployees)}
