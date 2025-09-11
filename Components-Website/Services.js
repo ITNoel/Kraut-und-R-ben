@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import '../global.css';
 import './Services.css';
 import { api } from '../Functions/apiClient';
+import { ROUTES } from '../app/routes';
 
 export default function Services({ initialData = null, index = null, generalServices = [], onSaveService, onUpdateService, onCancel, generalDepartments = [] }) {
   const [hideService, setHideService] = useState(false);
@@ -84,7 +85,11 @@ export default function Services({ initialData = null, index = null, generalServ
   };
 
   const backToOverview = () => {
-    if (typeof onCancel === 'function') onCancel();
+    if (typeof onCancel === 'function') {
+      onCancel();
+      return;
+    }
+    // no onCancel provided — nothing we can reliably do here
   };
 
   const handleChange = (k, v) => setForm(f => ({ ...f, [k]: v }));
@@ -205,7 +210,7 @@ export default function Services({ initialData = null, index = null, generalServ
           {initialData?.id && (
             <button className="btn save" onClick={handleDelete}>Löschen</button>
           )}
-          <button className="btn cancel" onClick={backToOverview}>Abbrechen</button>
+          <button className="btn cancel" type="button" onClick={backToOverview}>Abbrechen</button>
           <button className="btn save" onClick={handleSave} disabled={pendingSave}>
             {pendingSave ? 'Speichern…' : 'Speichern'}
           </button>
@@ -408,4 +413,3 @@ export default function Services({ initialData = null, index = null, generalServ
     </div>
   );
 }
-

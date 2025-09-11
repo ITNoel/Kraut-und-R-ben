@@ -4,6 +4,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import '../global.css';
 import './Services-Overview.css';
 import emptyIllustration from '../assets/empty-services.png';
+import SearchBar from './SearchBar';
+import { ROUTES } from '../app/routes';
 
 const services = [
   { name: 'Reisepass beantragen', duration: '15 min', price: '20 €', status: 'active' },
@@ -19,6 +21,8 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [localServices, setLocalServices] = useState(services);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const actionsRef = useRef();
 
   useEffect(() => {
@@ -44,10 +48,16 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
     }
   };
 
+  // derived filtered list
+  const displayedServices = (Array.isArray(localServices) ? localServices : []).filter((s) => {
+    const matchesTerm = !search || (s?.name ?? '').toLowerCase().includes(search.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || (s?.status ?? 'active') === statusFilter;
+    return matchesTerm && matchesStatus;
+  });
+
   const toggleSelectAll = (checked) => {
     if (checked) {
-      // store ids where possible, otherwise indices
-      setSelectedRows(localServices.map(s => s.id ?? s.name));
+      setSelectedRows(displayedServices.map(s => s.id ?? s.name));
     } else {
       setSelectedRows([]);
     }
@@ -123,7 +133,18 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
           </button>
         </div>
       </div>
-
+      <SearchBar
+          term={search}
+          onTermChange={setSearch}
+          status={statusFilter}
+          onStatusChange={setStatusFilter}
+          statusOptions={[
+            { value: 'all', label: 'Status' },
+            { value: 'active', label: 'Aktiv' },
+            { value: 'disabled', label: 'Inaktiv' },
+            { value: 'draft', label: 'Entwurf' },
+          ]}
+        />
       <div className="page-container department-overview__content">
         {localServices.length === 0 ? (
           <div className="empty-state">
@@ -155,7 +176,7 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
                 </tr>
               </thead>
               <tbody>
-                {localServices.map((s, i) => {
+                {displayedServices.map((s, i) => {
                   const identifier = s.id ?? s.name;
                   const checked = selectedRows.includes(identifier);
                   return (
@@ -207,6 +228,8 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
                             e.stopPropagation();
                             // Editiere via App-Callback (App setzt currentService und wechselt View)
                             if (typeof onEditService === 'function') onEditService(s, i);
+                            // fallback: ensure navigation to the services editor
+                            if (typeof onSelect === 'function') onSelect(ROUTES.SERVICES);
                           }}
                         >
                           ⋯
@@ -219,7 +242,7 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
             </table>
 
             <div className="department-overview__footer">
-              <button className="btn view-more" onClick={() => onSelect('services')}>Weitere Dienste anlegen</button>
+              <button className="btn view-more" onClick={() => onSelect(ROUTES.SERVICES)}>Weitere Dienste anlegen</button>
             </div>
           </>
         )}

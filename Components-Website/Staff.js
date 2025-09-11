@@ -6,6 +6,7 @@ import './Staff.css';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { api } from '../Functions/apiClient';
+import { ROUTES } from '../app/routes';
 
 export default function Staff({
   initialData = null,
@@ -201,8 +202,13 @@ export default function Staff({
   };
 
   const handleCancelClick = () => {
-    if (typeof onCancel === 'function') return onCancel();
-    if (typeof onSelect === 'function') return onSelect('staff-overview');
+    if (typeof onCancel === 'function') {
+      onCancel();
+      return;
+    }
+    if (typeof onSelect === 'function') {
+      onSelect(ROUTES.STAFF_OVERVIEW);
+    }
   };
 
   const handleDelete = () => {
@@ -259,7 +265,7 @@ export default function Staff({
           {initialData?.id && (
             <button className="btn save" onClick={handleDelete}>Löschen</button>
           )}
-          <button className="btn cancel" onClick={handleCancelClick}>Abbrechen</button>
+          <button className="btn cancel" type="button" onClick={handleCancelClick}>Abbrechen</button>
           <button className="btn save" onClick={handleSave} disabled={pendingSave}>
             {pendingSave ? 'Speichern…' : 'Speichern'}
           </button>

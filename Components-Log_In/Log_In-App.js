@@ -7,6 +7,9 @@ import Log_InForgot from './Log_In-Forgot';
 import ColorAnimation from './Color-Animation';
 import { api } from '../Functions/apiClient';
 
+// Toggle: offline login helper. Set to false to use real API.
+const OFFLINE_LOGIN = false;
+
 export default function Log_InApp({ onLogin }) {
   const [mode, setMode]         = useState('inputs');      // 'inputs' | 'forgot'
   const [showMessage, setShowMessage] = useState(false);
@@ -32,6 +35,14 @@ export default function Log_InApp({ onLogin }) {
     setLoading(true);
 
     try {
+      if (OFFLINE_LOGIN) {
+        // Bypass API completely and continue with empty seed data
+        // You can add mock items here if needed
+        console.warn('[Login] OFFLINE_LOGIN active – skipping API calls');
+        onLogin([], [], []);
+        return;
+      }
+
       // 1) Authentifizieren
       await api.post('/users/login/', { username, password });
 
@@ -41,14 +52,9 @@ export default function Log_InApp({ onLogin }) {
       // 3) Mitarbeiter laden
       let empList = await api.get('/employees');
 
-      // 4) Dienste laden und normalisieren (Array oder { results: [...] })
+      // 4) Dienste laden
       let servicesList = await api.get('/services');
-      
 
-
-      // deptList = [];
-      // empList = [];
-      // servicesList = [];
       // 5) an App.jsx weitergeben (nun mit services)
       onLogin(deptList, empList, servicesList);
     } catch (err) {

@@ -1,0 +1,149 @@
+﻿/* Lightweight filter/search bar inspired by the provided design */
+
+.filter-bar {
+  background: #fff;
+  border-radius: 24px;
+  padding: 20px 22px; /* insgesamt grÃ¶ÃŸer */
+  box-shadow: var(--shadow-sm);
+  border: 1px solid #eee;
+  margin: 0 0 18px 0; /* eigene weiÃŸe Box oberhalb der Content-Box */
+}
+
+.filter-bar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 12px;
+}
+
+.filter-bar__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px; /* Ãœberschrift etwas grÃ¶ÃŸer */
+}
+
+
+.filter-bar__title::before {
+  content: '';
+  display: inline-block;
+  width: 22px;
+  height: 15px;
+  background-image: url('../assets/filter-icon.png');
+  background-size: 22px 15px;
+  background-repeat: no-repeat;
+  margin-right: 6px;
+}
+
+.filter-bar__chevron {
+  border: none;
+  background: transparent;
+  width: 30px; /* leicht grÃ¶ÃŸer, damit 23x26 Pfeil passt */
+  height: 30px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.filter-bar__chevron img {
+  width: 20px; /* ursprüngliche Größe */
+  height: 10px;
+  transform: rotate(180deg); /* offen: Pfeil nach oben */
+  transition: transform 0.2s ease;
+}
+.filter-bar__chevron.closed img {
+  transform: rotate(0deg); /* zu: Pfeil nach unten */
+}
+
+.filter-bar__controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.filter-bar__control {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
+  height: 44px; /* hÃ¶her */
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Make search field slightly smaller */
+.filter-bar__search { flex: 1 1 240px; }
+.filter-bar__search input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  width: 140px; /* reduced from 180px */
+}
+
+/* search icon size */
+.search-icon {
+  width: 23px;
+  height: 20px;
+  object-fit: contain;
+  margin-right: 8px;
+}
+
+/* Make status select larger */
+.filter-bar__status { flex: 0 0 auto; }
+.filter-bar__status select {
+  display: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  min-width: 260px; /* increased from 200px */
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url('../assets/Buttons/arrow-icon.png');
+  background-size: 15px 7px; /* ursprüngliche Größe */
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 44px; /* more space for larger icon */
+}
+
+.filter-bar .icon {
+  color: #888;
+}
+
+/* Status as inline expandable (Department-like) */
+.filter-bar__status.service-box {
+  --service-header-height: 44px;
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
+  padding: 0 14px;
+  flex: 0 0 260px;
+  width: 260px;
+}
+.filter-bar__status.service-box.open {
+  border-color: var(--color-primary);
+}
+.filter-bar__status .service-box__label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  padding-right: 44px;
+}
+.filter-bar__status .service-box__label::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 15px;  /* ursprüngliche Größe wie select */
+  height: 7px;
+  transform: translateY(-50%);
+  background-image: url('../assets/Buttons/arrow-icon.png');
+  background-size: 15px 7px;
+  background-repeat: no-repeat;
+}

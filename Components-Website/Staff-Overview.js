@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import '../global.css';
 import './Staff-Overview.css'; // reuse overview table styles
 import emptyIllustration from '../assets/empty-staff.png';
+import SearchBar from './SearchBar';
 
 export default function StaffOverview({ employees = [], onSelect, onEditEmployee, onDeleteEmployees, onNewStaff }) {
   const [actionsOpen, setActionsOpen] = useState(false);
@@ -9,6 +10,7 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [localEmployees, setLocalEmployees] = useState(Array.isArray(employees) ? employees : []);
+  const [search, setSearch] = useState('');
   const actionsRef = useRef();
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
   }, []);
 
   const toggleSelectAll = checked => {
-    if (checked) setSelectedRows(localEmployees.map(emp => emp.id ?? emp.email ?? emp.name));
+    if (checked) setSelectedRows(displayedEmployees.map(emp => emp.id ?? emp.email ?? emp.name));
     else setSelectedRows([]);
   };
 
@@ -61,6 +63,15 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
     }
     return ''; // no data
   };
+
+  // filtered list by search term
+  const displayedEmployees = (Array.isArray(localEmployees) ? localEmployees : []).filter(emp => {
+    const text = [emp?.first_name, emp?.last_name, emp?.name, emp?.email]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+    return !search || text.includes(search.toLowerCase());
+  });
 
   return (
     <div className="department-page department-overview">
@@ -100,8 +111,9 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
         </div>
       </div>
 
-      <div className="page-container department-overview__content">
-        {localEmployees.length === 0 ? (
+        <SearchBar term={search} onTermChange={setSearch} statusOptions={null} />
+        <div className="page-container department-overview__content">
+          {localEmployees.length === 0 ? (
           <div className="empty-state">
             <img src={emptyIllustration} alt="Keine Sachbearbeiter" />
             <div className="empty-state__text">
@@ -138,7 +150,7 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
                 </tr>
               </thead>
               <tbody>
-                {localEmployees.map((emp, i) => {
+                {displayedEmployees.map((emp, i) => {
                   const identifier = emp.id ?? emp.email ?? emp.name ?? i;
                   const checked = selectedRows.includes(identifier);
                   return (

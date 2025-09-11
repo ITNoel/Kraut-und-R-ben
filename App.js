@@ -1,6 +1,7 @@
 // src/App.jsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './global.css';
 import './App.css';
 
@@ -13,16 +14,20 @@ import Staff from './Components-Website/Staff';
 import ServicesOverview from './Components-Website/Services-Overview';
 import Services from './Components-Website/Services';
 import { api } from './Functions/apiClient';
+import { ROUTES } from './app/routes';
+import { upsertByIdOrName, removeByIds } from './shared/utils/collection';
 import StaffOverview from './Components-Website/Staff-Overview'; // NEW
 
 export default function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [services, setServices] = useState([]); // already present
   const [currentDept, setCurrentDept] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(null);
-  const [view, setView] = useState('department-overview');
+  const [view, setView] = useState(ROUTES.DEPARTMENT_OVERVIEW);
   const [currentService, setCurrentService] = useState(null);      // NEW
   const [currentServiceIndex, setCurrentServiceIndex] = useState(null); // NEW
   const [currentStaff, setCurrentStaff] = useState(null);          // NEW
@@ -33,7 +38,8 @@ export default function App() {
     setEmployees(empList);
     setServices(Array.isArray(servicesList) ? servicesList : []);
     setIsAuthenticated(true);
-    setView('department-overview');
+    setView(ROUTES.DEPARTMENT_OVERVIEW);
+    navigate('/department-overview', { replace: true });
   };
 
   // enrichedDepartments: zusätzlich alle Personen pro Dept anhängen
@@ -61,38 +67,27 @@ export default function App() {
       allEmployees: employees // komplette Liste mitgeben
     });
     setCurrentIndex(null);
-    setView('department');
+    setView(ROUTES.DEPARTMENT);
+    navigate('/department');
   };
 
   const handleEdit = (dept, idx, generalEmployees) => {
     // currentDept mit kompletter Personenliste anreichern
     setCurrentDept({ ...dept, allEmployees: employees });
     setCurrentIndex(idx);
-    setView('department');
+    setView(ROUTES.DEPARTMENT);
+    navigate('/department');
   };
 
   const handleSaveAndClose = (deptData, idx) => {
-    // Falls deptData eine id hat und bereits vorhanden ist -> ersetzen.
-    const findById = deptData?.id != null
-      ? departments.findIndex(d => d.id === deptData.id)
-      : -1;
-    const findByName = findById === -1
-      ? departments.findIndex(d => d.name === deptData.name)
-      : -1;
-
-    let updated;
-    if (idx != null) {
-      updated = departments.map((d, i) => i === idx ? deptData : d);
-    } else if (findById !== -1) {
-      updated = departments.map((d, i) => i === findById ? deptData : d);
-    } else if (findByName !== -1) {
-      updated = departments.map((d, i) => i === findByName ? deptData : d);
-    } else {
-      updated = [...departments, deptData];
-    }
-
+    const updated = upsertByIdOrName(departments, deptData, {
+      idKey: 'id',
+      nameSelector: (d) => d?.name,
+      index: idx ?? null,
+    });
     setDepartments(updated);
-    setView('department-overview');
+    setView(ROUTES.DEPARTMENT_OVERVIEW);
+    navigate('/department-overview');
   };
 
   const handleUpdate = (deptData, idx) => {
@@ -104,51 +99,33 @@ export default function App() {
     }
 
     // Wie bei handleSaveAndClose: falls id/name bereits existiert → ersetzen
-    const findById = deptData?.id != null
-      ? departments.findIndex(d => d.id === deptData.id)
-      : -1;
-    const findByName = findById === -1
-      ? departments.findIndex(d => d.name === deptData.name)
-      : -1;
+    
 
-    let updated;
-    if (idx != null) {
-      updated = departments.map((d, i) => i === idx ? deptData : d);
-    } else if (findById !== -1) {
-      updated = departments.map((d, i) => i === findById ? deptData : d);
-    } else if (findByName !== -1) {
-      updated = departments.map((d, i) => i === findByName ? deptData : d);
-    } else {
-      updated = [...departments, deptData];
-    }
-
+    const updated = upsertByIdOrName(departments, deptData, {
+      idKey: 'id',
+      nameSelector: (d) => d?.name,
+      index: idx ?? null,
+    });
     setDepartments(updated);
   };
 
   // Entfernt mehrere Abteilungen aus dem globalen Zustand (IDs array)
   const handleDeleteDepartments = (ids) => {
     if (!Array.isArray(ids) || ids.length === 0) return;
-    setDepartments(prev => prev.filter(d => !ids.includes(d.id)));
+    setDepartments(prev => removeByIds(prev, ids, 'id'));
   };
 
   // Speichern (und anschließend zur Übersicht) — vermeidet Duplikate (id oder name)
   const handleSaveServiceAndClose = (svcData, idx) => {
-    const findById = svcData?.id != null ? services.findIndex(s => s.id === svcData.id) : -1;
-    const findByName = findById === -1 ? services.findIndex(s => s.name === svcData.name) : -1;
-
-    let updated;
-    if (idx != null) {
-      updated = services.map((s, i) => i === idx ? svcData : s);
-    } else if (findById !== -1) {
-      updated = services.map((s, i) => i === findById ? svcData : s);
-    } else if (findByName !== -1) {
-      updated = services.map((s, i) => i === findByName ? svcData : s);
-    } else {
-      updated = [...services, svcData];
-    }
-
-    setServices(updated);
-    setView('services-overview');
+    setServices(
+      upsertByIdOrName(services, svcData, {
+        idKey: 'id',
+        nameSelector: (s) => s?.name,
+        index: idx ?? null,
+      })
+    );
+    setView(ROUTES.SERVICES_OVERVIEW);
+    navigate('/services-overview');
   };
 
   // Update (in-place) oder Anfügen, analog zu Departments
@@ -158,51 +135,38 @@ export default function App() {
       setServices(updated);
       return;
     }
-    const findById = svcData?.id != null ? services.findIndex(s => s.id === svcData.id) : -1;
-    const findByName = findById === -1 ? services.findIndex(s => s.name === svcData.name) : -1;
-
-    let updated;
-    if (idx != null) {
-      updated = services.map((s, i) => i === idx ? svcData : s);
-    } else if (findById !== -1) {
-      updated = services.map((s, i) => i === findById ? svcData : s);
-    } else if (findByName !== -1) {
-      updated = services.map((s, i) => i === findByName ? svcData : s);
-    } else {
-      updated = [...services, svcData];
-    }
-    setServices(updated);
+    setServices(
+      upsertByIdOrName(services, svcData, {
+        idKey: 'id',
+        nameSelector: (s) => s?.name,
+        index: idx ?? null,
+      })
+    );
   };
 
   // Entfernt Services per id-Liste
   const handleDeleteServices = (ids) => {
     if (!Array.isArray(ids) || ids.length === 0) return;
-    setServices(prev => prev.filter(s => !ids.includes(s.id)));
+    setServices(prev => removeByIds(prev, ids, 'id'));
   };
 
   // Entfernt mehrere Mitarbeiter aus dem globalen Zustand (IDs array)
   const handleDeleteEmployees = (ids) => {
     if (!Array.isArray(ids) || ids.length === 0) return;
-    setEmployees(prev => prev.filter(emp => !ids.includes(emp.id)));
+    setEmployees(prev => removeByIds(prev, ids, 'id'));
   };
 
   // Save staff and close — vermeidet Duplikate (id oder name)
   const handleSaveStaffAndClose = (staffData, idx) => {
-    const findById = staffData?.id != null ? employees.findIndex(s => s.id === staffData.id) : -1;
-    const findByName = findById === -1 ? employees.findIndex(s => `${s.first_name} ${s.last_name}` === `${staffData.first_name} ${staffData.last_name}`) : -1;
-
-    let updated;
-    if (idx != null) {
-      updated = employees.map((s, i) => i === idx ? staffData : s);
-    } else if (findById !== -1) {
-      updated = employees.map((s, i) => i === findById ? staffData : s);
-    } else if (findByName !== -1) {
-      updated = employees.map((s, i) => i === findByName ? staffData : s);
-    } else {
-      updated = [...employees, staffData];
-    }
-    setEmployees(updated);
-    setView('staff-overview');
+    setEmployees(
+      upsertByIdOrName(employees, staffData, {
+        idKey: 'id',
+        nameSelector: (s) => `${s?.first_name ?? ''} ${s?.last_name ?? ''}`.trim(),
+        index: idx ?? null,
+      })
+    );
+    setView(ROUTES.STAFF_OVERVIEW);
+    navigate('/staff-overview');
   };
 
   const handleUpdateStaff = (staffData, idx) => {
@@ -210,20 +174,13 @@ export default function App() {
       setEmployees(prev => prev.filter((_, i) => i !== idx));
       return;
     }
-    const findById = staffData?.id != null ? employees.findIndex(s => s.id === staffData.id) : -1;
-    const findByName = findById === -1 ? employees.findIndex(s => `${s.first_name} ${s.last_name}` === `${staffData.first_name} ${staffData.last_name}`) : -1;
-
-    let updated;
-    if (idx != null) {
-      updated = employees.map((s, i) => i === idx ? staffData : s);
-    } else if (findById !== -1) {
-      updated = employees.map((s, i) => i === findById ? staffData : s);
-    } else if (findByName !== -1) {
-      updated = employees.map((s, i) => i === findByName ? staffData : s);
-    } else {
-      updated = [...employees, staffData];
-    }
-    setEmployees(updated);
+    setEmployees(
+      upsertByIdOrName(employees, staffData, {
+        idKey: 'id',
+        nameSelector: (s) => `${s?.first_name ?? ''} ${s?.last_name ?? ''}`.trim(),
+        index: idx ?? null,
+      })
+    );
   };
 
   // Neuer, kompletter leerer Sachbearbeiter anlegen und Editor öffnen
@@ -241,8 +198,61 @@ export default function App() {
       department: null
     });
     setCurrentStaffIndex(null);
-    setView('staff');
+    setView(ROUTES.STAFF);
+    navigate('/staff/edit');
   };
+
+  // Mappe Pfad -> View-State (damit Sidebar weiterhin korrekt funktioniert)
+  useEffect(() => {
+    const p = location.pathname || '';
+    if (p.startsWith('/services-overview')) {
+      setView(ROUTES.SERVICES_OVERVIEW);
+    } else if (p.startsWith('/services')) {
+      setView(ROUTES.SERVICES);
+    } else if (p.startsWith('/staff-overview')) {
+      setView(ROUTES.STAFF_OVERVIEW);
+    } else if (p.startsWith('/staff')) {
+      setView(ROUTES.STAFF);
+    } else if (p.startsWith('/department-overview')) {
+      setView(ROUTES.DEPARTMENT_OVERVIEW);
+    } else if (p.startsWith('/department')) {
+      setView(ROUTES.DEPARTMENT);
+    }
+  }, [location.pathname]);
+
+  // Weitergabe einer kompatiblen onSelect-API an Kinder, leitet auf Router um
+  const selectView = (v) => {
+    // Set view immediately for responsive UI, then sync URL
+    setView(v);
+    switch (v) {
+      case ROUTES.DEPARTMENT_OVERVIEW: return navigate('/department-overview');
+      case ROUTES.DEPARTMENT: return navigate('/department');
+      case ROUTES.SERVICES_OVERVIEW: return navigate('/services-overview');
+      case ROUTES.SERVICES: return navigate('/services');
+      case ROUTES.STAFF_OVERVIEW: return navigate('/staff-overview');
+      case ROUTES.STAFF: return navigate('/staff/edit');
+      default: return navigate('/department-overview');
+    }
+  };
+
+  // Ensure after login or unknown path we land on Department Overview
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const p = location.pathname || '';
+    const known = [
+      '/department-overview',
+      '/department',
+      '/services-overview',
+      '/services',
+      '/staff-overview',
+      '/staff',
+      '/staff/edit'
+    ];
+    if (p === '/' || !known.some(k => p.startsWith(k))) {
+      setView(ROUTES.DEPARTMENT_OVERVIEW);
+      navigate('/department-overview', { replace: true });
+    }
+  }, [isAuthenticated]);
 
   if (!isAuthenticated) {
     return <Log_InApp onLogin={handleLogin} />;
@@ -250,11 +260,11 @@ export default function App() {
 
   return (
     <div className="app-container">
-      <Sidebar view={view} onSelect={setView} />
+      <Sidebar view={view} onSelect={selectView} />
       <main className="main-content">
         <Header />
 
-        {view === 'department-overview' && (
+        {view === ROUTES.DEPARTMENT_OVERVIEW && (
           <DepartmentOverview
             departments={enrichedDepartments}
             generalEmployees={employees}
@@ -264,21 +274,21 @@ export default function App() {
           />
         )}
 
-        {view === 'staff-overview' && (
+        {view === ROUTES.STAFF_OVERVIEW && (
           <StaffOverview
             employees={employees}
-            onSelect={setView}
+            onSelect={selectView}
             onEditEmployee={(emp, idx) => {
               setCurrentStaff(emp);
               setCurrentStaffIndex(idx);
-              setView('staff');
+              selectView(ROUTES.STAFF);
             }}
             onDeleteEmployees={handleDeleteEmployees}
             onNewStaff={handleNewStaff}
           />
         )}
 
-        {view === 'department' && (
+        {view === ROUTES.DEPARTMENT && (
           <Department
             initialData={currentDept}
             generalEmployees={employees}
@@ -286,26 +296,26 @@ export default function App() {
             index={currentIndex}
             onSave={handleSaveAndClose}
             onUpdate={handleUpdate}
-            onCancel={() => setView('department-overview')}
-            navigateToStaff={() => setView('staff')}
-            navigateToServices={() => setView('services')}
+            onCancel={() => selectView(ROUTES.DEPARTMENT_OVERVIEW)}
+            navigateToStaff={() => selectView(ROUTES.STAFF)}
+            navigateToServices={() => selectView(ROUTES.SERVICES)}
           />
         )}
 
-        {view === 'services-overview' && (
+        {view === ROUTES.SERVICES_OVERVIEW && (
           <ServicesOverview
             services={services}
-            onSelect={setView}
+            onSelect={selectView}
             onEditService={(svc, idx) => {
               setCurrentService(svc);
               setCurrentServiceIndex(idx);
-              setView('services');
+              selectView(ROUTES.SERVICES);
             }}
             onDeleteServices={handleDeleteServices}
           />
         )}
 
-        {view === 'services' && (
+        {view === ROUTES.SERVICES && (
           <Services
             initialData={currentService}
             index={currentServiceIndex}
@@ -313,19 +323,19 @@ export default function App() {
             generalDepartments={departments} // <-- Liste aller Abteilungen übergeben
             onSaveService={handleSaveServiceAndClose}
             onUpdateService={handleUpdateService}
-            onCancel={() => setView('services-overview')}
+            onCancel={() => selectView(ROUTES.SERVICES_OVERVIEW)}
           />
         )}
 
-        {view === 'staff' && (
+        {view === ROUTES.STAFF && (
           <Staff
             initialData={currentStaff}
             index={currentStaffIndex}
             generalDepartments={departments}
             onSave={handleSaveStaffAndClose}
             onUpdate={handleUpdateStaff}
-            onCancel={() => setView('staff-overview')}
-            onSelect={setView}
+            onCancel={() => selectView(ROUTES.STAFF_OVERVIEW)}
+            onSelect={selectView}
           />
         )}
       </main>

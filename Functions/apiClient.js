@@ -1,6 +1,9 @@
 // src/Functions/apiClient.js
 
-const API_BASE = 'https://webprojekt3.herokuapp.com/api';
+// Allow configuration via CRA env var with sensible fallback
+const API_BASE =
+  (typeof process !== 'undefined' && process.env && process.env.REACT_APP_API_BASE)
+  || 'https://webprojekt3.herokuapp.com/api';
 
 async function request(method, path, body = null) {
   const res = await fetch(`${API_BASE}${path}`, {

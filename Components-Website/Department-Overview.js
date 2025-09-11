@@ -5,6 +5,7 @@ import '../global.css';
 import './Department-Overview.css';
 import emptyIllustration from '../assets/empty-departments.png';
 import { api } from '../Functions/apiClient';
+import SearchBar from './SearchBar';
 
 export default function DepartmentOverview({ departments, generalEmployees, onNew, onEdit, onDeleteSelected }) {
   const [actionsOpen, setActionsOpen] = useState(false);
@@ -12,6 +13,8 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [localDepartments, setLocalDepartments] = useState(departments);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const actionsRef = useRef();
 
   useEffect(() => {
@@ -79,6 +82,14 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
     }
   };
 
+  // filterable view
+  const displayedDepartments = (Array.isArray(localDepartments) ? localDepartments : []).filter((d) => {
+    const name = (d?.name ?? '').toLowerCase();
+    const matchesTerm = !search || name.includes(search.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || (d?.status ?? 'active') === statusFilter;
+    return matchesTerm && matchesStatus;
+  });
+
   return (
     <div className="department-page department-overview">
       <div className="page-header">
@@ -115,6 +126,18 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
           </button>
         </div>
       </div>
+      <SearchBar
+          term={search}
+          onTermChange={setSearch}
+          status={statusFilter}
+          onStatusChange={setStatusFilter}
+          statusOptions={[
+            { value: 'all', label: 'Status' },
+            { value: 'active', label: 'Aktiv' },
+            { value: 'disabled', label: 'Inaktiv' },
+            { value: 'draft', label: 'Entwurf' },
+          ]}
+        />
       <div className="page-container department-overview__content">
         {localDepartments.length === 0 ? (
           <div className="empty-state">
@@ -150,7 +173,7 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
                 </tr>
               </thead>
               <tbody>
-                {localDepartments.map((d, i) => {
+                {displayedDepartments.map((d, i) => {
                   const checked = selectedRows.includes(d.id);
                   return (
                     <tr

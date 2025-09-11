@@ -1,6 +1,7 @@
 // src/Sidebar.jsx
 import logo from '../assets/logo.png';
 import React, { useState, useEffect } from 'react';
+import { ROUTES } from '../app/routes';
 import './Sidebar.css';
 
 export default function Sidebar({ view, onSelect }) {
@@ -96,30 +97,30 @@ export default function Sidebar({ view, onSelect }) {
               <div className="nav-section-items">
                 <a
                   href="#"
-                  className={view === 'department' ? 'active' : ''}
+                  className={view === ROUTES.DEPARTMENT_OVERVIEW ? 'active' : ''}
                   onClick={e => {
                     e.preventDefault();
-                    onSelect('department-overview');
+                    onSelect(ROUTES.DEPARTMENT_OVERVIEW);
                   }}
                 >
                   Abteilung
                 </a>
                 <a
                   href="#"
-                  className={view === 'services-overview' ? 'active' : ''}
+                  className={view === ROUTES.SERVICES_OVERVIEW ? 'active' : ''}
                   onClick={e => {
                     e.preventDefault();
-                    onSelect('services-overview');
+                    onSelect(ROUTES.SERVICES_OVERVIEW);
                   }}
                 >
                   Dienste
                 </a>
                 <a
                   href="#"
-                  className={view === 'staff-overview' ? 'active' : ''}
+                  className={view === ROUTES.STAFF_OVERVIEW ? 'active' : ''}
                   onClick={e => {
                     e.preventDefault();
-                    onSelect('staff-overview');
+                    onSelect(ROUTES.STAFF_OVERVIEW);
                   }}
                 >
                   Sachbearbeiter:innen

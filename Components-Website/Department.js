@@ -6,6 +6,7 @@ import empty_services from '../assets/empty-services.png';
 import '../global.css';
 import './Department.css';
 import { api } from '../Functions/apiClient';
+import { ROUTES } from '../app/routes';
 
 export default function Department({
   initialData,
@@ -190,7 +191,17 @@ export default function Department({
     }
   };
 
-  const handleCancel = () => onCancel();
+  const handleCancel = () => {
+    if (typeof onCancel === 'function') {
+      onCancel();
+      return;
+    }
+    // fallback for older callers
+    if (typeof navigateToStaff === 'function') {
+      // go back to departments overview if possible
+      navigateToStaff(ROUTES.STAFF_OVERVIEW);
+    }
+  };
 
   const handleDelete = () => {
     setShowConfirmDeleteModal(true);
@@ -296,7 +307,7 @@ export default function Department({
           {initialData?.id && (
             <button className="btn save" onClick={handleDelete}>Löschen</button>
           )}
-          <button className="btn cancel" onClick={handleCancel}>Abbrechen</button>
+          <button className="btn cancel" type="button" onClick={handleCancel}>Abbrechen</button>
           <button className="btn save" onClick={handleSave} disabled={pendingSave}>
             {pendingSave ? 'Speichern…' : 'Speichern'}
           </button>
@@ -507,7 +518,7 @@ export default function Department({
             </p>
             <p>Möchtest du die Abteilung <strong>„{form.name}“</strong> wirklich löschen?</p>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '32px' }}>
-              <button className="btn cancel" onClick={() => setShowConfirmDeleteModal(false)}>Abbrechen</button>
+              <button className="btn cancel" type="button" onClick={() => setShowConfirmDeleteModal(false)}>Abbrechen</button>
               <button className="btn save" onClick={handleConfirmDelete} disabled={pendingDelete}>
                 {pendingDelete ? 'Lösche…' : 'Ja, löschen'}
               </button>
