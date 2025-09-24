@@ -18,7 +18,7 @@
   padding-left: 10px;
   margin: 10px 0;
   border: 1px solid #bdbdbd;  /* exakt wie .form-grid input */
-  border-radius: 17px;         /* exakt wie .form-grid input */
+  border-radius: var(--border-radius-small);         /* exakt wie .form-grid input */
   font-size: 14px;
   background: #fff;
   color: var(--label-color);

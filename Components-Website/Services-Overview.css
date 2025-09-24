@@ -1,5 +1,36 @@
 /* src/Services-Overview.css */
 
+/* Overview-Header Buttons: große Abrundung nur im Header */
+.page-header .btn.more-actions,
+.page-header .btn.services-new {
+  border-radius: var(--border-radius-large);
+}
+
+/* Karten-Look pro Zeile (runde Rechtecke) wie in Staff/Department */
+.department-overview__table tbody tr { position: relative; }
+.department-overview__table tbody tr::after {
+  content: '';
+  position: absolute; left: 8px; right: 8px; top: 4px; bottom: 4px;
+  border: 1px solid #e5e7eb; border-radius: 8px; background: transparent; z-index: 0;
+}
+.department-overview__table tbody td {
+  position: relative; z-index: 1; background: transparent !important; border-bottom: none !important;
+}
+.department-overview__table tbody tr:hover::after { background: transparent; border-color: #cfd2d6; }
+.department-overview__table tbody tr.row-selected::after { background: transparent; border-color: var(--color-primary); }
+
+/* Header-Zeile mit identischem Rahmen/Hintergrund */
+.department-overview__table thead tr { position: relative; }
+.department-overview__table thead tr::after {
+  content: '';
+  position: absolute; left: 8px; right: 8px; top: 4px; bottom: 4px;
+  border: 1px solid #e5e7eb; border-radius: 8px; background: rgb(241,241,241);
+}
+.department-overview__table thead th { position: relative; background: transparent !important; border-bottom: none !important; }
+
+/* Sichtbare Header-Texte (Name/Status) sicherstellen */
+/* Sichtbarkeit der Header-Texte wird global gesteuert (global.css) */
+
 /* Nur servicespezifische Anpassungen — gemeinsame Table/Kachel/Checkbox-/Status-Stile
    stammen jetzt aus global.css / Department-Overview.css */
 
@@ -77,7 +108,7 @@
   accent-color: var(--color-primary);
   vertical-align: middle;
   border: 2px solid #111;
-  border-radius: 3px;
+  border-radius: 4px; /* leicht größerer Radius */
   margin-right: 0.5rem;
   box-shadow: none;
   appearance: none;
@@ -181,13 +212,7 @@
 /* Make Name column wider and prevent forced wraps; keep ellipsis on overflow */
 .services-overview__table th:nth-child(2),
 .services-overview__table td:nth-child(2) {
-  min-width: 420px !important;
-  max-width: 900px !important;
-  width: 40vw !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  padding-left: 3rem !important;
+  /* vereinheitlicht über global.css */
 }
 
 /* Feintuning: mehr Abstand für Name (links) und Status (rechts) — konsistent mit Department-Overview */
@@ -204,12 +229,10 @@
 /* Center status column header and cell content */
 .services-overview__table th.status,
 .services-overview__table td.status {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important; /* center status pill horizontally */
+  display: table-cell !important;
   text-align: center !important;
   padding-left: 0.5rem !important;
-  padding-right: 4rem !important; /* ensure space to actions */
+  padding-right: 1rem !important; /* space to actions */
 }
 
 /* Ensure the status pill itself has no extra left margin */
@@ -256,43 +279,38 @@
 
 /* Header-Status: oben in der Kopfzeile, volle Höhe */
 .services-overview__table th.status {
-  position: absolute !important;
-  right: var(--action-offset) !important;
-  top: 0 !important;
-  height: 100% !important;
-  width: var(--status-col-width) !important;
-  min-width: var(--status-col-width) !important;
-  max-width: var(--status-col-width) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  padding-right: 2.2rem !important;
+  position: static !important;
+  right: auto !important;
+  top: auto !important;
+  height: auto !important;
+  width: auto !important;
+  min-width: auto !important;
+  max-width: none !important;
+  display: table-cell !important;
+  padding-right: 0 !important;
   box-sizing: border-box !important;
-  background: var(--color-bg) !important;
-  z-index: 8 !important;
+  background: transparent !important;
+  z-index: auto !important;
 }
 
 /* Body-Status: absolut innerhalb jeder Zeile, vertikal zentriert */
 .services-overview__table td.status {
-  position: absolute !important;
-  right: var(--action-offset) !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  width: var(--status-col-width) !important;
-  min-width: var(--status-col-width) !important;
-  max-width: var(--status-col-width) !important;
-  padding-right: 2.2rem !important;
+  position: static !important;
+  right: auto !important;
+  top: auto !important;
+  transform: none !important;
+  width: auto !important;
+  min-width: auto !important;
+  max-width: none !important;
+  padding-right: 0 !important;
   box-sizing: border-box !important;
   background: transparent !important;
-  text-align: right !important;
-  z-index: 5 !important;
+  text-align: center !important;
+  z-index: auto !important;
 }
 
 /* Verhindere Überlappung: mehr Abstand rechts für normale Zellen (außer Checkbox, Name, Aktion, Status) */
-.services-overview__table th:not(.status):not(:first-child):not(:last-child),
-.services-overview__table td:not(.status):not(:first-child):not(:last-child) {
-  padding-right: calc(var(--status-col-width) + 2.5rem) !important;
-}
+/* unified: remove extra right padding from non-status columns */
 
 /* Aktions-Buttons (drei Punkte) müssen über der Status-Spalte liegen */
 .services-overview__table .btn.more-actions {
@@ -442,19 +460,15 @@
 
 /* Aktions-Buttons (drei Punkte) über der Status-Spalte anzeigen */
 .services-overview__table .btn.more-actions,
-.department-overview__table .btn.more-actions {
-  z-index: 6 !important;
-}
+.department-overview__table .btn.more-actions { /* stacking controlled globally */ }
 
 /* --- Überschreibe: Status-Spalte exakt zentrieren (horizontal + vertikal) --- */
 .services-overview__table th.status,
 .services-overview__table td.status {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important; /* horizontal zentrieren */
+  display: table-cell !important;
   text-align: center !important;      /* Fallback */
   padding-left: 0.5rem !important;
-  padding-right: 3rem !important;
+  padding-right: 1rem !important;
 }
 
 /* Status-Pille selbst keinen Margin links/rechts erlauben */
@@ -465,3 +479,56 @@
 
 /* Removed local .services-overview__status / .department-overview__status rules — moved to global.css */
 
+/* Tabellen-Layout: 16px vertikaler Zeilenabstand */
+.department-overview__table {
+  border-collapse: separate;
+  border-spacing: 0 16px;
+}
+
+/* Abstand unter der Überschrift (Header) */
+.department-overview .page-header {
+  margin-bottom: 32px;
+}
+
+/* Innenabstand der weißen Box (Container) */
+.page-container.department-overview__content {
+  padding: 8px 32px 32px 32px; /* 8px oben, damit Header->erste Zeile = 32 + 8 = 40px */
+  margin-bottom: 0;
+}
+
+/* Disable sticky behavior to avoid fixed-looking top background during scroll */
+.department-overview__table th:first-child,
+.department-overview__table td:first-child,
+.department-overview__table th:nth-child(2),
+.department-overview__table td:nth-child(2),
+.department-overview__table th.status,
+.department-overview__table td.status {
+  position: static !important;
+  left: auto !important;
+  right: auto !important;
+}
+/* (Revert) Entfernt die zuletzt hinzugefügten globalen Overrides für Tabellen-Layout */
+/* ===== Fix: Header sichtbar und Status-Spalte korrekt ausgerichtet (Services) ===== */
+.department-overview__table th.status,
+.department-overview__table td.status {
+  position: static !important;
+  right: auto !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  display: table-cell !important;
+  text-align: center !important;
+}
+
+/* Z-Index/Overlay für Header zentral in global.css geregelt */
+
+.department-overview__table th:not(.status),
+.department-overview__table td:not(.status) {
+  padding-right: 1rem !important;
+}
+
+/* Header-Checkbox über dem thead-Overlay halten */
+.department-overview__table thead th input[type="checkbox"] {
+  position: relative;
+  z-index: 3;
+}

@@ -5,14 +5,15 @@ import '../global.css';
 import './Services-Overview.css';
 import emptyIllustration from '../assets/empty-services.png';
 import SearchBar from './SearchBar';
+import actionIcon from '../assets/Buttons/action-icon.svg';
 import { ROUTES } from '../app/routes';
 
 const services = [
-  { name: 'Reisepass beantragen', duration: '15 min', price: '20 €', status: 'active' },
-  { name: 'Abmeldung (Ausland/Nebenwohnung)', duration: '45 min', price: '10 €', status: 'active' },
-  { name: 'Ummeldung (innerhalb Stadt)', duration: '15 min', price: '30 €', status: 'active' },
-  { name: 'Melde-/Lebensbescheinigung', duration: '30 min', price: '25 €', status: 'disabled' },
-  { name: 'Test', duration: '30 min', price: '25 €', status: 'draft' },
+  { name: 'Reisepass beantragen', duration: '15 min', price: '20 Ã¢â€šÂ¬', status: 'active' },
+  { name: 'Abmeldung (Ausland/Nebenwohnung)', duration: '45 min', price: '10 Ã¢â€šÂ¬', status: 'active' },
+  { name: 'Ummeldung (innerhalb Stadt)', duration: '15 min', price: '30 Ã¢â€šÂ¬', status: 'active' },
+  { name: 'Melde-/Lebensbescheinigung', duration: '30 min', price: '25 Ã¢â€šÂ¬', status: 'disabled' },
+  { name: 'Test', duration: '30 min', price: '25 Ã¢â€šÂ¬', status: 'draft' },
 ];
 
 export default function ServicesOverview({ onSelect, services = [], onEditService, onDeleteServices }) {
@@ -74,13 +75,13 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
   const handleDeleteSelected = async () => {
     setIsDeleting(true);
     try {
-      // Hier würdest du API-Calls machen, falls Services serverseitig gelöscht werden sollen
+      // Hier wÃƒÂ¼rdest du API-Calls machen, falls Services serverseitig gelÃƒÂ¶scht werden sollen
       // for (const idx of selectedRows) { ... }
       // map selectedRows to ids
       const idsToDelete = selectedRows;
       const remaining = localServices.filter(s => !(idsToDelete.includes(s.id) || idsToDelete.includes(s.name)));
       setLocalServices(remaining);
-      // Informiere App über gelöschte IDs (falls vorhanden)
+      // Informiere App ÃƒÂ¼ber gelÃƒÂ¶schte IDs (falls vorhanden)
       if (typeof onDeleteServices === 'function') {
         const ids = localServices
           .filter(s => (idsToDelete.includes(s.id) || idsToDelete.includes(s.name)))
@@ -91,7 +92,7 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
       setSelectedRows([]);
       setShowDeleteModal(false);
     } catch (err) {
-      alert('Fehler beim Löschen: ' + err.message);
+      alert('Fehler beim LÃƒÂ¶schen: ' + err.message);
     } finally {
       setIsDeleting(false);
     }
@@ -100,7 +101,7 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
   return (
     <div className="department-page department-overview">
       <div className="page-header">
-        <h1 className="page-header__title">Dienste Übersicht</h1>
+        <h1 className="page-header__title">Dienste ÃƒÅ“bersicht</h1>
         <div className="page-header__actions">
           <div className="actions-dropdown-wrapper" ref={actionsRef}>
             <button
@@ -109,7 +110,7 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
               disabled={selectedRows.length === 0}
               style={{ opacity: selectedRows.length === 0 ? 0.5 : 1 }}
             >
-              <span aria-hidden="true">⋯</span> Weitere Aktionen
+              <span aria-hidden="true">Ã¢â€¹Â¯</span> Weitere Aktionen
             </button>
             {actionsOpen && (
               <div className="actions-dropdown">
@@ -120,7 +121,7 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
                     setShowDeleteModal(true);
                   }}
                 >
-                  Dienste löschen
+                  Dienste lÃƒÂ¶schen
                 </button>
               </div>
             )}
@@ -150,8 +151,8 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
           <div className="empty-state">
             <img src={emptyIllustration} alt="Keine Dienste" />
             <div className="empty-state__text">
-              <h2>Willkommen in der Dienste Übersicht</h2>
-              Sobald Sie Dienste hinzufügen, erscheinen diese hier.
+              <h2>Willkommen in der Dienste ÃƒÅ“bersicht</h2>
+              Sobald Sie Dienste hinzufÃƒÂ¼gen, erscheinen diese hier.
             </div>
             <button className="btn save department-new" onClick={() => onSelect('services')}>Neue Dienste anlegen</button>
           </div>
@@ -165,13 +166,13 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
                       type="checkbox"
                       checked={selectedRows.length === localServices.length && localServices.length > 0}
                       onChange={e => toggleSelectAll(e.target.checked)}
-                      aria-label="Alle auswählen"
+                      aria-label="Alle auswÃƒÂ¤hlen"
                     />
                   </th>
                   <th>Name</th>
-                  <th className="status">Status</th>
                   <th>Dauer</th>
                   <th>Preis</th>
+                  <th className="status">Status</th>
                   <th></th>
                 </tr>
               </thead>
@@ -179,6 +180,13 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
                 {displayedServices.map((s, i) => {
                   const identifier = s.id ?? s.name;
                   const checked = selectedRows.includes(identifier);
+                  const rawStatus = (s.status || '').toString().toLowerCase();
+                  const statusType = (['active','aktiv'].includes(rawStatus)
+                    ? 'active'
+                    : (['disabled','inactive','inaktiv','deaktiviert'].includes(rawStatus)
+                      ? 'disabled'
+                      : (['draft','entwurf'].includes(rawStatus) ? 'draft' : 'active')));
+                  const statusLabel = statusType === 'active' ? 'Aktiv' : (statusType === 'disabled' ? 'Inaktiv' : 'Entwurf');
                   return (
                     <tr
                       key={identifier ?? i}
@@ -198,18 +206,16 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
                           type="checkbox"
                           checked={checked}
                           onChange={e => toggleSelectOne(identifier, e.target.checked)}
-                          aria-label={`Dienst ${s.name} auswählen`}
+                          aria-label={`Dienst ${s.name} auswÃƒÂ¤hlen`}
                           onClick={e => e.stopPropagation()}
                         />
                       </td>
                       <td style={{ color: "#222" }}>{s.name}</td>
-                      <td className="status">
-                        <span className={statusClass(s.status)}>
-                          {s.status === 'active' ? 'Aktiv' : s.status === 'disabled' ? 'Deaktiviert' : 'Entwurf'}
-                        </span>
-                      </td>
                       <td style={{ color: "#222" }}>{s.duration}</td>
                       <td style={{ color: "#222" }}>{s.price}</td>
+                      <td className="status">
+                        <span className={statusClass(statusType)}>{statusLabel}</span>
+                      </td>
                       <td>
                         <button
                           className="btn more-actions"
@@ -232,7 +238,7 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
                             if (typeof onSelect === 'function') onSelect(ROUTES.SERVICES);
                           }}
                         >
-                          ⋯
+                          <img src={actionIcon} alt="" width={12} height={12} />
                         </button>
                       </td>
                     </tr>
@@ -251,15 +257,15 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
       {showDeleteModal && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <button className="modal-close" onClick={() => setShowDeleteModal(false)}>×</button>
-            <h2 className="modal-title">Mehrere Dienste löschen?</h2>
+            <button className="modal-close" onClick={() => setShowDeleteModal(false)}>Ãƒâ€”</button>
+            <h2 className="modal-title">Mehrere Dienste lÃƒÂ¶schen?</h2>
             <p className="modal-subheading">
-              Es werden <strong>{selectedRows.length}</strong> Dienste gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.
+              Es werden <strong>{selectedRows.length}</strong> Dienste gelÃƒÂ¶scht. Diese Aktion kann nicht rÃƒÂ¼ckgÃƒÂ¤ngig gemacht werden.
             </p>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '32px' }}>
               <button className="btn cancel" onClick={() => setShowDeleteModal(false)}>Abbrechen</button>
               <button className="btn save" onClick={handleDeleteSelected} disabled={isDeleting}>
-                {isDeleting ? 'Lösche…' : 'Ja, löschen'}
+                {isDeleting ? 'LÃƒÂ¶scheÃ¢â‚¬Â¦' : 'Ja, lÃƒÂ¶schen'}
               </button>
             </div>
           </div>

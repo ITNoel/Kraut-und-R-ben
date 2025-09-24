@@ -5,7 +5,7 @@
 .common-overview__table.department-overview__table {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0;
+  border-spacing: 0 16px; /* vertikaler Zeilenabstand sichtbar machen */
 }
 
 /* Wochentags-Spalten: feste, schmale Breite, zentrierter Inhalt */
@@ -33,18 +33,40 @@
 .department-overview__table input[type="checkbox"] {
   width: 16px;
   height: 16px;
-  border-radius: 3px;
+  border-radius: 4px; /* leicht größerer Radius */
   border: 1px solid var(--color-border, #dcdcdc);
   background: #fff;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
-/* Zeilen-Hover / Selected wie bei anderen Overviews */
-.department-overview__table tbody tr:hover {
-  background-color: rgb(227,227,227);
+/* Zeilen-Hover / Selected über Pseudo-Overlay (runde Rechteck-Umrandung) */
+/* Body: jede Zeile erhält ein abgerundetes Rechteck als Hintergrund */
+.common-overview__table tbody tr { position: relative; }
+.common-overview__table tbody tr::after {
+  content: '';
+  position: absolute;
+  left: 8px; right: 8px; top: 4px; bottom: 4px;
+  border: 1px solid #e5e7eb; border-radius: 8px; background: transparent; z-index: 0;
 }
-.department-overview__table tr.row-selected {
-  background: #f3f4f6;
+.common-overview__table tbody td {
+  position: relative; z-index: 1; background: transparent !important; border-bottom: none !important;
 }
+.common-overview__table tbody tr:hover::after { background: transparent; border-color: #cfd2d6; }
+.common-overview__table tbody tr.row-selected::after { background: transparent; border-color: var(--color-primary); }
+
+/* Header: gleicher Rahmen wie Body, dezente Hintergrundfarbe */
+.common-overview__table thead tr { position: relative; }
+.common-overview__table thead tr::after {
+  content: '';
+  position: absolute;
+  left: 8px; right: 8px; top: 4px; bottom: 4px;
+  border: 1px solid #e5e7eb; border-radius: 8px; background: rgb(241,241,241);
+}
+.common-overview__table thead th { position: relative; background: transparent !important; border-bottom: none !important; }
+
+/* Sichtbare Header-Texte (Name/Status) sicherstellen */
+/* Sichtbarkeit der Header-Texte wird global in global.css erzwungen */
 
 /* Action-Button (drei Punkte) Positionierung und Look (runde graue Umrandung) */
 .department-overview__table .btn.more-actions {
@@ -56,13 +78,13 @@
   min-width: 30px !important;
   min-height: 30px !important;
   border-radius: 50% !important;
-  display: flex !important;
+  display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  position: absolute !important;
-  right: 1rem !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
+  position: static !important;
+  right: auto !important;
+  top: auto !important;
+  transform: none !important;
 }
 
 /* Footer / view-more Button */
@@ -74,6 +96,12 @@
   border: none;
   color: var(--color-primary);
   text-decoration: underline;
+}
+
+/* Overview-Header Buttons: große Abrundung nur im Header */
+.page-header .btn.more-actions,
+.page-header .btn.departments-new {
+  border-radius: var(--border-radius-large);
 }
 
 /* Responsive: bei sehr schmalen Bildschirmen die Tages-Spalten ausblenden */
@@ -105,4 +133,121 @@
 .department-overview__table td {
   padding-top: 20px !important;
   padding-bottom: 20px !important;
+}
+
+/* (entfernt) Sticky-Columns: Staff-Overview nutzt jetzt Zeilen-Overlay wie die anderen Overviews */
+
+/* Entfernt: gesonderter Hover/Selected-Hintergrund für Checkbox/Name-Spalten */
+
+/* ---- Status-Spalte: gleiche Logik wie in anderen Overviews ---- */
+/* Tabelle als Positionierungs-Container für absolute/ sticky Elemente */
+.department-overview__table { position: relative; }
+
+/* Zeilen als Positionierungs-Container */
+.department-overview__table thead tr,
+.department-overview__table tbody tr { position: relative; }
+
+/* Header-Status: oben in der Kopfzeile, volle Höhe, rechts vor dem Aktionen-Bereich */
+.department-overview__table th.status {
+  position: static !important;
+  right: var(--action-offset) !important; /* Platz für ...-Button */
+  top: 0 !important;
+  height: 100% !important;
+  width: var(--status-col-width, 140px) !important;
+  min-width: var(--status-col-width, 140px) !important;
+  max-width: var(--status-col-width, 140px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important; /* Status zentriert wie in anderen Overviews */
+  padding-right: 0 !important;
+  box-sizing: border-box !important;
+  background: transparent !important;
+  z-index: 8 !important;
+}
+
+/* Body-Status: absolut innerhalb jeder Zeile, vertikal zentriert rechts */
+.department-overview__table td.status {
+  position: static !important;
+  right: var(--action-offset) !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: var(--status-col-width, 140px) !important;
+  min-width: var(--status-col-width, 140px) !important;
+  max-width: var(--status-col-width, 140px) !important;
+  padding-right: 0 !important;
+  box-sizing: border-box !important;
+  background: transparent !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 7 !important;
+}
+
+/* Andere Spalten: rechts etwas Platz lassen, damit Status/Actions nicht überdeckt werden */
+/* bereinigt: kein extra rechtes Padding wegen ehemals absoluter Status-Spalte */
+
+/* Aktionen-Button oberhalb der Status-Spalte stapeln */
+.department-overview__table .btn.more-actions { /* z-index via global stacking ausreichend */ }
+/* Tabellen-Layout: 16px vertikaler Zeilenabstand */
+.department-overview__table {
+  border-collapse: separate;
+  border-spacing: 0 16px;
+}
+
+/* Abstand unter der Überschrift (Header) */
+.department-overview .page-header {
+  margin-bottom: 32px;
+}
+
+/* Innenabstand der weißen Box (Container) */
+.page-container.department-overview__content {
+  padding: 8px 32px 32px 32px; /* 8px oben, damit Header->erste Zeile = 32 + 8 = 40px */
+  margin-bottom: 0;
+}
+
+/* Staff: 8px Abstand zwischen Header und erster Zeile (SearchBar) */
+.department-overview > .filter-bar {
+  margin-top: 8px;
+}
+
+/* Disable sticky behavior to avoid fixed-looking top background during scroll */
+.department-overview__table th:first-child,
+.department-overview__table td:first-child,
+.department-overview__table th:nth-child(2),
+.department-overview__table td:nth-child(2),
+.department-overview__table th.status,
+.department-overview__table td.status {
+  position: static !important;
+  left: auto !important;
+  right: auto !important;
+}
+
+/* (Revert) Entfernt die zuletzt hinzugefügten Overrides für Tabellen-Layout */
+/* ===== Fix: Header sichtbar und Status-Spalte korrekt ausgerichtet (Staff) ===== */
+.department-overview__table th.status,
+.department-overview__table td.status {
+  position: static !important;
+  right: auto !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  display: table-cell !important;
+  text-align: center !important;
+}
+
+.common-overview__table thead th,
+.department-overview__table thead th { z-index: 1 !important; position: relative; }
+.common-overview__table thead tr::after,
+.department-overview__table thead tr::after { z-index: 0 !important; pointer-events: none !important; }
+
+.department-overview__table th:not(.status),
+.department-overview__table td:not(.status) {
+  padding-right: 1rem !important;
+}
+
+/* Header-Checkbox liegt sicher über dem Overlay */
+.department-overview__table thead th input[type="checkbox"],
+.common-overview__table thead th input[type="checkbox"] {
+  position: relative;
+  z-index: 3;
 }

@@ -8,7 +8,7 @@ import ColorAnimation from './Color-Animation';
 import { api } from '../Functions/apiClient';
 
 // Toggle: offline login helper. Set to false to use real API.
-const OFFLINE_LOGIN = false;
+const OFFLINE_LOGIN = true;
 
 export default function Log_InApp({ onLogin }) {
   const [mode, setMode]         = useState('inputs');      // 'inputs' | 'forgot'
@@ -44,7 +44,12 @@ export default function Log_InApp({ onLogin }) {
       }
 
       // 1) Authentifizieren
-      await api.post('/users/login/', { username, password });
+      const loginResp = await api.post('/users/login/', { username, password });
+      // Token aus der Antwort auslesen und global setzen
+      const token = loginResp?.token ?? loginResp?.access ?? loginResp?.auth_token ?? null;
+      if (token) {
+        api.setToken(token);
+      }
 
       // 2) Abteilungen laden
       let deptList = await api.get('/departments');

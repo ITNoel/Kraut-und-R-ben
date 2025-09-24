@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import '../global.css';
 import './Department-Overview.css';
 import emptyIllustration from '../assets/empty-departments.png';
+import actionIcon from '../assets/Buttons/action-icon.svg';
 import { api } from '../Functions/apiClient';
 import SearchBar from './SearchBar';
 
@@ -167,14 +168,21 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
                     />
                   </th>
                   <th>Name</th>
-                  <th className="status">Status</th>
                   <th className="persons">Personen</th>
+                  <th className="status">Status</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 {displayedDepartments.map((d, i) => {
                   const checked = selectedRows.includes(d.id);
+                  const rawStatus = (d.status || '').toString().toLowerCase();
+                  const statusType = (['active','aktiv'].includes(rawStatus)
+                    ? 'active'
+                    : (['disabled','inactive','inaktiv','deaktiviert'].includes(rawStatus)
+                      ? 'disabled'
+                      : (['draft','entwurf'].includes(rawStatus) ? 'draft' : 'active')));
+                  const statusLabel = statusType === 'active' ? 'Aktiv' : (statusType === 'disabled' ? 'Inaktiv' : 'Entwurf');
                   return (
                     <tr
                       key={d.id || i}
@@ -200,17 +208,11 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
                         />
                       </td>
                       <td style={{ color: "#222" }}>{d.name}</td>
-                      <td className="status">
-                        <span className={statusClass(d.status)}>
-                          {d.status === "active"
-                            ? "Aktiv"
-                            : d.status === "disabled"
-                            ? "Inaktiv"
-                            : "Entwurf"}
-                        </span>
-                      </td>
                       <td className="persons" style={{ color: "#222" }}>
                         {Array.isArray(d.employees) ? d.employees.length : d.employees ?? 0}
+                      </td>
+                      <td className="status">
+                        <span className={statusClass(statusType)}>{statusLabel}</span>
                       </td>
                       <td>
                         <button
@@ -230,10 +232,10 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
                             e.stopPropagation();
                             // Gib die vollständige Personenliste der Abteilung mit (falls gesetzt),
                             // ansonsten das globale generalEmployees als Fallback.
-                            onEdit(d, i, d?.allEmployees ?? generalEmployees);
+                          onEdit(d, i, d?.allEmployees ?? generalEmployees);
                           }}
                         >
-                          ⋯
+                          <img src={actionIcon} alt="" width={12} height={12} />
                         </button>
                       </td>
                     </tr>
@@ -273,3 +275,5 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
     </div>
   );
 }
+
+

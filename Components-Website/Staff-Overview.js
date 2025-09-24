@@ -3,6 +3,7 @@ import '../global.css';
 import './Staff-Overview.css'; // reuse overview table styles
 import emptyIllustration from '../assets/empty-staff.png';
 import SearchBar from './SearchBar';
+import actionIcon from '../assets/Buttons/action-icon.svg';
 
 export default function StaffOverview({ employees = [], onSelect, onEditEmployee, onDeleteEmployees, onNewStaff }) {
   const [actionsOpen, setActionsOpen] = useState(false);
@@ -50,16 +51,16 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
       setSelectedRows([]);
       setShowDeleteModal(false);
     } catch (err) {
-      alert('Fehler beim Löschen: ' + (err?.message || err));
+      alert('Fehler beim LÃƒÂ¶schen: ' + (err?.message || err));
     } finally {
       setIsDeleting(false);
     }
   };
 
-  // helper: day cell content — if employee.days array exists, show check
+  // helper: day cell content Ã¢â‚¬â€ if employee.days array exists, show check
   const renderDay = (emp, shortDay) => {
     if (Array.isArray(emp.days)) {
-      return emp.days.includes(shortDay) ? '✓' : '';
+      return emp.days.includes(shortDay) ? 'Ã¢Å“â€œ' : '';
     }
     return ''; // no data
   };
@@ -76,7 +77,7 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
   return (
     <div className="department-page department-overview">
       <div className="page-header">
-        <h1 className="page-header__title">Sachbearbeiter Übersicht</h1>
+        <h1 className="page-header__title">Sachbearbeiter ÃƒÅ“bersicht</h1>
         <div className="page-header__actions">
           <div className="actions-dropdown-wrapper" ref={actionsRef}>
             <button
@@ -85,7 +86,7 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
               disabled={selectedRows.length === 0}
               style={{ opacity: selectedRows.length === 0 ? 0.5 : 1 }}
             >
-              <span aria-hidden="true">⋯</span> Weitere Aktionen
+              <span aria-hidden="true">Ã¢â€¹Â¯</span> Weitere Aktionen
             </button>
             {actionsOpen && (
               <div className="actions-dropdown">
@@ -93,7 +94,7 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
                   className="actions-dropdown__item"
                   onClick={() => { setActionsOpen(false); setShowDeleteModal(true); }}
                 >
-                  Sachbearbeiter löschen
+                  Sachbearbeiter lÃƒÂ¶schen
                 </button>
               </div>
             )}
@@ -117,8 +118,8 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
           <div className="empty-state">
             <img src={emptyIllustration} alt="Keine Sachbearbeiter" />
             <div className="empty-state__text">
-              <h2>Willkommen in der Sachbearbeiter Übersicht</h2>
-              Sobald Sie Sachbearbeiter hinzufügen, erscheinen diese hier.
+              <h2>Willkommen in der Sachbearbeiter ÃƒÅ“bersicht</h2>
+              Sobald Sie Sachbearbeiter hinzufÃƒÂ¼gen, erscheinen diese hier.
             </div>
             <button
               className="btn save department-new"
@@ -137,15 +138,13 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
                       type="checkbox"
                       checked={selectedRows.length === localEmployees.length && localEmployees.length > 0}
                       onChange={e => toggleSelectAll(e.target.checked)}
-                      aria-label="Alle auswählen"
+                      aria-label="Alle auswÃƒÂ¤hlen"
                     />
                   </th>
                   <th>Name</th>
-                  <th className="day">Mo</th>
-                  <th className="day">Di</th>
-                  <th className="day">Mi</th>
-                  <th className="day">Do</th>
-                  <th className="day">Fr</th>
+                  <th>Abteilung</th>
+                  <th>Telefon</th>
+                  <th className="status">Status</th>
                   <th></th>
                 </tr>
               </thead>
@@ -153,6 +152,12 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
                 {displayedEmployees.map((emp, i) => {
                   const identifier = emp.id ?? emp.email ?? emp.name ?? i;
                   const checked = selectedRows.includes(identifier);
+                  const fullName = emp.first_name ? `${emp.first_name} ${emp.last_name || ''}` : (emp.name || emp.email || '-');
+                  const department = typeof emp.department === 'object' ? (emp.department?.name ?? '-') : (emp.department ?? '-');
+                  const phone = emp.telephone || emp.phone || '-';
+                  const rawStatus = (emp.status || '').toString().toLowerCase();
+                  const statusType = (['active','aktiv'].includes(rawStatus) ? 'active' : (['disabled','inactive','inaktiv'].includes(rawStatus) ? 'disabled' : (['draft','entwurf'].includes(rawStatus) ? 'draft' : 'active')));
+                  const statusLabel = statusType === 'active' ? 'Aktiv' : (statusType === 'disabled' ? 'Inaktiv' : 'Entwurf');
                   return (
                     <tr key={identifier} className={checked ? 'row-selected' : ''} onClick={e => {
                       if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
@@ -163,16 +168,18 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
                           type="checkbox"
                           checked={checked}
                           onChange={e => toggleSelectOne(identifier, e.target.checked)}
-                          aria-label={`Mitarbeiter ${emp.name || emp.email} auswählen`}
+                          aria-label={`Mitarbeiter ${emp.name || emp.email} auswÃƒÂ¤hlen`}
                           onClick={e => e.stopPropagation()}
                         />
                       </td>
-                      <td style={{ color: "#222" }}>{emp.first_name ? `${emp.first_name} ${emp.last_name || ''}` : (emp.name || emp.email || '-')}</td>
-                      <td style={{ textAlign: 'center' }}>{renderDay(emp, 'Mo')}</td>
-                      <td style={{ textAlign: 'center' }}>{renderDay(emp, 'Di')}</td>
-                      <td style={{ textAlign: 'center' }}>{renderDay(emp, 'Mi')}</td>
-                      <td style={{ textAlign: 'center' }}>{renderDay(emp, 'Do')}</td>
-                      <td style={{ textAlign: 'center' }}>{renderDay(emp, 'Fr')}</td>
+                      <td style={{ color: "#222" }}>{fullName}</td>
+                      <td>{String(department)}</td>
+                      <td>{phone}</td>
+                      <td className="status">
+                        <span className={`department-overview__status department-overview__status--${statusType}`}>
+                          {statusLabel}
+                        </span>
+                      </td>
                       <td>
                         <button
                           className="btn more-actions"
@@ -189,7 +196,7 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
                           }}
                           onClick={e => { e.stopPropagation(); if (typeof onEditEmployee === 'function') onEditEmployee(emp, i); }}
                         >
-                          ⋯
+                          <img src={actionIcon} alt="" width={12} height={12} />
                         </button>
                       </td>
                     </tr>
@@ -208,14 +215,14 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
       {showDeleteModal && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <button className="modal-close" onClick={() => setShowDeleteModal(false)}>×</button>
-            <h2 className="modal-title">Mehrere Sachbearbeiter löschen?</h2>
+            <button className="modal-close" onClick={() => setShowDeleteModal(false)}>Ãƒâ€”</button>
+            <h2 className="modal-title">Mehrere Sachbearbeiter lÃƒÂ¶schen?</h2>
             <p className="modal-subheading">
-              Es werden <strong>{selectedRows.length}</strong> Sachbearbeiter gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.
+              Es werden <strong>{selectedRows.length}</strong> Sachbearbeiter gelÃƒÂ¶scht. Diese Aktion kann nicht rÃƒÂ¼ckgÃƒÂ¤ngig gemacht werden.
             </p>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '32px' }}>
               <button className="btn cancel" onClick={() => setShowDeleteModal(false)}>Abbrechen</button>
-              <button className="btn save" onClick={handleDeleteSelected} disabled={isDeleting}>{isDeleting ? 'Lösche…' : 'Ja, löschen'}</button>
+              <button className="btn save" onClick={handleDeleteSelected} disabled={isDeleting}>{isDeleting ? 'LÃƒÂ¶scheÃ¢â‚¬Â¦' : 'Ja, lÃƒÂ¶schen'}</button>
             </div>
           </div>
         </div>

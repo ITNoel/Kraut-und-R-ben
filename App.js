@@ -42,6 +42,22 @@ export default function App() {
     navigate('/department-overview', { replace: true });
   };
 
+  const handleLogout = () => {
+    try { api.clearToken?.(); } catch {}
+    setIsAuthenticated(false);
+    setDepartments([]);
+    setEmployees([]);
+    setServices([]);
+    setCurrentDept(null);
+    setCurrentIndex(null);
+    setCurrentService(null);
+    setCurrentServiceIndex(null);
+    setCurrentStaff(null);
+    setCurrentStaffIndex(null);
+    setView(ROUTES.DEPARTMENT_OVERVIEW);
+    navigate('/', { replace: true });
+  };
+
   // enrichedDepartments: zusätzlich alle Personen pro Dept anhängen
   const enrichedDepartments = departments.map(dept => {
     const linked = employees.filter(emp => emp.department === dept.id);
@@ -262,7 +278,7 @@ export default function App() {
     <div className="app-container">
       <Sidebar view={view} onSelect={selectView} />
       <main className="main-content">
-        <Header />
+        <Header onLogout={handleLogout} />
 
         {view === ROUTES.DEPARTMENT_OVERVIEW && (
           <DepartmentOverview
