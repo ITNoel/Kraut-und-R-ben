@@ -690,6 +690,10 @@
   background: transparent !important; /* header bleibt sichtbar durch z-index oben */
 }
 
+/* Scroll-responsive top spacing (only Department Overview) */
+.main-content .department-overview { margin-top: 16px; transition: margin-top 120ms ease; }
+.main-content.scrolled-under .department-overview { margin-top: 0; }
+
 /* Entferne jeden Top-Gap zwischen Header und Seitenrand */
 .department-overview .page-header { margin-top: 0 !important; padding-top: 0 !important; }
 .department-overview .page-header__title { margin: 0 !important; }

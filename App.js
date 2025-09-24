@@ -38,8 +38,9 @@ export default function App() {
     setEmployees(empList);
     setServices(Array.isArray(servicesList) ? servicesList : []);
     setIsAuthenticated(true);
-    setView(ROUTES.DEPARTMENT_OVERVIEW);
-    navigate('/department-overview', { replace: true });
+    // Direkt Staff-Overview anzeigen, damit Mitarbeiterliste sofort sichtbar ist
+    setView(ROUTES.STAFF_OVERVIEW);
+    navigate('/staff-overview', { replace: true });
   };
 
   const handleLogout = () => {

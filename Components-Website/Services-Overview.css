@@ -471,6 +471,10 @@
   padding-right: 1rem !important;
 }
 
+/* Scroll-responsive top spacing (only Services Overview) */
+.main-content .department-overview { margin-top: 16px; transition: margin-top 120ms ease; }
+.main-content.scrolled-under .department-overview { margin-top: 0; }
+
 /* Status-Pille selbst keinen Margin links/rechts erlauben */
 .services-overview__table th.status .department-overview__status,
 .services-overview__table td.status .department-overview__status {

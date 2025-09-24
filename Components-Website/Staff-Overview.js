@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../global.css';
-import './Staff-Overview.css'; // reuse overview table styles
+import './Staff-Overview.css';
 import emptyIllustration from '../assets/empty-staff.png';
 import SearchBar from './SearchBar';
 import actionIcon from '../assets/Buttons/action-icon.svg';
@@ -29,7 +29,7 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
   }, []);
 
   const toggleSelectAll = checked => {
-    if (checked) setSelectedRows(displayedEmployees.map(emp => emp.id ?? emp.email ?? emp.name));
+    if (checked) setSelectedRows(displayedEmployees.map(emp => emp.id ?? emp.email ?? emp.name ?? String(Math.random())));
     else setSelectedRows([]);
   };
 
@@ -45,24 +45,19 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
       const remaining = localEmployees.filter(emp => !(idsToDelete.includes(emp.id) || idsToDelete.includes(emp.email) || idsToDelete.includes(emp.name)));
       setLocalEmployees(remaining);
       if (typeof onDeleteEmployees === 'function') {
-        const ids = localEmployees.filter(emp => (idsToDelete.includes(emp.id) || idsToDelete.includes(emp.email) || idsToDelete.includes(emp.name))).map(emp => emp.id).filter(Boolean);
+        const ids = localEmployees
+          .filter(emp => (idsToDelete.includes(emp.id) || idsToDelete.includes(emp.email) || idsToDelete.includes(emp.name)))
+          .map(emp => emp.id)
+          .filter(Boolean);
         onDeleteEmployees(ids);
       }
       setSelectedRows([]);
       setShowDeleteModal(false);
     } catch (err) {
-      alert('Fehler beim LÃƒÂ¶schen: ' + (err?.message || err));
+      alert('Fehler beim Löschen: ' + (err?.message || err));
     } finally {
       setIsDeleting(false);
     }
-  };
-
-  // helper: day cell content Ã¢â‚¬â€ if employee.days array exists, show check
-  const renderDay = (emp, shortDay) => {
-    if (Array.isArray(emp.days)) {
-      return emp.days.includes(shortDay) ? 'Ã¢Å“â€œ' : '';
-    }
-    return ''; // no data
   };
 
   // filtered list by search term
@@ -74,10 +69,17 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
     return !search || text.includes(search.toLowerCase());
   });
 
+  const mapStatus = raw => {
+    const s = String(raw || '').toLowerCase();
+    if (['disabled', 'inactive', 'inaktiv', 'deaktiviert'].includes(s)) return { type: 'disabled', label: 'Inaktiv' };
+    if (['draft', 'entwurf'].includes(s)) return { type: 'draft', label: 'Entwurf' };
+    return { type: 'active', label: 'Aktiv' };
+  };
+
   return (
     <div className="department-page department-overview">
       <div className="page-header">
-        <h1 className="page-header__title">Sachbearbeiter ÃƒÅ“bersicht</h1>
+        <h1 className="page-header__title">Sachbearbeiter Übersicht</h1>
         <div className="page-header__actions">
           <div className="actions-dropdown-wrapper" ref={actionsRef}>
             <button
@@ -86,7 +88,7 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
               disabled={selectedRows.length === 0}
               style={{ opacity: selectedRows.length === 0 ? 0.5 : 1 }}
             >
-              <span aria-hidden="true">Ã¢â€¹Â¯</span> Weitere Aktionen
+              <span aria-hidden="true">⋯</span> Weitere Aktionen
             </button>
             {actionsOpen && (
               <div className="actions-dropdown">
@@ -94,7 +96,7 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
                   className="actions-dropdown__item"
                   onClick={() => { setActionsOpen(false); setShowDeleteModal(true); }}
                 >
-                  Sachbearbeiter lÃƒÂ¶schen
+                  Sachbearbeiter löschen
                 </button>
               </div>
             )}
@@ -112,14 +114,14 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
         </div>
       </div>
 
-        <SearchBar term={search} onTermChange={setSearch} statusOptions={null} />
-        <div className="page-container department-overview__content">
-          {localEmployees.length === 0 ? (
+      <SearchBar term={search} onTermChange={setSearch} statusOptions={null} />
+      <div className="page-container department-overview__content">
+        {localEmployees.length === 0 ? (
           <div className="empty-state">
             <img src={emptyIllustration} alt="Keine Sachbearbeiter" />
             <div className="empty-state__text">
-              <h2>Willkommen in der Sachbearbeiter ÃƒÅ“bersicht</h2>
-              Sobald Sie Sachbearbeiter hinzufÃƒÂ¼gen, erscheinen diese hier.
+              <h2>Willkommen in der Sachbearbeiter Übersicht</h2>
+              Sobald Sie Sachbearbeiter hinzufügen, erscheinen diese hier.
             </div>
             <button
               className="btn save department-new"
@@ -138,7 +140,7 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
                       type="checkbox"
                       checked={selectedRows.length === localEmployees.length && localEmployees.length > 0}
                       onChange={e => toggleSelectAll(e.target.checked)}
-                      aria-label="Alle auswÃƒÂ¤hlen"
+                      aria-label="Alle auswählen"
                     />
                   </th>
                   <th>Name</th>
@@ -155,9 +157,7 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
                   const fullName = emp.first_name ? `${emp.first_name} ${emp.last_name || ''}` : (emp.name || emp.email || '-');
                   const department = typeof emp.department === 'object' ? (emp.department?.name ?? '-') : (emp.department ?? '-');
                   const phone = emp.telephone || emp.phone || '-';
-                  const rawStatus = (emp.status || '').toString().toLowerCase();
-                  const statusType = (['active','aktiv'].includes(rawStatus) ? 'active' : (['disabled','inactive','inaktiv'].includes(rawStatus) ? 'disabled' : (['draft','entwurf'].includes(rawStatus) ? 'draft' : 'active')));
-                  const statusLabel = statusType === 'active' ? 'Aktiv' : (statusType === 'disabled' ? 'Inaktiv' : 'Entwurf');
+                  const { type: statusType, label: statusLabel } = mapStatus(emp.status);
                   return (
                     <tr key={identifier} className={checked ? 'row-selected' : ''} onClick={e => {
                       if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
@@ -168,11 +168,11 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
                           type="checkbox"
                           checked={checked}
                           onChange={e => toggleSelectOne(identifier, e.target.checked)}
-                          aria-label={`Mitarbeiter ${emp.name || emp.email} auswÃƒÂ¤hlen`}
+                          aria-label={`Mitarbeiter ${emp.name || emp.email} auswählen`}
                           onClick={e => e.stopPropagation()}
                         />
                       </td>
-                      <td style={{ color: "#222" }}>{fullName}</td>
+                      <td style={{ color: '#222' }}>{fullName}</td>
                       <td>{String(department)}</td>
                       <td>{phone}</td>
                       <td className="status">
@@ -185,14 +185,14 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
                           className="btn more-actions"
                           aria-label="Bearbeiten"
                           style={{
-                            background: "none",
-                            border: "none",
-                            color: "#888",
+                            background: 'none',
+                            border: 'none',
+                            color: '#888',
                             fontSize: 22,
                             padding: 0,
                             minWidth: 32,
                             minHeight: 32,
-                            borderRadius: "50%"
+                            borderRadius: '50%'
                           }}
                           onClick={e => { e.stopPropagation(); if (typeof onEditEmployee === 'function') onEditEmployee(emp, i); }}
                         >
@@ -204,7 +204,6 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
                 })}
               </tbody>
             </table>
-
             <div className="department-overview__footer">
               <button className="btn view-more" onClick={() => onSelect?.('staff')}>Weitere Sachbearbeiter anlegen</button>
             </div>
@@ -215,14 +214,14 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
       {showDeleteModal && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <button className="modal-close" onClick={() => setShowDeleteModal(false)}>Ãƒâ€”</button>
-            <h2 className="modal-title">Mehrere Sachbearbeiter lÃƒÂ¶schen?</h2>
+            <button className="modal-close" onClick={() => setShowDeleteModal(false)}>×</button>
+            <h2 className="modal-title">Mehrere Sachbearbeiter löschen?</h2>
             <p className="modal-subheading">
-              Es werden <strong>{selectedRows.length}</strong> Sachbearbeiter gelÃƒÂ¶scht. Diese Aktion kann nicht rÃƒÂ¼ckgÃƒÂ¤ngig gemacht werden.
+              Es werden <strong>{selectedRows.length}</strong> Sachbearbeiter gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.
             </p>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '32px' }}>
               <button className="btn cancel" onClick={() => setShowDeleteModal(false)}>Abbrechen</button>
-              <button className="btn save" onClick={handleDeleteSelected} disabled={isDeleting}>{isDeleting ? 'LÃƒÂ¶scheÃ¢â‚¬Â¦' : 'Ja, lÃƒÂ¶schen'}</button>
+              <button className="btn save" onClick={handleDeleteSelected} disabled={isDeleting}>{isDeleting ? 'Lösche…' : 'Ja, löschen'}</button>
             </div>
           </div>
         </div>
@@ -230,3 +229,4 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
     </div>
   );
 }
+

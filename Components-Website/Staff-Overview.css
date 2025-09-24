@@ -201,14 +201,12 @@
 
 /* Innenabstand der weißen Box (Container) */
 .page-container.department-overview__content {
-  padding: 8px 32px 32px 32px; /* 8px oben, damit Header->erste Zeile = 32 + 8 = 40px */
+  padding: 8px 32px 32px 32px; /* wie zuvor: 8px Top-Padding */
   margin-bottom: 0;
 }
 
 /* Staff: 8px Abstand zwischen Header und erster Zeile (SearchBar) */
-.department-overview > .filter-bar {
-  margin-top: 8px;
-}
+.department-overview > .filter-bar { margin-top: 8px; }
 
 /* Disable sticky behavior to avoid fixed-looking top background during scroll */
 .department-overview__table th:first-child,
