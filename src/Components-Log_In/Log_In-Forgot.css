@@ -1,0 +1,102 @@
+/* src/Components-Log_In/Log_In-Forgot.css */
+
+.log-in-forgot-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background: white;
+}
+
+.forgot-title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+.input-group.forgot-input {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin-bottom: 1.5rem;
+}
+
+.input-group.forgot-input input {
+  width: 100%;
+  padding: 0.9rem 3rem 0.9rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 1.5rem;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.input-group.forgot-input input:hover {
+  border-color: #bbb;
+}
+
+.input-group.forgot-input .input-icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  pointer-events: none;
+}
+
+.forgot-buttons {
+  display: flex;
+  width: 100%;
+  max-width: 480px;
+  gap: 1rem;
+  margin-top: 0rem;
+  align-items: center;
+}
+
+/* Gemeinsame Button-Grundlagen */
+.forgot-buttons .btn {
+  flex: 1;
+  height: 3rem;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  line-height: 1;
+  border-radius: 1.5rem; /* exakt halbe Höhe = Capsule */
+  border: 2px solid transparent;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.forgot-buttons .btn.log-in-btn {
+margin-top: 0px;
+}
+
+/* Abbrechen-Button */
+.forgot-buttons .btn.cancel {
+  background-color: #e5e7eb;
+  color: #000;
+}
+
+.forgot-buttons .btn.cancel:hover {
+  background-color: #fff;
+  color: #000;
+  border-color: var(--color-primary);
+}
+
+/* Bestätigen-Button */
+.forgot-buttons .btn.log-in-btn {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.forgot-buttons .btn.log-in-btn:hover {
+  background-color: #fff;
+  color: #000;
+  border-color: var(--color-primary);
+}

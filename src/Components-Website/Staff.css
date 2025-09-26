@@ -1,0 +1,88 @@
+/* src/Staff.css */
+
+/* ===== Formular-Items ===== */
+.form-item {
+  margin-bottom: 16px;
+}
+.form-item label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+/* ===== Date-Input Container ===== */
+/* Nimmt exakt das Styling der .form-grid input-Felder */
+.date-input-container {
+  width: 100%;
+  padding: 0px;
+  padding-left: 10px;
+  margin: 10px 0;
+  border: 1px solid #bdbdbd;  /* exakt wie .form-grid input */
+  border-radius: var(--border-radius-small);         /* exakt wie .form-grid input */
+  font-size: 14px;
+  background: #fff;
+  color: var(--label-color);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  opacity: var(--label-opacity); /* 0.8 */
+
+  max-height: 40px;           /* Höhe eines normalen Inputs */
+  overflow: hidden;
+  transition: max-height 0.2s ease, border-color 0.2s ease;
+}
+
+.date-input-container.open {
+  max-height: 200px;         /* Platz für Chips */
+  border-color: var(--color-primary);
+}
+
+/* Textanzeige im oberen Bereich */
+.date-input-value {
+  line-height: 40px;         /* Vertikal zentriert in 40px Höhe */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== Chips Dropdown ===== */
+.day-picker-dropdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding-bottom: 8px;
+}
+
+/* ===== Day Chips ===== */
+.day-chip {
+  flex: 1;
+  background: #f3f4f6;
+  border: none;
+  padding: 6px 0;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.2s, border 0.2s;
+}
+.day-chip:hover {
+  background: #e5e7eb;
+}
+.day-chip.selected {
+  border: 2px solid var(--color-primary);
+  background: #fff;
+  color: var(--color-primary);
+}
+
+/* ===== Service-Box („Tage hinzufügen“) ===== */
+/* entferne dominante lokale .service-box-Regel, nur kleiner Abstand pro Komponente */
+.staff-page .service-box {
+  margin-top: 12px;
+  /* keine display-/position-Änderung hier — global.css steuert layout & label */
+}
+
+.date-input-container.filled .date-input-value {
+  color: #000;
+}
+
+/* ===== Sidebar-Komponenten ziehen ihr Styling aus global.css ===== */

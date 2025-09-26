@@ -1,0 +1,51 @@
+/* src/Department.css */
+
+.department-page {
+  /* Dann wie gehabt dein bestehendes Layout: */
+  display: flex;
+  flex-direction: column;
+  padding: var(--page-padding-vertical) var(--page-padding-horizontal);
+  gap: var(--page-gap);
+  overflow-y: auto;
+}
+
+.department-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.department-header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+/* Abstand zwischen Buttons in Department-Header auf --button-gap setzen */
+.header-buttons .btn {
+  /* Abstand wird vom Container (.page-header__actions) via gap gesteuert */
+}
+
+.department-body {
+  display: flex;
+  gap: var(--column-gap);
+}
+
+.left-column {
+  flex: 0 0 70%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--page-gap);
+}
+
+.right-sidebar {
+  flex: 0 0 30%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--page-gap);
+  padding-right: var(--column-gap);
+}
+
+/* vorhandenes Grid-Layout belassen */
+.form-grid.two-col {
+  grid-template-columns: repeat(2, 1fr);
+}

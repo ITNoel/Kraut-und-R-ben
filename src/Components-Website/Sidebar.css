@@ -1,0 +1,108 @@
+/* Sidebar.css */
+
+.sidebar {
+  width: 350px;
+  background: #1f1f1f;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  font-size: 17px;
+}
+
+.logo {
+  min-height: var(--header-height);    /* exakt dieselbe Höhe wie der Header */
+  display: flex;
+  align-items: center;             /* vertikal zentrieren */
+  justify-content: flex-start;     /* Logo linksbündig im Container */
+  padding-left: 24px;              /* exakt dasselbe Padding, das der Header auch nutzt */
+  margin: 0;
+  background: #1f1f1f;             /* Hintergrundfarbe passend zum Header */
+}
+
+.logo img {
+  max-height: 100%;                /* Bild füllt die vollen 100px Höhe aus */
+  width: auto;                     /* Seitenverhältnis beibehalten */
+  object-fit: contain;
+}
+
+
+.navTree {
+  background: #444444;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 25px 40px 40px;
+}
+
+.nav a {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.dashboard-icon svg {
+  display: block;
+  stroke: currentColor;
+  fill: none;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid #555;
+  margin: 8px 0;
+}
+
+.nav-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 20px 0;
+}
+
+.nav-section.open .nav-section-header span:first-child {
+  font-weight: bold;
+}
+
+.toggle-icon {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.nav-section-items {
+  padding-left: 15px;
+}
+
+.nav-section-items a::before {
+  content: '↳ ';
+  margin-right: 8px;
+}
+
+.nav-section-items a {
+  display: block;
+  margin: 6px 0;
+  padding-bottom: 6px;
+}
+
+.bottom-links {
+  margin-top: auto;
+}
+
+.bottom-links a {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.bottom-icon {
+  margin-right: 8px;
+  font-size: 20px;
+}
