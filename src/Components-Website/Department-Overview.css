@@ -5,6 +5,17 @@
   border-spacing: 0 16px; /* 16px vertikaler Abstand zwischen Zeilen */
 }
 
+/* Einheitliche Zeilenhöhe in Header und Body */
+.department-overview__table thead tr,
+.department-overview__table tbody tr {
+  height: 60px;
+}
+.department-overview__table th,
+.department-overview__table td {
+  height: 60px;
+  vertical-align: middle;
+}
+
 /* Tabellen-Layout: Immer Platz für Markierung lassen */
 .department-overview__table {
   border-collapse: separate;

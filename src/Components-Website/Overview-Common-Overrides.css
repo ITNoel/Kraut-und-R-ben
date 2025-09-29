@@ -1,0 +1,63 @@
+/* Common overrides for all overview tables: row height 60px + 16px gap */
+
+.department-overview__table {
+  border-collapse: separate !important;
+  border-spacing: 0 16px !important; /* 16px vertical gap between rows */
+}
+
+.department-overview__table thead tr,
+.department-overview__table tbody tr {
+  height: 60px !important;
+}
+
+.department-overview__table th,
+.department-overview__table td {
+  height: 60px !important;
+  vertical-align: middle !important;
+}
+
+/* Larger gap between header row and first body row */
+.department-overview__table tbody::before {
+  content: '';
+  display: block;
+  /* With border-spacing: 16px, there is 16px above and below this pseudo-row.
+     To achieve an effective 40px gap between thead and first row,
+     set inner height to 8px so 16 + 8 + 16 = 40. */
+  height: 8px;
+  line-height: 8px;
+}
+
+/* Hide collapse chevron/button in filter header */
+.filter-bar__chevron { display: none !important; }
+
+/* Remove filter icon from filter header title */
+.filter-bar__title::before { content: none !important; }
+.filter-bar__title .filter-icon { display: none !important; }
+.filter-bar__header .filter-icon { display: none !important; }
+.filter-bar__title img { display: none !important; }
+
+/* Filter header typography and separator */
+/* Revert title font-size to original by removing override; only positioning kept */
+.filter-bar__title {
+  position: relative;
+  display: inline-block;
+}
+.filter-bar {
+  padding: 32px !important; /* 32px Abstand zur weißen Box in alle Richtungen */
+}
+.filter-bar__header {
+  border-bottom: 1px solid var(--color-border, #e5e7eb) !important; /* base grey line across full width */
+  padding-bottom: 12px; /* Abstand zwischen Titel und Trennstrich */
+  margin-bottom: 32px;  /* 32px Abstand zwischen Trennstrich und Controls */
+}
+/* Blue underline segment only under the title width */
+.filter-bar__title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -12px; /* aligns with header bottom border */
+  height: 2px;
+  background: var(--color-primary, #0257e0);
+  pointer-events: none;
+}
