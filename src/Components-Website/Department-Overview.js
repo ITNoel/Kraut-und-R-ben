@@ -168,7 +168,13 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
                     />
                   </th>
                   <th>Name</th>
-                  <th className="persons">Personen</th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th className="persons" style={{ textAlign: 'center' }}>Mitarbeiter</th>
                   <th className="status"><span className="status-wrap">Status</span></th>
                   <th></th>
                 </tr>
@@ -208,7 +214,13 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
                         />
                       </td>
                       <td style={{ color: "#222" }}>{d.name}</td>
-                      <td className="persons" style={{ color: "#222" }}>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td className="persons" style={{ color: "#222", textAlign: 'center' }}>
                         {Array.isArray(d.employees) ? d.employees.length : d.employees ?? 0}
                       </td>
                       <td className="status">

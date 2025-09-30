@@ -144,6 +144,8 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
                     />
                   </th>
                   <th>Name</th>
+                  <th></th>
+                  <th></th>
                   <th>Abteilung</th>
                   <th>Telefon</th>
                   <th className="status"><span className="status-wrap">Status</span></th>
@@ -173,6 +175,8 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
                         />
                       </td>
                       <td style={{ color: '#222' }}>{fullName}</td>
+                      <td></td>
+                      <td></td>
                       <td>{String(department)}</td>
                       <td>{phone}</td>
                       <td className="status">

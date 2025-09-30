@@ -51,13 +51,7 @@
   padding-bottom: 18px;
 }
 
-/* Tabellenzellen: KEINE dicke Schrift für Name, Personen, Status */
-.department-overview__table td,
-.department-overview__table td.persons,
-.department-overview__table td.status,
-.department-overview__status {
-  font-weight: 400 !important;
-}
+
 
 /* Tabellenzellen: kein vertikales Raster, nur horizontale Linien */
 .department-overview__table td {
@@ -250,20 +244,24 @@
 }
 
 /* Name-Spalte bleibt links, alle anderen (außer erster Checkbox-Spalte) rechts */
-.department-overview__table th:not(:first-child):not(:nth-child(2)),
-.department-overview__table td:not(:first-child):not(:nth-child(2)) {
+.department-overview__table th:not(:first-child):not(:nth-child(2)):not(.persons),
+.department-overview__table td:not(:first-child):not(:nth-child(2)):not(.persons) {
   text-align: right;
   white-space: nowrap;
 }
 
 /* Name-Spalte bleibt links, Personen und Status rechts */
 .department-overview__table td.persons,
-.department-overview__table th.persons,
-.department-overview__table td.status,
-.department-overview__table th.status {
-  text-align: center;
+.department-overview__table th.persons {
+  text-align: center !important;
   vertical-align: middle;
   white-space: nowrap;
+}
+
+/* Ensure Personen-Spalte ist mittig (analog Status) */
+.department-overview .department-overview__table th.persons,
+.department-overview .department-overview__table td.persons {
+  text-align: center !important;
 }
 
 /* Zeile optisch hervorheben, wenn ausgewählt */
@@ -303,16 +301,7 @@
   padding-left: 0.5rem; /* Abstand zur Checkbox-Spalte */
 }
 
-.department.overview__table th.status,
-.department-overview__table td.status,
-.department-overview__table th:nth-last-child(2),
-.department-overview__table td:nth-last-child(2) {
-  min-width: 120px;
-  max-width: 180px;
-  width: 10vw;
-  text-align: right;
-  padding-right: 2.2rem; /* Abstand zum "..." Button/rechten Rand */
-}
+
 
 /* Einheitlicher Abstand und Zentrierung für alle Spalten außer "Name" */
 .department-overview__table th,
@@ -334,8 +323,8 @@
 
 /* --- Replace centered alignment for non-name columns with right alignment
      so headers and values start on the same vertical line --- */
-.department-overview__table th:not(:first-child):not(:nth-child(2)):not(:last-child),
-.department-overview__table td:not(:first-child):not(:nth-child(2)):not(:last-child) {
+.department-overview__table th:not(:first-child):not(:nth-child(2)):not(.persons):not(:last-child),
+.department-overview__table td:not(:first-child):not(:nth-child(2)):not(.persons):not(:last-child) {
   text-align: right !important;
   white-space: nowrap;
 }
@@ -350,17 +339,7 @@
   vertical-align: middle;
 }
 
-/* Status-Spalte rechtsbündig, Abstand zum "..."-Button */
-.department-overview__table th.status,
-.department-overview__table td.status,
-.department-overview__table th:nth-last-child(2),
-.department-overview__table td:nth-last-child(2) {
-  min-width: 120px;
-  max-width: 180px;
-  width: 10vw;
-  text-align: right;
-  padding-right: 2.2rem;
-}
+
 
 /* Letzte Spalte ("...") bleibt rechtsbündig */
 .department-overview__table th:last-child,
@@ -392,17 +371,17 @@
   padding-left: 2.5rem !important;
 }
 
-/* Name-Spalte: fester Abstand zur Checkbox */
+/* Name-Spalte: fester Abstand zur Checkbox - wie Services-Overview */
 .department-overview__table th:nth-child(2),
 .department-overview__table td:nth-child(2) {
-  padding-left: 0.5rem !important;
+  padding-left: 3rem !important;
   text-align: left;
   min-width: 220px;
 }
 
 /* Andere Spalten: gleiche, neutrale Innenabstände */
-.department-overview__table th:not(:first-child):not(:nth-child(2)),
-.department-overview__table td:not(:first-child):not(:nth-child(2)) {
+.department-overview__table th:not(:first-child):not(:nth-child(2)):not(.persons),
+.department-overview__table td:not(:first-child):not(:nth-child(2)):not(.persons) {
   padding-left: 0.5rem;
   padding-right: 0.75rem;
   text-align: right;
@@ -415,31 +394,9 @@
   vertical-align: middle;
 }
 
-/* --- Status-Spalte rechts fixieren (sticky), links von den "..."-Buttons --- */
-.department-overview__table th.status,
-.department-overview__table td.status {
-  /* exakt wie Name-Spalte sticky, aber rechts anstelle von links */
-  position: static;
-  right: var(--action-offset);
-  z-index: 4;             /* über normalen Zellen, unter den Aktions-Buttons */
-  box-sizing: border-box;
-  /* Beibehalten der bestehenden Breiten */
-  min-width: 120px;
-  max-width: 180px;
-  width: 10vw;
-  text-align: right;
-  padding-right: 2.2rem;
-}
 
-/* Header-Zelle soll festen Hintergrund haben, damit Sticky-Header nicht durchscheint */
-.department-overview__table th.status {
-  background: transparent; /* gleich wie andere Zellen; Overlay steuert Hintergrund */
-}
 
-/* Body-Zelle transparent, damit row-selected Hintergrund sichtbar ist */
-.department-overview__table td.status {
-  background: transparent;
-}
+
 
 /* Sicherstellen, dass Aktions-Button über der Status-Spalte liegt */
 .department-overview__table .btn.more-actions {
@@ -452,19 +409,7 @@
   position: relative;
 }
 
-/* Status-Spalte: sticky rechts, feste Breiten, Box-Sizing und Ausrichtung */
-.department-overview__table th.status,
-.department-overview__table td.status {
-  position: static;
-  right: var(--action-offset);
-  z-index: 5; /* über normalen Zellen */
-  box-sizing: border-box;
-  min-width: 120px;
-  max-width: 180px;
-  width: 10vw;
-  text-align: right;
-  padding-right: 2.2rem;
-}
+
 
 /* Header-Zelle hat festen Hintergrund, Body-Zelle transparent (Zeilen-Highlight soll durchscheinen) */
 .department-overview__table th.status {
@@ -480,19 +425,7 @@
   /* Positionierung der Buttons wird bereits an mehreren Stellen gesetzt; hier stellen wir nur den Stacking-Context sicher */
 }
 
-/* Überschreibe / stelle sicher: Status-Spalte sticky, exakt gleiche Logik wie Checkbox/Name (nur rechts) */
-.department-overview__table th.status,
-.department-overview__table td.status {
-  position: static !important;
-  right: var(--action-offset) !important;
-  width: var(--status-col-width) !important;
-  min-width: var(--status-col-width) !important;
-  max-width: var(--status-col-width) !important;
-  text-align: right !important;
-  padding-right: 2.2rem !important;
-  z-index: 7 !important;
-  background-clip: padding-box !important;
-}
+
 
 .department-overview__table th.status {
   background: transparent !important;
@@ -531,21 +464,7 @@
   z-index: 8 !important;
 }
 
-/* Body-Status: absolut innerhalb jeder Zeile, vertikal zentriert */
-.department-overview__table td.status {
-  position: static !important;
-  right: var(--action-offset) !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  width: var(--status-col-width) !important;
-  min-width: var(--status-col-width) !important;
-  max-width: var(--status-col-width) !important;
-  padding-right: 2.2rem !important;
-  box-sizing: border-box !important;
-  background: transparent !important;
-  text-align: right !important;
-  z-index: 5 !important;
-}
+
 
 /* Damit andere Zellen nicht unter der absolut positionierten Status-Spalte liegen,
    erhöhen wir rechtsseitig das Padding der normalen Zellen (ausgenommen Checkbox, Name, Status, Aktion) */
@@ -563,10 +482,7 @@
   padding-left: 1rem !important;
 }
 
-.department-overview__table th.status,
-.department-overview__table td.status {
-  padding-right: 1.5rem !important;
-}
+
 
 /* Make Name column wider and prevent forced wraps; keep ellipsis on overflow */
 .department-overview__table th:nth-child(2),
@@ -577,46 +493,18 @@
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
-  padding-left: 1rem !important;
+  padding-left: 3rem !important;
 }
 
-/* Center status column header and cell content (align left edge of pill with header center visually) */
-.department-overview__table th.status,
-.department-overview__table td.status {
-  /* keep sticky/absolute positioning from existing rules, but center inner content */
-  display: table-cell !important;
-  align-items: center !important;
-  justify-content: center !important; /* center status pill horizontally */
-  text-align: center !important;
-  padding-left: 0.75rem !important;
-}
 
-/* Ensure the status pill itself has no extra left margin so it's exactly centered */
-.department-overview__table th.status .department-overview__status,
-.department-overview__table td.status .department-overview__status {
-  margin: 0 !important;
-}
+
 
 /* Give other columns a little extra right padding to avoid overlap with status area */
 /* (bereinigt) kein extra rechtes Padding für frühere absolute/sticky-Status-Spalte */
 
-/* --- Überschreibe: Status-Spalte exakt zentrieren (horizontal + vertikal) --- */
-.department-overview__table th.status,
-.department-overview__table td.status {
-  /* sicherstellen, dass die Zellen als Flex-Container zentrieren */
-  display: table-cell !important;
-  align-items: center !important;
-  justify-content: center !important; /* horizontal zentrieren */
-  text-align: center !important;      /* Fallback für Inline-Inhalt */
-  /* keine Ränder innerhalb der Zelle, damit Pill wirklich zentriert steht */
-  padding-left: 0.75rem !important;
-}
 
-/* Status-Pille selbst keinen Margin links/rechts erlauben */
-.department-overview__table th.status .department-overview__status,
-.department-overview__table td.status .department-overview__status {
-  margin: 0 !important;
-}
+
+
 
 /* kleine Trennkante rechts der Name-Spalte für bessere Lesbarkeit (nur im Header, nicht in jeder Zeile) */
 .department-overview__table thead th:nth-child(2)::after {
@@ -637,10 +525,12 @@
   padding-bottom: 20px !important;
 }
 
-/* Center values in all columns except the Name column (2nd) and the checkbox column (1st) */
+/* Center all columns except checkbox (1st) and Name (2nd) */
 .department-overview__table th:not(:first-child):not(:nth-child(2)),
 .department-overview__table td:not(:first-child):not(:nth-child(2)) {
   text-align: center !important;
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
 }
 
 /* Ensure Name column remains left-aligned */
@@ -649,26 +539,34 @@
   text-align: left !important;
 }
 
-/* Minimal größerer Abstand zur Aktionen-Spalte, ohne Spaltenposition zu verändern */
+/* Status column gets same spacing and centering */
 .department-overview__table th.status,
 .department-overview__table td.status {
-  padding-left: 0.75rem !important;
+  text-align: center !important;
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
 }
+
+/* Fix Status header alignment - add wrapper span styling */
+.department-overview__table th.status .status-wrap {
+  display: inline-block;
+  width: 100%;
+  text-align: center !important;
+}
+
+/* Persons column also centered with same spacing */
+.department-overview__table th.persons,
+.department-overview__table td.persons {
+  text-align: center !important;
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+}
+
+
 
 /* (Revert) entferne keine globalen Overrides – zurück zum ursprünglichen Verhalten */
 
-/* ===== Fix: Header sichtbar und Status-Spalte korrekt ausgerichtet ===== */
-/* Status-Spalte nicht absolut positionieren, sondern im normalen Tabellenfluss lassen */
-.department-overview__table th.status,
-.department-overview__table td.status {
-  position: static !important;
-  right: auto !important;
-  left: auto !important;
-  top: auto !important;
-  transform: none !important;
-  display: table-cell !important;
-  text-align: center !important;
-}
+
 
 /* Header-Inhalte über dem dekorativen ::after-Overlay halten */
 .department-overview__table thead th { z-index: 5 !important; position: relative; }
@@ -704,24 +602,7 @@
   visibility: visible !important;
   mix-blend-mode: normal !important;
 }
-/* Status- und Name-Spalte im normalen Tabellenfluss (keine sticky/absolute Positionierung) */
-.department-overview__table th.status,
-.department-overview__table td.status,
-.department-overview__table th:nth-child(2),
-.department-overview__table td:nth-child(2) {
-  position: static !important;
-  left: auto !important;
-  right: auto !important;
-  top: auto !important;
-  transform: none !important;
-  display: table-cell !important;
-  background: transparent !important; /* header bleibt sichtbar durch z-index oben */
-}
 
-/* Option A: Body-Zellen der Status-Spalte linksbündig, Header kann zentriert bleiben */
-.department-overview__table td.status {
-  text-align: left !important;
-}
 
 /* Scroll-responsive top spacing (only Department Overview) */
 .main-content .department-overview { margin-top: 16px; transition: margin-top 120ms ease; }
@@ -741,35 +622,7 @@
 }
 
 
-/* Status symmetric override: ensure true centering without shifting */
-.department-overview__table th.status,
-.department-overview__table td.status {
-  text-align: center !important;
-  padding-left: 0.75rem !important;
-  padding-right: 0.75rem !important;
-}
-.services-overview__table th.status,
-.services-overview__table td.status {
-  text-align: center !important;
-  padding-left: 0.75rem !important;
-  padding-right: 0.75rem !important;
-}
-/* Final: Status column fixed width and symmetric padding for true centering */
-.department-overview__table th.status,
-.department-overview__table td.status {
-  width: var(--status-col-width) !important;
-  min-width: var(--status-col-width) !important;
-  max-width: var(--status-col-width) !important;
-  text-align: center !important;
-  padding-left: 0.75rem !important;
-  padding-right: 0.75rem !important;
-}
 
-/* Equal-length pills: center status cell content */
-.department-overview__table td.status,
-.department-overview__table th.status {
-  text-align: center !important;
-}
 .services-overview__table td.status,
 .services-overview__table th.status {
   text-align: center !important;
@@ -781,35 +634,9 @@
   padding-left: 0.5rem !important;
 }
 
-/* Center all columns like Status */
-.department-overview__table th,
-.department-overview__table td {
-  text-align: center !important;
-}
+/* Spaltenausrichtung gezielt per Spalte – kein globales Zentrieren mehr. */
 
-/* Ensure higher-specificity rules also center */
-.department-overview__table th:nth-child(2),
-.department-overview__table td:nth-child(2) {
-  text-align: center !important;
-}
-.department-overview__table th:not(:first-child):not(:nth-child(2)):not(:last-child),
-.department-overview__table td:not(:first-child):not(:nth-child(2)):not(:last-child) {
-  text-align: center !important;
-}
-.department-overview__table th.persons,
-.department-overview__table td.persons {
-  text-align: center !important;
-}
-
-/* Exact gap: Name (2nd col) 3rem from checkbox (1st col) */
-.department-overview__table th:first-child,
-.department-overview__table td:first-child {
-  padding-right: 0 !important; /* no extra gap on checkbox column */
-}
-.department-overview__table th:nth-child(2),
-.department-overview__table td:nth-child(2) {
-  padding-left: 3rem !important; /* exact 3rem from checkbox */
-}
+/* Exakte Abstände werden weiter unten final gesetzt. */
 
 /* Name column: left-aligned and flush next to checkbox */
 .department-overview__table th:nth-child(2),
@@ -819,11 +646,7 @@
 }
 
 
-/* Checkbox column: left gap 1rem from table edge */
-.department-overview__table th:first-child,
-.department-overview__table td:first-child {
-  padding-left: 1rem !important;
-}
+/* Checkbox-Spacing wird final unten definiert. */
 
 
 
@@ -850,3 +673,14 @@
   top: 50% !important;
   transform: translateY(-50%) !important;
 }
+
+/* Final alignment overrides: center Personen like other columns */
+.department-overview .department-overview__table th.persons,
+.department-overview .department-overview__table td.persons {
+  text-align: center !important;
+}
+
+
+
+
+

@@ -85,14 +85,6 @@
   padding-bottom: 18px;
 }
 
-/* Tabellenzellen: KEINE dicke Schrift für Name, Dauer, Preis, Status */
-.services-overview__table td,
-.services-overview__table td.duration,
-.services-overview__table td.price,
-.services-overview__table td.status,
-.services-overview__status {
-  font-weight: 400 !important;
-}
 
 /* Tabellenzellen: kein vertikales Raster, nur horizontale Linien */
 .services-overview__table td {
@@ -240,35 +232,10 @@
   padding-left: 0.5rem !important;
 }
 
-/* Make Name column wider and prevent forced wraps; keep ellipsis on overflow */
-.services-overview__table th:nth-child(2),
-.services-overview__table td:nth-child(2) {
-  /* vereinheitlicht über global.css */
-}
-
 /* Feintuning: mehr Abstand für Name (links) und Status (rechts) — konsistent mit Department-Overview */
 .services-overview__table th:nth-child(2),
 .services-overview__table td:nth-child(2) {
   padding-left: 1rem !important; /* etwas mehr Luft links der Name-Spalte */
-}
-
-.services-overview__table th.status,
-.services-overview__table td.status {
-  padding-right: 2.8rem !important; /* etwas mehr Abstand zum rechten Rand/Aktions-Button */
-}
-
-/* Center status column header and cell content */
-.services-overview__table th.status,
-.services-overview__table td.status {
-  display: table-cell !important;
-  text-align: center !important;
-  padding-left: 0.75rem !important; /* space to actions */
-}
-
-/* Ensure the status pill itself has no extra left margin */
-.services-overview__table th.status .department-overview__status,
-.services-overview__table td.status .department-overview__status {
-  margin: 0 !important;
 }
 
 /* --- Alle weiteren Spalten (außer Checkbox + Name + letzte Aktion) zentriert --- */
@@ -278,10 +245,12 @@
   white-space: nowrap;
 }
 
-/* Center values in all columns except the Name column (2nd) and the checkbox column (1st) */
+/* Center all columns except checkbox (1st) and Name (2nd) */
 .services-overview__table th:not(:first-child):not(:nth-child(2)),
 .services-overview__table td:not(:first-child):not(:nth-child(2)) {
   text-align: center !important;
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
 }
 
 /* Ensure Name column remains left-aligned */
@@ -323,21 +292,15 @@
   z-index: auto !important;
 }
 
-/* Body-Status: absolut innerhalb jeder Zeile, vertikal zentriert */
-.services-overview__table td.status {
-  position: static !important;
-  right: auto !important;
-  top: auto !important;
-  transform: none !important;
-  width: auto !important;
-  min-width: auto !important;
-  max-width: none !important;
-  padding-right: 0 !important;
-  box-sizing: border-box !important;
-  background: transparent !important;
+/* Fix Status header alignment - add wrapper span styling */
+.services-overview__table th.status .status-wrap,
+.department-overview__table th.status .status-wrap {
+  display: inline-block;
+  width: 100%;
   text-align: center !important;
-  z-index: auto !important;
 }
+
+
 
 /* Verhindere Überlappung: mehr Abstand rechts für normale Zellen (außer Checkbox, Name, Aktion, Status) */
 /* unified: remove extra right padding from non-status columns */
@@ -351,7 +314,7 @@
 .services-overview__table th:last-child,
 .services-overview__table td:last-child {
   text-align: right;
-  padding-right: 1.5.5rem;
+  padding-right: 1.5rem;
 }
 
 /* --- Row selected indicator / left stripe wie Department-Overview --- */
@@ -462,54 +425,17 @@
   position: relative; /* sicherstellen, dass sticky innerhalb des Containers funktioniert */
 }
 
-/* Status-Spalte für beide Overviews vereinheitlichen */
-.services-overview__table th.status,
-.services-overview__table td.status,
-.department-overview__table th.status,
-.department-overview__table td.status {
-  position: sticky;
-  right: var(--action-offset);
-  z-index: 5;
-  box-sizing: border-box;
-  min-width: 120px;
-  max-width: 180px;
-  width: 10vw;
-  text-align: right;
-  padding-right: 2.2rem;
-}
 
-/* Header: weißer Hintergrund, Body: transparent damit row-highlight sichtbar bleibt */
-.services-overview__table th.status,
-.department-overview__table th.status {
-  background: var(--color-bg);
-}
-.services-overview__table td.status,
-.department-overview__table td.status {
-  background: transparent;
-}
 
-/* Aktions-Buttons (drei Punkte) über der Status-Spalte anzeigen */
-.services-overview__table .btn.more-actions,
-.department-overview__table .btn.more-actions { /* stacking controlled globally */ }
 
-/* --- Überschreibe: Status-Spalte exakt zentrieren (horizontal + vertikal) --- */
-.services-overview__table th.status,
-.services-overview__table td.status {
-  display: table-cell !important;
-  text-align: center !important;      /* Fallback */
-  /* minimal links-Versatz der Status-Pille für mehr Abstand zur Aktionen-Spalte */
-  padding-left: 0.75rem !important;
-}
+
+
 
 /* Scroll-responsive top spacing (only Services Overview) */
 .main-content .department-overview { margin-top: 16px; transition: margin-top 120ms ease; }
 .main-content.scrolled-under .department-overview { margin-top: 0; }
 
-/* Status-Pille selbst keinen Margin links/rechts erlauben */
-.services-overview__table th.status .department-overview__status,
-.services-overview__table td.status .department-overview__status {
-  margin: 0 !important;
-}
+
 
 /* Removed local .services-overview__status / .department-overview__status rules — moved to global.css */
 
@@ -529,34 +455,8 @@
   margin-bottom: 0;
 }
 
-/* Disable sticky behavior to avoid fixed-looking top background during scroll */
-.department-overview__table th:first-child,
-.department-overview__table td:first-child,
-.department-overview__table th:nth-child(2),
-.department-overview__table td:nth-child(2),
-.department-overview__table th.status,
-.department-overview__table td.status {
-  position: static !important;
-  left: auto !important;
-  right: auto !important;
-}
-/* (Revert) Entfernt die zuletzt hinzugefügten globalen Overrides für Tabellen-Layout */
-/* ===== Fix: Header sichtbar und Status-Spalte korrekt ausgerichtet (Services) ===== */
-.department-overview__table th.status,
-.department-overview__table td.status {
-  position: static !important;
-  right: auto !important;
-  left: auto !important;
-  top: auto !important;
-  transform: none !important;
-  display: table-cell !important;
-  text-align: center !important;
-}
 
-/* Option A: Body-Zellen der Status-Spalte linksbündig, Header kann zentriert bleiben */
-.services-overview__table td.status {
-  text-align: left !important;
-}
+
 
 /* Uniformer Spaltenabstand: gleicher Left-Gap wie vor Aktionen-Spalte */
 .services-overview__table th + th,
@@ -564,27 +464,7 @@
   padding-left: 0.5rem !important;
 }
 
-/* Center all columns like Status */
-.services-overview__table th,
-.services-overview__table td {
-  text-align: center !important;
-}
-
-/* Ensure higher-specificity rules also center */
-.services-overview__table th:nth-child(2),
-.services-overview__table td:nth-child(2) {
-  text-align: center !important;
-}
-.services-overview__table th:not(:first-child):not(:nth-child(2)):not(:last-child),
-.services-overview__table td:not(:first-child):not(:nth-child(2)):not(:last-child) {
-  text-align: center !important;
-}
-.services-overview__table th.duration,
-.services-overview__table td.duration,
-.services-overview__table th.price,
-.services-overview__table td.price {
-  text-align: center !important;
-}
+/* Name bleibt linksbündig; andere Spalten werden gezielt formatiert. */
 
 /* Exact gap: Name (2nd col) 3rem from checkbox (1st col) */
 .services-overview__table th:first-child,
@@ -611,10 +491,7 @@
 
 /* Z-Index/Overlay für Header zentral in global.css geregelt */
 
-.department-overview__table th:not(.status),
-.department-overview__table td:not(.status) {
-  padding-right: 1rem !important;
-}
+/* Einheitliche horizontale Innenabstände werden weiter unten vereinheitlicht. */
 
 /* Header-Checkbox über dem thead-Overlay halten */
 .department-overview__table thead th input[type="checkbox"] {
@@ -623,39 +500,10 @@
 }
 
 
-/* Status symmetric override: ensure true centering without shifting */
-.department-overview__table th.status,
-.department-overview__table td.status {
-  text-align: center !important;
-  padding-left: 0.75rem !important;
-  padding-right: 0.75rem !important;
-}
-.services-overview__table th.status,
-.services-overview__table td.status {
-  text-align: center !important;
-  padding-left: 0.75rem !important;
-  padding-right: 0.75rem !important;
-}
-/* Final: Status column fixed width and symmetric padding for true centering */
-.services-overview__table th.status,
-.services-overview__table td.status {
-  width: var(--status-col-width) !important;
-  min-width: var(--status-col-width) !important;
-  max-width: var(--status-col-width) !important;
-  text-align: center !important;
-  padding-left: 0.75rem !important;
-  padding-right: 0.75rem !important;
-}
 
-/* Equal-length pills: center status cell content */
-.department-overview__table td.status,
-.department-overview__table th.status {
-  text-align: center !important;
-}
-.services-overview__table td.status,
-.services-overview__table th.status {
-  text-align: center !important;
-}
+
+
+
 
 
 
@@ -681,4 +529,39 @@
   right: calc(2rem + 1rem) !important; /* 2rem frame inset + 1rem inner gap */
   top: 50% !important;
   transform: translateY(-50%) !important;
+}
+
+/* ======================= */
+/* Equal column spacing    */
+/* ======================= */
+/* Center all columns except checkbox, Name and last action column */
+.services-overview .department-overview__table th:not(:first-child):not(:nth-child(2)):not(:last-child),
+.services-overview .department-overview__table td:not(:first-child):not(:nth-child(2)):not(:last-child) {
+  text-align: center !important;
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+}
+
+/* Checkbox column - left aligned */
+.services-overview .department-overview__table th:first-child,
+.services-overview .department-overview__table td:first-child {
+  text-align: left !important;
+  padding-left: 3rem !important;
+  padding-right: 0 !important;
+}
+
+/* Name column - left aligned */
+.services-overview .department-overview__table th:nth-child(2),
+.services-overview .department-overview__table td:nth-child(2) {
+  text-align: left !important;
+  padding-left: 3rem !important;
+  padding-right: 2rem !important;
+}
+
+/* Last column (actions) - right aligned */
+.services-overview .department-overview__table th:last-child,
+.services-overview .department-overview__table td:last-child {
+  text-align: right !important;
+  padding-right: 3rem !important;
+  padding-left: 2rem !important;
 }

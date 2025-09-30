@@ -61,3 +61,37 @@
   background: var(--color-primary, #0257e0);
   pointer-events: none;
 }
+
+/* === FIX: Align Status header exactly above its column === */
+/* Enforce identical width and centering for Status in thead and tbody */
+.department-overview__table th.status,
+.department-overview__table td.status,
+.department-overview .department-overview__table th.status,
+.department-overview .department-overview__table td.status {
+  width: var(--status-col-width, 150px) !important;
+  min-width: var(--status-col-width, 150px) !important;
+  max-width: var(--status-col-width, 150px) !important;
+  text-align: center !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Center inner wrappers so label aligns with pill below */
+.department-overview__table th.status .status-wrap,
+.department-overview__table td.status .status-wrap,
+.department-overview .department-overview__table th.status .status-wrap,
+.department-overview .department-overview__table td.status .status-wrap {
+  display: inline-block;
+  width: 100%;
+  text-align: center !important;
+}
+
+/* Keep actions column width stable to avoid column shift next to Status */
+.department-overview__table th:last-child,
+.department-overview__table td:last-child,
+.department-overview .department-overview__table th:last-child,
+.department-overview .department-overview__table td:last-child {
+  width: var(--actions-col-width, 64px) !important;
+  min-width: var(--actions-col-width, 64px) !important;
+  max-width: var(--actions-col-width, 64px) !important;
+}
