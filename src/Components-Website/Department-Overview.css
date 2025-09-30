@@ -446,23 +446,7 @@
   position: relative;
 }
 
-/* Header-Status: oben in der Kopfzeile, volle Höhe */
-.department-overview__table th.status {
-  position: static !important;
-  right: var(--action-offset) !important;
-  top: 0 !important;
-  height: 100% !important;
-  width: var(--status-col-width) !important;
-  min-width: var(--status-col-width) !important;
-  max-width: var(--status-col-width) !important;
-  display: table-cell !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  padding-right: 2.2rem !important;
-  box-sizing: border-box !important;
-  background: transparent !important;
-  z-index: 8 !important;
-}
+
 
 
 
@@ -539,13 +523,7 @@
   text-align: left !important;
 }
 
-/* Status column gets same spacing and centering */
-.department-overview__table th.status,
-.department-overview__table td.status {
-  text-align: center !important;
-  padding-left: 2rem !important;
-  padding-right: 2rem !important;
-}
+
 
 /* Fix Status header alignment - add wrapper span styling */
 .department-overview__table th.status .status-wrap {

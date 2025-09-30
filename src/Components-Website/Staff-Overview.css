@@ -253,14 +253,6 @@
   padding-right: 2rem !important;
 }
 
-/* Status column gets same spacing and centering */
-.department-overview__table th.status,
-.department-overview__table td.status {
-  text-align: center !important;
-  padding-left: 2rem !important;
-  padding-right: 2rem !important;
-}
-
 /* Fix Status header alignment - add wrapper span styling */
 .department-overview__table th.status .status-wrap {
   display: inline-block;
