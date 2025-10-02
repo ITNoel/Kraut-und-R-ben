@@ -295,6 +295,7 @@ export default function App() {
         {view === ROUTES.STAFF_OVERVIEW && (
           <StaffOverview
             employees={employees}
+            departments={departments}
             onSelect={selectView}
             onEditEmployee={(emp, idx) => {
               setCurrentStaff(emp);

@@ -5,7 +5,7 @@ import emptyIllustration from '../assets/empty-staff.png';
 import SearchBar from './SearchBar';
 import actionIcon from '../assets/Buttons/action-icon.svg';
 
-export default function StaffOverview({ employees = [], onSelect, onEditEmployee, onDeleteEmployees, onNewStaff }) {
+export default function StaffOverview({ employees = [], departments = [], onSelect, onEditEmployee, onDeleteEmployees, onNewStaff }) {
   const [actionsOpen, setActionsOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -77,7 +77,7 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
   };
 
   return (
-    <div className="department-page department-overview">
+    <div className="department-page department-overview staff-overview">
       <div className="page-header">
         <h1 className="page-header__title">Sachbearbeiter Übersicht</h1>
         <div className="page-header__actions">
@@ -157,7 +157,14 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
                   const identifier = emp.id ?? emp.email ?? emp.name ?? i;
                   const checked = selectedRows.includes(identifier);
                   const fullName = emp.first_name ? `${emp.first_name} ${emp.last_name || ''}` : (emp.name || emp.email || '-');
-                  const department = typeof emp.department === 'object' ? (emp.department?.name ?? '-') : (emp.department ?? '-');
+                  // Resolve department ID to name
+                  let departmentName = '-';
+                  if (typeof emp.department === 'object') {
+                    departmentName = emp.department?.name ?? '-';
+                  } else if (emp.department != null) {
+                    const deptObj = departments.find(d => d.id === emp.department);
+                    departmentName = deptObj?.name ?? String(emp.department);
+                  }
                   const phone = emp.telephone || emp.phone || '-';
                   const { type: statusType, label: statusLabel } = mapStatus(emp.status);
                   return (
@@ -177,8 +184,8 @@ export default function StaffOverview({ employees = [], onSelect, onEditEmployee
                       <td style={{ color: '#222' }}>{fullName}</td>
                       <td></td>
                       <td></td>
-                      <td>{String(department)}</td>
-                      <td>{phone}</td>
+                      <td style={{ textAlign: 'center' }}>{departmentName}</td>
+                      <td style={{ textAlign: 'center' }}>{phone}</td>
                       <td className="status">
                         <span className="status-wrap">
                           <span className={`department-overview__status department-overview__status--${statusType}`}>

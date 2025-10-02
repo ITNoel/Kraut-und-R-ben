@@ -12,26 +12,25 @@ const OFFLINE_LOGIN = true;
 
 // Mock-Daten für Offline-Login (nur Test)
 const MOCK_DEPARTMENTS = [
-  { id: 1, name: 'Bürgeramt Mitte', status: 'active' },
-  { id: 2, name: 'Kfz-Zulassungsstelle', status: 'active' },
-  { id: 3, name: 'Standesamt', status: 'disabled' },
+  { id: 1, name: 'Bürgeramt Mitte', status: 'active', employees: [] },
+  { id: 2, name: 'Kfz-Zulassungsstelle', status: 'active', employees: [] },
+  { id: 3, name: 'Standesamt', status: 'disabled', employees: [] },
+  { id: 4, name: 'Ordnungsamt', status: 'draft', employees: [] },
 ];
 
 const MOCK_EMPLOYEES = [
-  { id: 101, first_name: 'Anna',   last_name: 'Schmidt',   email: 'anna.schmidt@example.com',   telephone: '+49 30 1234 1001', status: 'active',   department: { id: 1, name: 'Bürgeramt Mitte' } },
-  { id: 102, first_name: 'Markus', last_name: 'Weber',     email: 'markus.weber@example.com',   telephone: '+49 30 1234 1002', status: 'active',   department: { id: 2, name: 'Kfz-Zulassungsstelle' } },
-  { id: 103, first_name: 'Lea',    last_name: 'Keller',    email: 'lea.keller@example.com',     telephone: '+49 30 1234 1003', status: 'disabled', department: { id: 1, name: 'Bürgeramt Mitte' } },
-  { id: 104, first_name: 'Jonas',  last_name: 'Becker',    email: 'jonas.becker@example.com',   telephone: '+49 30 1234 1004', status: 'draft',    department: { id: 3, name: 'Standesamt' } },
-  { id: 105, first_name: 'Sara',   last_name: 'Vogt',      email: 'sara.vogt@example.com',      telephone: '+49 30 1234 1005', status: 'active',   department: { id: 2, name: 'Kfz-Zulassungsstelle' } },
-  { id: 106, first_name: 'Timo',   last_name: 'Brandt',    email: 'timo.brandt@example.com',    telephone: '+49 30 1234 1006', status: 'active',   department: { id: 1, name: 'Bürgeramt Mitte' } },
-  { id: 107, first_name: 'Mara',   last_name: 'Hofmann',   email: 'mara.hofmann@example.com',   telephone: '+49 30 1234 1007', status: 'disabled', department: { id: 3, name: 'Standesamt' } },
-  { id: 108, first_name: 'Felix',  last_name: 'Wagner',    email: 'felix.wagner@example.com',   telephone: '+49 30 1234 1008', status: 'active',   department: { id: 2, name: 'Kfz-Zulassungsstelle' } },
+  { id: 101, first_name: 'Anna',   last_name: 'Schmidt',   email: 'anna.schmidt@example.com',   telephone: '+49 30 1234 1001', status: 'active',   department: 1 },
+  { id: 102, first_name: 'Markus', last_name: 'Weber',     email: 'markus.weber@example.com',   telephone: '+49 30 1234 1002', status: 'active',   department: 2 },
+  { id: 103, first_name: 'Lea',    last_name: 'Keller',    email: 'lea.keller@example.com',     telephone: '+49 30 1234 1003', status: 'disabled', department: 0 },
+  { id: 104, first_name: 'Jonas',  last_name: 'Becker',    email: 'jonas.becker@example.com',   telephone: '+49 30 1234 1004', status: 'draft',    department: 3 },
+  { id: 105, first_name: 'Sarah',  last_name: 'Müller',    email: 'sarah.mueller@example.com',  telephone: '+49 30 1234 1005', status: 'active',   department: 1 },
 ];
 
 const MOCK_SERVICES = [
-  { id: 201, name: 'Reisepass beantragen', status: 'active' },
-  { id: 202, name: 'Ummeldung',            status: 'active' },
-  { id: 203, name: 'Meldebescheinigung',   status: 'disabled' },
+  { id: 201, name: 'Reisepass beantragen', department: 1, duration: 30, max_persons: 1, documents: 3, status: 'active' },
+  { id: 202, name: 'Ummeldung', department: 1, duration: 20, max_persons: 2, documents: 5, status: 'active' },
+  { id: 203, name: 'Meldebescheinigung', department: 1, duration: 15, max_persons: 1, documents: 2, status: 'disabled' },
+  { id: 204, name: 'Führerschein beantragen', department: 2, duration: 45, max_persons: 1, documents: 8, status: 'active' },
 ];
 
 export default function Log_InApp({ onLogin }) {
