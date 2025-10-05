@@ -14,16 +14,25 @@ export default function SearchBar({
   status,
   onStatusChange,
   statusOptions = null,
+  department,
+  onDepartmentChange,
+  departmentOptions = null,
 }) {
   const [open, setOpen] = useState(true);
   // Custom Dropdown-State für Status
   const [statusOpen, setStatusOpen] = useState(false);
   const statusRef = useRef();
+  // Custom Dropdown-State für Department
+  const [departmentOpen, setDepartmentOpen] = useState(false);
+  const departmentRef = useRef();
 
   useEffect(() => {
     const onDocClick = (e) => {
       if (statusRef.current && !statusRef.current.contains(e.target)) {
         setStatusOpen(false);
+      }
+      if (departmentRef.current && !departmentRef.current.contains(e.target)) {
+        setDepartmentOpen(false);
       }
     };
     document.addEventListener('mousedown', onDocClick);
@@ -72,7 +81,8 @@ export default function SearchBar({
                   const val = status ?? '';
                   const options = Array.isArray(statusOptions) ? statusOptions : [];
                   const found = options.find((o) => o.value === val);
-                  return found ? found.label : (val || 'Status');
+                  if (!found || val === '' || val === 'all') return 'Status';
+                  return found.label;
                 })()}
               </button>
               {statusOpen && (
@@ -89,6 +99,49 @@ export default function SearchBar({
                           e.preventDefault();
                           onStatusChange?.(opt.value);
                           setStatusOpen(false);
+                        }
+                      }}
+                    >
+                      {opt.label}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+
+          {Array.isArray(departmentOptions) && departmentOptions.length > 0 && (
+            <div className="filter-bar__status" ref={departmentRef}>
+              <button
+                type="button"
+                className={`status-trigger ${departmentOpen ? 'open' : ''}`}
+                onClick={() => setDepartmentOpen((v) => !v)}
+                aria-haspopup="listbox"
+                aria-expanded={departmentOpen}
+              >
+                <span className="status-trigger__chevron" aria-hidden="true"><img src={arrowSvg} width={18} height={9} alt="" /></span>
+                {(() => {
+                  const val = department ?? '';
+                  const options = Array.isArray(departmentOptions) ? departmentOptions : [];
+                  const found = options.find((o) => o.value === val);
+                  if (!found || val === '' || val === 'all') return 'Abteilung';
+                  return found.label;
+                })()}
+              </button>
+              {departmentOpen && (
+                <ul className="dropdown-list" role="listbox">
+                  {departmentOptions.map((opt) => (
+                    <li
+                      key={opt.value}
+                      role="option"
+                      aria-selected={opt.value === department}
+                      tabIndex={0}
+                      onClick={() => { onDepartmentChange?.(opt.value); setDepartmentOpen(false); }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          onDepartmentChange?.(opt.value);
+                          setDepartmentOpen(false);
                         }
                       }}
                     >

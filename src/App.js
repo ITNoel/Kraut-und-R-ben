@@ -324,6 +324,7 @@ export default function App() {
         {view === ROUTES.SERVICES_OVERVIEW && (
           <ServicesOverview
             services={services}
+            departments={departments}
             onSelect={selectView}
             onEditService={(svc, idx) => {
               setCurrentService(svc);

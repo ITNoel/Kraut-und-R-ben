@@ -6,9 +6,12 @@ import './Services-Overview.css';
 import emptyIllustration from '../assets/empty-services.png';
 import SearchBar from './SearchBar';
 import actionIcon from '../assets/Buttons/action-icon.svg';
+import personIcon from '../assets/fonts/person-icon.svg';
+import personsIcon from '../assets/fonts/persons-icon.svg';
+import settingsIcon from '../assets/fonts/settings.icon.svg';
 import { ROUTES } from '../app/routes';
 
-export default function ServicesOverview({ onSelect, services = [], onEditService, onDeleteServices }) {
+export default function ServicesOverview({ onSelect, services = [], onEditService, onDeleteServices, departments = [] }) {
   const [actionsOpen, setActionsOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -16,6 +19,7 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
   const [localServices, setLocalServices] = useState(Array.isArray(services) ? services : []);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [departmentFilter, setDepartmentFilter] = useState('all');
   const actionsRef = useRef();
 
   useEffect(() => {
@@ -42,7 +46,11 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
   const displayedServices = (Array.isArray(localServices) ? localServices : []).filter((s) => {
     const matchesTerm = !search || (s?.name ?? '').toLowerCase().includes(search.toLowerCase());
     const matchesStatus = statusFilter === 'all' || (s?.status ?? 'active') === statusFilter;
-    return matchesTerm && matchesStatus;
+    const matchesDepartment = departmentFilter === 'all' || (() => {
+      const deptId = typeof s.department === 'object' ? s.department?.id : s.department;
+      return String(deptId) === String(departmentFilter);
+    })();
+    return matchesTerm && matchesStatus && matchesDepartment;
   });
 
   const toggleSelectAll = (checked) => {
@@ -89,7 +97,8 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
               disabled={selectedRows.length === 0}
               style={{ opacity: selectedRows.length === 0 ? 0.5 : 1 }}
             >
-              <span aria-hidden="true">⋯</span> Weitere Aktionen
+              <img src={settingsIcon} alt="" width="17" height="17" style={{ marginRight: '8px' }} />
+              Weitere Aktionen
             </button>
             {actionsOpen && (
               <div className="actions-dropdown">
@@ -111,10 +120,16 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
         status={statusFilter}
         onStatusChange={setStatusFilter}
         statusOptions={[
-          { value: 'all', label: 'Status' },
+          { value: 'all', label: 'Alle' },
           { value: 'active', label: 'Aktiv' },
           { value: 'disabled', label: 'Inaktiv' },
           { value: 'draft', label: 'Entwurf' },
+        ]}
+        department={departmentFilter}
+        onDepartmentChange={setDepartmentFilter}
+        departmentOptions={[
+          { value: 'all', label: 'Alle' },
+          ...departments.map(d => ({ value: String(d.id), label: d.name }))
         ]}
       />
 
@@ -160,9 +175,14 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
                   const duration = s.duration != null ? String(s.duration) : '-';
                   const maxPersons = s.max_persons ?? s.maxPersons ?? s.capacity ?? s.max ?? '-';
                   let documentsDisplay = '-';
-                  if (Array.isArray(s.documents)) documentsDisplay = String(s.documents.length);
-                  else if (s.documents_count != null) documentsDisplay = String(s.documents_count);
-                  else if (s.documents != null) documentsDisplay = String(s.documents);
+                  let documentsCount = 0;
+                  if (Array.isArray(s.documents)) documentsCount = s.documents.length;
+                  else if (s.documents_count != null) documentsCount = s.documents_count;
+                  else if (s.documents != null) documentsCount = s.documents;
+
+                  if (documentsCount > 0) {
+                    documentsDisplay = `${documentsCount} Dokumente`;
+                  }
                   const rawStatus = (s.status || '').toString().toLowerCase();
                   const statusType = (['active','aktiv'].includes(rawStatus)
                     ? 'active'
@@ -193,10 +213,18 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
                       <td style={{ color: '#222' }}>{s.name}</td>
                       <td></td>
                       <td></td>
-                      <td>{String(department)}</td>
+                      <td className="department-cell">
+                        <img src={personsIcon} alt="" width="17" height="17" className="persons-icon" />
+                        <span>{String(department)}</span>
+                      </td>
                       <td style={{ color: '#222' }}>{duration}</td>
-                      <td style={{ color: '#222' }}>{maxPersons}</td>
-                      <td style={{ color: '#222' }}>{documentsDisplay}</td>
+                      <td className="persons-cell">
+                        <img src={personIcon} alt="" width="13" height="13" className="person-icon" />
+                        <span>{maxPersons}</span>
+                      </td>
+                      <td className="documents-cell">
+                        <span className="documents-badge">{documentsDisplay}</span>
+                      </td>
                       <td className="status">
                         <span className="status-wrap">
                           <span className={statusClass(statusType)}>{statusLabel}</span>

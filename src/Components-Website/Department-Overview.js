@@ -5,6 +5,8 @@ import '../global.css';
 import './Department-Overview.css';
 import emptyIllustration from '../assets/empty-departments.png';
 import actionIcon from '../assets/Buttons/action-icon.svg';
+import personIcon from '../assets/fonts/person-icon.svg';
+import settingsIcon from '../assets/fonts/settings.icon.svg';
 import { api } from '../Functions/apiClient';
 import SearchBar from './SearchBar';
 
@@ -103,7 +105,8 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
               disabled={selectedRows.length === 0}
               style={{ opacity: selectedRows.length === 0 ? 0.5 : 1 }}
             >
-              <span aria-hidden="true">⋯</span> Weitere Aktionen
+              <img src={settingsIcon} alt="" width="17" height="17" style={{ marginRight: '8px' }} />
+              Weitere Aktionen
             </button>
             {actionsOpen && (
               <div className="actions-dropdown">
@@ -220,8 +223,9 @@ export default function DepartmentOverview({ departments, generalEmployees, onNe
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td className="persons" style={{ color: "#222", textAlign: 'center' }}>
-                        {Array.isArray(d.employees) ? d.employees.length : d.employees ?? 0}
+                      <td className="persons employees-cell" style={{ color: "#222", textAlign: 'center' }}>
+                        <img src={personIcon} alt="" width="13" height="13" className="person-icon" />
+                        <span>{Array.isArray(d.employees) ? d.employees.length : d.employees ?? 0}</span>
                       </td>
                       <td className="status">
                         <span className="status-wrap">

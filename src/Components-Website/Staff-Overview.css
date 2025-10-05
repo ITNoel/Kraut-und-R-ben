@@ -371,3 +371,21 @@
   align-self: center !important;
   line-height: 1 !important;
 }
+
+/* Department cell styling */
+.staff-overview .department-cell {
+  text-align: center !important;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.staff-overview .department-cell img.persons-icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.staff-overview .department-cell span {
+  display: inline-block;
+  vertical-align: middle;
+}

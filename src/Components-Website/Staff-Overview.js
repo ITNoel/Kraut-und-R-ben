@@ -4,6 +4,8 @@ import './Staff-Overview.css';
 import emptyIllustration from '../assets/empty-staff.png';
 import SearchBar from './SearchBar';
 import actionIcon from '../assets/Buttons/action-icon.svg';
+import personsIcon from '../assets/fonts/persons-icon.svg';
+import settingsIcon from '../assets/fonts/settings.icon.svg';
 
 export default function StaffOverview({ employees = [], departments = [], onSelect, onEditEmployee, onDeleteEmployees, onNewStaff }) {
   const [actionsOpen, setActionsOpen] = useState(false);
@@ -12,6 +14,8 @@ export default function StaffOverview({ employees = [], departments = [], onSele
   const [isDeleting, setIsDeleting] = useState(false);
   const [localEmployees, setLocalEmployees] = useState(Array.isArray(employees) ? employees : []);
   const [search, setSearch] = useState('');
+  const [departmentFilter, setDepartmentFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
   const actionsRef = useRef();
 
   useEffect(() => {
@@ -66,7 +70,16 @@ export default function StaffOverview({ employees = [], departments = [], onSele
       .filter(Boolean)
       .join(' ')
       .toLowerCase();
-    return !search || text.includes(search.toLowerCase());
+    const matchesSearch = !search || text.includes(search.toLowerCase());
+    const matchesDepartment = departmentFilter === 'all' || (() => {
+      const deptId = typeof emp.department === 'object' ? emp.department?.id : emp.department;
+      return String(deptId) === String(departmentFilter);
+    })();
+    const matchesStatus = statusFilter === 'all' || (() => {
+      const empStatus = String(emp?.status ?? 'active').toLowerCase();
+      return empStatus === statusFilter;
+    })();
+    return matchesSearch && matchesDepartment && matchesStatus;
   });
 
   const mapStatus = raw => {
@@ -88,7 +101,8 @@ export default function StaffOverview({ employees = [], departments = [], onSele
               disabled={selectedRows.length === 0}
               style={{ opacity: selectedRows.length === 0 ? 0.5 : 1 }}
             >
-              <span aria-hidden="true">⋯</span> Weitere Aktionen
+              <img src={settingsIcon} alt="" width="17" height="17" style={{ marginRight: '8px' }} />
+              Weitere Aktionen
             </button>
             {actionsOpen && (
               <div className="actions-dropdown">
@@ -114,7 +128,24 @@ export default function StaffOverview({ employees = [], departments = [], onSele
         </div>
       </div>
 
-      <SearchBar term={search} onTermChange={setSearch} statusOptions={null} />
+      <SearchBar
+        term={search}
+        onTermChange={setSearch}
+        status={statusFilter}
+        onStatusChange={setStatusFilter}
+        statusOptions={[
+          { value: 'all', label: 'Alle' },
+          { value: 'active', label: 'Aktiv' },
+          { value: 'disabled', label: 'Inaktiv' },
+          { value: 'draft', label: 'Entwurf' },
+        ]}
+        department={departmentFilter}
+        onDepartmentChange={setDepartmentFilter}
+        departmentOptions={[
+          { value: 'all', label: 'Alle' },
+          ...departments.map(d => ({ value: String(d.id), label: d.name }))
+        ]}
+      />
       <div className="page-container department-overview__content">
         {localEmployees.length === 0 ? (
           <div className="empty-state">
@@ -161,9 +192,13 @@ export default function StaffOverview({ employees = [], departments = [], onSele
                   let departmentName = '-';
                   if (typeof emp.department === 'object') {
                     departmentName = emp.department?.name ?? '-';
-                  } else if (emp.department != null) {
+                  } else if (emp.department != null && emp.department !== 0 && emp.department !== '0') {
                     const deptObj = departments.find(d => d.id === emp.department);
                     departmentName = deptObj?.name ?? String(emp.department);
+                  }
+                  // If departmentName is empty string or '0', show '-'
+                  if (!departmentName || departmentName === '0' || departmentName === 0) {
+                    departmentName = '-';
                   }
                   const phone = emp.telephone || emp.phone || '-';
                   const { type: statusType, label: statusLabel } = mapStatus(emp.status);
@@ -184,7 +219,12 @@ export default function StaffOverview({ employees = [], departments = [], onSele
                       <td style={{ color: '#222' }}>{fullName}</td>
                       <td></td>
                       <td></td>
-                      <td style={{ textAlign: 'center' }}>{departmentName}</td>
+                      <td className="department-cell" style={{ textAlign: 'center' }}>
+                        {departmentName !== '-' && (
+                          <img src={personsIcon} alt="" width="17" height="17" className="persons-icon" />
+                        )}
+                        <span>{departmentName}</span>
+                      </td>
                       <td style={{ textAlign: 'center' }}>{phone}</td>
                       <td className="status">
                         <span className="status-wrap">

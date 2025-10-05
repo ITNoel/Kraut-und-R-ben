@@ -7,12 +7,15 @@
 }
 .department-overview__table thead tr,
 .department-overview__table tbody tr {
-  height: 60px;
+  height: 60px !important;
+  max-height: 60px !important;
 }
 .department-overview__table th,
 .department-overview__table td {
-  height: 60px;
+  height: 60px !important;
+  max-height: 60px !important;
   vertical-align: middle;
+  box-sizing: border-box;
 }
 
 /* Overview-Header Buttons: große Abrundung nur im Header */
@@ -564,4 +567,65 @@
   text-align: right !important;
   padding-right: 3rem !important;
   padding-left: 2rem !important;
+}
+
+/* Department cell styling */
+.services-overview .department-cell {
+  text-align: center !important;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.services-overview .department-cell img.persons-icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.services-overview .department-cell span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Persons cell styling */
+.services-overview .persons-cell {
+  text-align: center !important;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.services-overview .persons-cell img.person-icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.services-overview .persons-cell span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Dokumente cell styling */
+.services-overview .documents-cell {
+  text-align: center !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  vertical-align: middle !important;
+}
+
+.services-overview .documents-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #E6F3FF;
+  color: #0066CC;
+  padding: 0.22rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.95rem;
+  font-weight: 400;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+  border: none;
+  line-height: 1;
+  height: auto;
 }

@@ -658,6 +658,24 @@
   text-align: center !important;
 }
 
+/* Employees cell styling */
+.department-overview .employees-cell {
+  text-align: center !important;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.department-overview .employees-cell img.person-icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.department-overview .employees-cell span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 
 
 

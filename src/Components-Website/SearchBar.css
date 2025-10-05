@@ -1,1 +1,6 @@
 /* Styling in global.css ausgelagert */
+
+/* Higher z-index for filter dropdowns */
+.filter-bar__status .dropdown-list {
+  z-index: 9999 !important;
+}
