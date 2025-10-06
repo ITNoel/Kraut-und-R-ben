@@ -541,16 +541,6 @@ export default function Department({
           <div className="page-container">
             <div className="section">
               <h2>Mitarbeiter</h2>
-              <div className="employee-list-box">
-                {employees.map((p, i) => (
-                  <div key={i} className="employee-list-item">
-                    <button className="employee-delete-btn" onClick={() => removeEmployee(i)} aria-label="Mitarbeiter entfernen">
-                      <img src={trashIcon} width={16} height={16} alt="" />
-                    </button>
-                    <span>{p.first_name} {p.last_name}</span>
-                  </div>
-                ))}
-              </div>
 
               <div className="employee-dropdown-wrapper" ref={employeeRef}>
                 <button
@@ -586,24 +576,23 @@ export default function Department({
                   </ul>
                 )}
               </div>
+
+              <div className="employee-list-box">
+                {employees.map((p, i) => (
+                  <div key={i} className="employee-list-item">
+                    <button className="employee-delete-btn" onClick={() => removeEmployee(i)} aria-label="Mitarbeiter entfernen">
+                      <img src={trashIcon} width={16} height={16} alt="" />
+                    </button>
+                    <span>{p.first_name} {p.last_name}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
           <div className="page-container">
             <div className="section">
               <h2>Dienste</h2>
-
-              {/* Liste der aktuell zur Abteilung hinzugefügten Dienste */}
-              <div className="service-list-box">
-                {services.map((s, i) => (
-                  <div key={s.id ?? `${s.name}-${i}`} className="service-list-item">
-                    <button className="service-delete-btn" onClick={() => removeService(i)} aria-label="Dienst entfernen">
-                      <img src={trashIcon} width={16} height={16} alt="" />
-                    </button>
-                    <span>{s.name}</span>
-                  </div>
-                ))}
-              </div>
 
                {/* Dienste anlegen: zeigt Dropdown mit globalen Diensten oder Modal wenn keine vorhanden */}
                <div className="service-dropdown-wrapper" ref={serviceRef}>
@@ -647,6 +636,18 @@ export default function Department({
                    </ul>
                  )}
                </div>
+
+              {/* Liste der aktuell zur Abteilung hinzugefügten Dienste */}
+              <div className="service-list-box">
+                {services.map((s, i) => (
+                  <div key={s.id ?? `${s.name}-${i}`} className="service-list-item">
+                    <button className="service-delete-btn" onClick={() => removeService(i)} aria-label="Dienst entfernen">
+                      <img src={trashIcon} width={16} height={16} alt="" />
+                    </button>
+                    <span>{s.name}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </aside>

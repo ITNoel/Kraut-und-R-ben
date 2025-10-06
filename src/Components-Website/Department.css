@@ -51,6 +51,26 @@
   grid-template-columns: repeat(2, 1fr);
 }
 
+/* Toggle Box für "Abteilung ausblenden" */
+.right-sidebar .toggle-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px 24px;
+  gap: 12px;
+  min-height: auto;
+}
+
+.right-sidebar .toggle-box span {
+  order: 2;
+  margin: 0;
+  color: #000;
+}
+
+.right-sidebar .toggle-box .switch {
+  order: 1;
+}
+
 /* Labeled Inputs - schwarze Schriftfarbe für Labels */
 .form-grid.labeled-inputs label {
   display: flex;
@@ -60,6 +80,10 @@
   font-weight: var(--label-font-weight);
   opacity: 1;
   gap: 4px;
+}
+
+.form-grid.labeled-inputs input {
+  border: 1px solid #e5e7eb;
 }
 
 /* Full-width label für Name-Feld */
@@ -269,7 +293,7 @@
   width: 100%;
   padding: 10px;
   margin: 0;
-  border: 1px solid #bdbdbd;
+  border: 1px solid #e5e7eb;
   border-radius: var(--border-radius-small);
   font-size: 14px;
   background: white;
@@ -321,6 +345,11 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+
+.employee-list-box .employee-list-item:last-child {
   margin-bottom: 16px;
 }
 
@@ -372,6 +401,11 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+
+.service-list-box .service-list-item:last-child {
   margin-bottom: 16px;
 }
 
@@ -421,10 +455,12 @@
 /* Ensure page-containers in sidebar don't clip dropdowns */
 .right-sidebar .page-container {
   overflow: visible !important;
+  padding-bottom: 16px;
 }
 
 .right-sidebar .page-container .section {
   overflow: visible !important;
+  padding: 0;
 }
 
 /* Increase z-index for dropdowns to ensure they appear above other containers */
@@ -437,6 +473,8 @@
 .service-dropdown-wrapper {
   position: relative;
   width: 100%;
+  margin-top: 16px;
+  margin-bottom: 0;
 }
 
 .service-trigger {
@@ -516,6 +554,8 @@
 .employee-dropdown-wrapper {
   position: relative;
   width: 100%;
+  margin-top: 16px;
+  margin-bottom: 0;
 }
 
 .employee-trigger {
