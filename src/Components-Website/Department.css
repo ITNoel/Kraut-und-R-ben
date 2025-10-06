@@ -43,9 +43,550 @@
   flex-direction: column;
   gap: var(--page-gap);
   padding-right: var(--column-gap);
+  padding-bottom: 100px; /* Zusätzlicher Platz am unteren Rand für Dropdowns */
 }
 
 /* vorhandenes Grid-Layout belassen */
 .form-grid.two-col {
   grid-template-columns: repeat(2, 1fr);
+}
+
+/* Labeled Inputs - schwarze Schriftfarbe für Labels */
+.form-grid.labeled-inputs label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: #000;
+  font-weight: var(--label-font-weight);
+  opacity: 1;
+  gap: 4px;
+}
+
+/* Full-width label für Name-Feld */
+.form-grid.labeled-inputs label.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Opening Hours Toggle */
+.opening-hours-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 0;
+  min-height: 44px;
+  background: transparent;
+}
+
+.opening-hours-toggle span {
+  font-size: 14px;
+  color: #222;
+  font-weight: 400;
+  margin: 0;
+  line-height: 20px;
+  order: 2;
+}
+
+.opening-hours-toggle .switch {
+  position: relative;
+  width: 44px;
+  height: 22px;
+  flex-shrink: 0;
+  order: 1;
+}
+
+.opening-hours-toggle .switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.opening-hours-toggle .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ccc;
+  transition: 0.28s;
+  border-radius: var(--radius-full);
+}
+
+.opening-hours-toggle .slider::before {
+  content: "";
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background: white;
+  transition: 0.28s;
+  border-radius: 50%;
+}
+
+.opening-hours-toggle .switch input:checked + .slider {
+  background: var(--color-primary);
+}
+
+.opening-hours-toggle .switch input:checked + .slider::before {
+  transform: translateX(22px);
+}
+
+/* Opening Hours Block Container */
+.opening-hours-block {
+  margin-top: 16px;
+}
+
+.opening-hours-block + .opening-hours-block {
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Opening Hours Display Box */
+.opening-hours-box {
+  margin-top: 16px;
+  padding: 6px 16px;
+  min-height: 60px;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--border-radius-small);
+  background: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  align-content: center;
+}
+
+.opening-hours-block:first-of-type .opening-hours-box {
+  margin-top: 0;
+}
+
+.opening-hours-placeholder {
+  color: #9ca3af;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.opening-hours-day-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: var(--border-radius-small);
+  white-space: nowrap;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.opening-hours-day-tag:hover {
+  background: #bae6fd;
+}
+
+.opening-hours-day-tag img {
+  display: block;
+  flex-shrink: 0;
+}
+
+/* Weekday Buttons */
+.opening-hours-days {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.opening-hours-day-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--border-radius-small);
+  font-size: 14px;
+  font-weight: 400;
+  color: #222;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.opening-hours-day-btn:hover {
+  border-color: var(--color-primary);
+  background: #f5f7fa;
+}
+
+.opening-hours-day-btn img {
+  display: block;
+  opacity: 0.6;
+}
+
+.opening-hours-day-btn:hover img {
+  opacity: 1;
+}
+
+/* Opening Hours Time Inputs */
+.opening-hours-times {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.time-input-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.time-input-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #000;
+  font-weight: 500;
+}
+
+.time-input-header img {
+  display: block;
+  flex-shrink: 0;
+}
+
+.time-input-header span {
+  line-height: 1;
+}
+
+.time-input-label input[type="time"] {
+  width: 100%;
+  padding: 10px;
+  margin: 0;
+  border: 1px solid #bdbdbd;
+  border-radius: var(--border-radius-small);
+  font-size: 14px;
+  background: white;
+  color: #000;
+  box-sizing: border-box;
+  height: 40px;
+  font-family: inherit;
+}
+
+/* Opening Hours Divider */
+.opening-hours-divider {
+  margin-top: 32px;
+  margin-bottom: 32px;
+  border: none;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Opening Hours Add More Button */
+.opening-hours-add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--border-radius-small);
+  font-size: 14px;
+  font-weight: 400;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.opening-hours-add-btn:hover {
+  border-color: var(--color-primary);
+  background: #f5f7fa;
+}
+
+.opening-hours-add-btn img {
+  display: block;
+  flex-shrink: 0;
+}
+
+/* Employee List Items - matching the dropdown button style */
+.employee-list-box {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.employee-list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  height: 44px;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--border-radius-small);
+  background: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.employee-list-item:hover {
+  border-color: #d1d5db;
+}
+
+.employee-list-item span {
+  flex: 1;
+  font-size: 14px;
+  color: #222;
+  font-weight: 400;
+}
+
+.employee-delete-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.employee-delete-btn:hover {
+  opacity: 1;
+}
+
+.employee-delete-btn img {
+  display: block;
+}
+
+/* Service List Items - matching the dropdown button style */
+.service-list-box {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.service-list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  height: 44px;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--border-radius-small);
+  background: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.service-list-item:hover {
+  border-color: #d1d5db;
+}
+
+.service-list-item span {
+  flex: 1;
+  font-size: 14px;
+  color: #222;
+  font-weight: 400;
+}
+
+.service-delete-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.service-delete-btn:hover {
+  opacity: 1;
+}
+
+.service-delete-btn img {
+  display: block;
+}
+
+/* Ensure page-containers in sidebar don't clip dropdowns */
+.right-sidebar .page-container {
+  overflow: visible !important;
+}
+
+.right-sidebar .page-container .section {
+  overflow: visible !important;
+}
+
+/* Increase z-index for dropdowns to ensure they appear above other containers */
+.employee-dropdown-wrapper .dropdown-list,
+.service-dropdown-wrapper .dropdown-list {
+  z-index: 100;
+}
+
+/* Service Dropdown - styled like SearchBar status filter */
+.service-dropdown-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.service-trigger {
+  width: 100%;
+  height: 44px;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--border-radius-small);
+  background: #fff;
+  font-size: 14px;
+  font-weight: 400;
+  color: #6b7280;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 16px 0 48px;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.2s ease;
+}
+
+.service-trigger:hover {
+  border-color: #d1d5db;
+}
+
+.service-trigger__chevron {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.service-trigger.open .service-trigger__chevron {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.service-dropdown-wrapper .dropdown-list {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border-radius: var(--border-radius-small);
+  border: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  padding: 6px;
+  list-style: none;
+  margin: 0;
+  z-index: 10;
+  font-family: inherit;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.service-dropdown-wrapper .dropdown-list li {
+  padding: 12px 10px;
+  border-radius: var(--border-radius-small);
+  cursor: pointer;
+  font-size: 14px;
+  color: #222;
+  font-family: inherit;
+  transition: background 0.15s ease;
+}
+
+.service-dropdown-wrapper .dropdown-list li[aria-selected="true"],
+.service-dropdown-wrapper .dropdown-list li:hover,
+.service-dropdown-wrapper .dropdown-list li:focus {
+  background: #f5f7fa;
+  outline: none;
+}
+
+/* Employee Dropdown - styled like SearchBar status filter */
+.employee-dropdown-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.employee-trigger {
+  width: 100%;
+  height: 44px;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--border-radius-small);
+  background: #fff;
+  font-size: 14px;
+  font-weight: 400;
+  color: #6b7280;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 16px 0 48px;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.2s ease;
+}
+
+.employee-trigger:hover {
+  border-color: #d1d5db;
+}
+
+.employee-trigger__chevron {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.employee-trigger.open .employee-trigger__chevron {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.employee-dropdown-wrapper .dropdown-list {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border-radius: var(--border-radius-small);
+  border: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  padding: 6px;
+  list-style: none;
+  margin: 0;
+  z-index: 10;
+  font-family: inherit;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.employee-dropdown-wrapper .dropdown-list li {
+  padding: 12px 10px;
+  border-radius: var(--border-radius-small);
+  cursor: pointer;
+  font-size: 14px;
+  color: #222;
+  font-family: inherit;
+  transition: background 0.15s ease;
+}
+
+.employee-dropdown-wrapper .dropdown-list li[aria-selected="true"],
+.employee-dropdown-wrapper .dropdown-list li:hover,
+.employee-dropdown-wrapper .dropdown-list li:focus {
+  background: #f5f7fa;
+  outline: none;
 }

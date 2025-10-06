@@ -3,6 +3,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import empty_staff from '../assets/empty-staff.png';
 import empty_services from '../assets/empty-services.png';
+import arrowIcon from '../assets/Buttons/arrow-icon.svg';
+import trashIcon from '../assets/Buttons/trash-icon.svg';
+import addIcon from '../assets/Buttons/add-icon.svg';
+import xIcon from '../assets/Buttons/x-icon.svg';
+import clockIcon from '../assets/fonts/clock-icon.svg';
+import plusIcon from '../assets/fonts/plus-icon.svg';
 import '../global.css';
 import './Department.css';
 import { api } from '../Functions/apiClient';
@@ -29,6 +35,17 @@ export default function Department({
     city: '',
   });
   const [hideDept, setHideDept] = useState(false);
+  const [useOpeningHours, setUseOpeningHours] = useState(false);
+  const [timeBlocks, setTimeBlocks] = useState([
+    {
+      id: 1,
+      selectedDays: [],
+      timeStart: '',
+      timeEnd: '',
+      breakStart: '',
+      breakEnd: ''
+    }
+  ]);
   const [employees, setEmployees] = useState([]);
   const [services, setServices] = useState([]);
   const [showEmployeeDropdown, setShowEmployeeDropdown] = useState(false);
@@ -235,6 +252,51 @@ export default function Department({
   const removeService = i =>
     setServices(list => list.filter((_, idx) => idx !== i));
 
+  // Add new time block
+  const addTimeBlock = () => {
+    // Prüfe, ob noch Tage verfügbar sind
+    const allSelectedDays = timeBlocks.flatMap(b => b.selectedDays);
+    const allDays = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
+    const availableDays = allDays.filter(day => !allSelectedDays.includes(day));
+
+    // Wenn keine Tage mehr verfügbar sind, tue nichts
+    if (availableDays.length === 0) {
+      return;
+    }
+
+    setTimeBlocks(prev => [
+      ...prev,
+      {
+        id: Date.now(),
+        selectedDays: [],
+        timeStart: '',
+        timeEnd: '',
+        breakStart: '',
+        breakEnd: ''
+      }
+    ]);
+  };
+
+  // Update time block
+  const updateTimeBlock = (id, field, value) => {
+    setTimeBlocks(prev => prev.map(block =>
+      block.id === id ? { ...block, [field]: value } : block
+    ));
+  };
+
+  // Toggle day in time block
+  const toggleDayInBlock = (blockId, day) => {
+    setTimeBlocks(prev => prev.map(block => {
+      if (block.id === blockId) {
+        const days = block.selectedDays.includes(day)
+          ? block.selectedDays.filter(d => d !== day)
+          : [...block.selectedDays, day];
+        return { ...block, selectedDays: days };
+      }
+      return block;
+    }));
+  };
+
   const addService = () => {
     const svc = prompt('Name des Dienstes');
     if (svc && svc.trim()) {
@@ -322,60 +384,147 @@ export default function Department({
           <div className="page-container">
             <div className="section">
               <h2>Informationen</h2>
-              <div className="form-grid two-col labeled-inputs">
-                <label>Name*<input name="name" value={form.name} onChange={handleChange} /></label>
-                <label>E-Mail*<input name="email" value={form.email} onChange={handleChange} /></label>
-                <label>Telefonnummer*<input name="phone" value={form.phone} onChange={handleChange} /></label>
-                <label>Straße<input name="street" value={form.street} onChange={handleChange} /></label>
-                <label>Raum<input name="room" value={form.room} onChange={handleChange} /></label>
-                <label>Postleitzahl<input name="postalCode" value={form.postalCode} onChange={handleChange} /></label>
-                <label>Ort<input name="city" value={form.city} onChange={handleChange} /></label>
+              <div className="form-grid labeled-inputs">
+                <label className="full-width">Name*<input name="name" value={form.name} onChange={handleChange} /></label>
+                <div className="form-grid two-col labeled-inputs">
+                  <label>E-Mail*<input name="email" value={form.email} onChange={handleChange} /></label>
+                  <label>Telefonnummer*<input name="phone" value={form.phone} onChange={handleChange} /></label>
+                  <label>Straße<input name="street" value={form.street} onChange={handleChange} /></label>
+                  <label>Raum<input name="room" value={form.room} onChange={handleChange} /></label>
+                  <label>Postleitzahl<input name="postalCode" value={form.postalCode} onChange={handleChange} /></label>
+                  <label>Ort<input name="city" value={form.city} onChange={handleChange} /></label>
+                </div>
               </div>
             </div>
           </div>
 
           <div className="page-container">
             <div className="section">
-              <h2>Dienste</h2>
-
-              {/* Liste der aktuell zur Abteilung hinzugefügten Dienste (ohne Platzhalter) */}
-              <div className="list-box" style={{ marginBottom: 12 }}>
-                {services.map((s, i) => (
-                  <div key={s.id ?? `${s.name}-${i}`} className="list-item">
-                    <span>{s.name}</span>
-                    <button className="btn overflow" onClick={() => removeService(i)}>✕</button>
-                  </div>
-                ))}
+              <h2>Öffnungszeiten</h2>
+              <div className="opening-hours-toggle">
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={useOpeningHours}
+                    onChange={() => setUseOpeningHours(h => !h)}
+                  />
+                  <span className="slider" />
+                </label>
+                <span>Öffnungszeiten übernehmen</span>
               </div>
 
-               {/* Dienste anlegen: zeigt Dropdown mit globalen Diensten oder Modal wenn keine vorhanden */}
-               <div
-                 className={`service-box dashed${showServiceDropdown ? ' open' : ''}`}
-                 ref={serviceRef}
-                 role="button"
-                 tabIndex={0}
-                 onClick={(e) => { if (e.target.closest('.dropdown-list')) return; handleServiceAddClick(); }}
-                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleServiceAddClick(); } }}
-               >
-                 <div className="service-box__label">Dienste anlegen</div>
+              {/* Render all time blocks */}
+              {timeBlocks.map((block, blockIndex) => {
+                // Sammle alle bereits ausgewählten Tage aus ALLEN Blöcken
+                const allSelectedDays = timeBlocks.flatMap(b => b.selectedDays);
+                // Verfügbare Tage: Alle Tage minus die bereits in IRGENDEINEM Block ausgewählten
+                const availableDays = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag']
+                  .filter(day => !allSelectedDays.includes(day) || block.selectedDays.includes(day));
 
-                 {showServiceDropdown && (
-                   <ul className="dropdown-list">
-                     {generalServicesList.length > 0 ? (
-                       generalServicesList.map((opt, i) => {
-                         const label = typeof opt === 'string' ? opt : (opt.name || opt.title || opt.type || `Dienst ${i+1}`);
-                         return (
-                           <li key={i} onClick={() => addServiceFromDropdown(opt)}>{label}</li>
-                         );
-                       })
-                     ) : (
-                       <li style={{ opacity: 0.7, padding: '10px' }}>Keine Dienste verfügbar</li>
-                     )}
-                   </ul>
-                 )}
-               </div>
+                return (
+                  <div key={block.id} className="opening-hours-block">
+                    {/* Selected Days Display Box */}
+                    <div className="opening-hours-box">
+                      {block.selectedDays.length === 0 ? (
+                        <span className="opening-hours-placeholder">Keine Tage ausgewählt</span>
+                      ) : (
+                        (() => {
+                          const dayOrder = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
+                          const sortedDays = [...block.selectedDays].sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b));
+                          return sortedDays.map((day) => (
+                            <button
+                              key={day}
+                              type="button"
+                              className="opening-hours-day-tag"
+                              onClick={() => toggleDayInBlock(block.id, day)}
+                            >
+                              <img src={xIcon} width={10} height={10} alt="" />
+                              <span>{day}</span>
+                            </button>
+                          ));
+                        })()
+                      )}
+                    </div>
+
+                    {/* Weekday Buttons - nur noch nicht global ausgewählte Tage zeigen */}
+                    <div className="opening-hours-days">
+                      {availableDays
+                        .filter(day => !block.selectedDays.includes(day))
+                        .map((day) => (
+                          <button
+                            key={day}
+                            type="button"
+                            className="opening-hours-day-btn"
+                            onClick={() => toggleDayInBlock(block.id, day)}
+                          >
+                            <img src={addIcon} width={14} height={14} alt="" />
+                            <span>{day}</span>
+                          </button>
+                        ))}
+                    </div>
+
+                  {/* Time Input Fields */}
+                  <div className="opening-hours-times">
+                    <label className="time-input-label">
+                      <div className="time-input-header">
+                        <img src={clockIcon} width={18} height={18} alt="" />
+                        <span>Uhrzeit Beginn*</span>
+                      </div>
+                      <input
+                        type="time"
+                        value={block.timeStart}
+                        onChange={(e) => updateTimeBlock(block.id, 'timeStart', e.target.value)}
+                      />
+                    </label>
+                    <label className="time-input-label">
+                      <div className="time-input-header">
+                        <img src={clockIcon} width={18} height={18} alt="" />
+                        <span>Uhrzeit Ende*</span>
+                      </div>
+                      <input
+                        type="time"
+                        value={block.timeEnd}
+                        onChange={(e) => updateTimeBlock(block.id, 'timeEnd', e.target.value)}
+                      />
+                    </label>
+                    <label className="time-input-label">
+                      <div className="time-input-header">
+                        <img src={clockIcon} width={18} height={18} alt="" />
+                        <span>Pause Beginn</span>
+                      </div>
+                      <input
+                        type="time"
+                        value={block.breakStart}
+                        onChange={(e) => updateTimeBlock(block.id, 'breakStart', e.target.value)}
+                      />
+                    </label>
+                    <label className="time-input-label">
+                      <div className="time-input-header">
+                        <img src={clockIcon} width={18} height={18} alt="" />
+                        <span>Pause Ende</span>
+                      </div>
+                      <input
+                        type="time"
+                        value={block.breakEnd}
+                        onChange={(e) => updateTimeBlock(block.id, 'breakEnd', e.target.value)}
+                      />
+                    </label>
+                  </div>
+                </div>
+                );
+              })}
+
+              {/* Divider */}
+              <hr className="opening-hours-divider" />
+
+              {/* Add More Button */}
+              <button type="button" className="opening-hours-add-btn" onClick={addTimeBlock}>
+                <img src={plusIcon} width={13} height={13} alt="" />
+                <span>Mehr hinzufügen</span>
+              </button>
             </div>
           </div>
+
         </div>
 
         <aside className="right-sidebar">
@@ -391,35 +540,113 @@ export default function Department({
 
           <div className="page-container">
             <div className="section">
-              <h2>Personen</h2>
-              <div className="list-box">
+              <h2>Mitarbeiter</h2>
+              <div className="employee-list-box">
                 {employees.map((p, i) => (
-                  <div key={i} className="list-item">
+                  <div key={i} className="employee-list-item">
+                    <button className="employee-delete-btn" onClick={() => removeEmployee(i)} aria-label="Mitarbeiter entfernen">
+                      <img src={trashIcon} width={16} height={16} alt="" />
+                    </button>
                     <span>{p.first_name} {p.last_name}</span>
-                    <button className="btn overflow" onClick={() => removeEmployee(i)}>✕</button>
                   </div>
                 ))}
               </div>
 
-              <div
-                className={`service-box dashed${showEmployeeDropdown ? ' open' : ''}`}
-                ref={employeeRef}
-                role="button"
-                tabIndex={0}
-                onClick={(e) => { if (e.target.closest('.dropdown-list')) return; handlePersonAddClick(); }}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handlePersonAddClick(); } }}
-              >
-                <div className="service-box__label">Person hinzufügen</div>
+              <div className="employee-dropdown-wrapper" ref={employeeRef}>
+                <button
+                  type="button"
+                  className={`employee-trigger ${showEmployeeDropdown ? 'open' : ''}`}
+                  onClick={handlePersonAddClick}
+                  aria-haspopup="listbox"
+                  aria-expanded={showEmployeeDropdown}
+                >
+                  <span className="employee-trigger__chevron" aria-hidden="true">
+                    <img src={arrowIcon} width={18} height={9} alt="" />
+                  </span>
+                  Mitarbeiter hinzufügen
+                </button>
                 {showEmployeeDropdown && (
-                  <ul className="dropdown-list">
+                  <ul className="dropdown-list" role="listbox">
                     {employeeOptions.map((opt, i) => (
-                      <li key={i} onClick={() => addEmployeeFromDropdown(opt)}>
+                      <li
+                        key={i}
+                        role="option"
+                        tabIndex={0}
+                        onClick={() => addEmployeeFromDropdown(opt)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            addEmployeeFromDropdown(opt);
+                          }
+                        }}
+                      >
                         {opt.first_name} {opt.last_name}
                       </li>
                     ))}
                   </ul>
                 )}
               </div>
+            </div>
+          </div>
+
+          <div className="page-container">
+            <div className="section">
+              <h2>Dienste</h2>
+
+              {/* Liste der aktuell zur Abteilung hinzugefügten Dienste */}
+              <div className="service-list-box">
+                {services.map((s, i) => (
+                  <div key={s.id ?? `${s.name}-${i}`} className="service-list-item">
+                    <button className="service-delete-btn" onClick={() => removeService(i)} aria-label="Dienst entfernen">
+                      <img src={trashIcon} width={16} height={16} alt="" />
+                    </button>
+                    <span>{s.name}</span>
+                  </div>
+                ))}
+              </div>
+
+               {/* Dienste anlegen: zeigt Dropdown mit globalen Diensten oder Modal wenn keine vorhanden */}
+               <div className="service-dropdown-wrapper" ref={serviceRef}>
+                 <button
+                   type="button"
+                   className={`service-trigger ${showServiceDropdown ? 'open' : ''}`}
+                   onClick={handleServiceAddClick}
+                   aria-haspopup="listbox"
+                   aria-expanded={showServiceDropdown}
+                 >
+                   <span className="service-trigger__chevron" aria-hidden="true">
+                     <img src={arrowIcon} width={18} height={9} alt="" />
+                   </span>
+                   Dienste hinzufügen
+                 </button>
+                 {showServiceDropdown && (
+                   <ul className="dropdown-list" role="listbox">
+                     {generalServicesList.length > 0 ? (
+                       generalServicesList.map((opt, i) => {
+                         const label = typeof opt === 'string' ? opt : (opt.name || opt.title || opt.type || `Dienst ${i+1}`);
+                         return (
+                           <li
+                             key={i}
+                             role="option"
+                             tabIndex={0}
+                             onClick={() => addServiceFromDropdown(opt)}
+                             onKeyDown={(e) => {
+                               if (e.key === 'Enter' || e.key === ' ') {
+                                 e.preventDefault();
+                                 addServiceFromDropdown(opt);
+                               }
+                             }}
+                           >
+                             {label}
+                           </li>
+                         );
+                       })
+                     ) : (
+                       <li style={{ opacity: 0.7, padding: '10px' }}>Keine Dienste verfügbar</li>
+                     )}
+                   </ul>
+                 )}
+               </div>
             </div>
           </div>
         </aside>
