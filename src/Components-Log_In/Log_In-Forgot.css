@@ -17,33 +17,39 @@
 }
 
 .input-group.forgot-input {
-  position: relative;
   width: 100%;
   max-width: 480px;
   margin-bottom: 1.5rem;
 }
 
+.input-group.forgot-input .input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.input-group.forgot-input .input-icon-left {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  opacity: 1;
+}
+
 .input-group.forgot-input input {
   width: 100%;
-  padding: 0.9rem 3rem 0.9rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 1.5rem;
+  padding: 0.9rem 1rem 0.9rem 3rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
   font-size: 0.9rem;
   outline: none;
+  opacity: var(--label-opacity);
   transition: border-color 0.2s ease;
+  box-sizing: border-box;
 }
 
 .input-group.forgot-input input:hover {
-  border-color: #bbb;
-}
-
-.input-group.forgot-input .input-icon {
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.2rem;
-  pointer-events: none;
+  border-color: black;
 }
 
 .forgot-buttons {

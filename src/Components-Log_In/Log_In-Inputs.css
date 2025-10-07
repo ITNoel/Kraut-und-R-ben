@@ -26,30 +26,46 @@
 
 .input-group {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #000;
+  margin: 0;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.input-icon-left {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  opacity: 1;
 }
 
 .input-group input {
   width: 100%;
-  padding: 0.9rem 3rem 0.9rem 1rem;
+  padding: 0.9rem 1rem 0.9rem 3rem;
   border: 2px solid #ddd;
-  border-radius: var(--radius-md); /* nutzt die globale Variable */
+  border-radius: 8px;
   font-size: 0.9rem;
   outline: none;
   opacity: var(--label-opacity);
-  transition: border-color 0.2s ease; /* neu */
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
 }
 
-/* Hover-Effekt: Rand wird dunkler */
 .input-group input:hover {
   border-color: black;
-}
-
-.input-icon {
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.2rem;
 }
 
 .btn.log-in-btn {
@@ -58,7 +74,7 @@
   width: 100%;
   box-sizing: border-box;
   border: 2px solid transparent;
-  border-radius: var(--radius-md); /* nutzt die globale Variable */
+  border-radius: var(--radius-md);
   background-color: var(--color-primary);
   color: white;
   font-size: 1rem;

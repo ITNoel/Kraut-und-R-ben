@@ -3,27 +3,40 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../global.css';
 import './Services.css';
+import arrowIcon from '../assets/Buttons/arrow-icon.svg';
+import trashIcon from '../assets/Buttons/trash-icon.svg';
+import abordIcon from '../assets/fonts/abord-icon.svg';
+import saveIcon from '../assets/fonts/save-icon.svg';
+import saveMultipleIcon from '../assets/fonts/save-multiple-icon.svg';
+import uploadIcon from '../assets/fonts/upload-icon.svg';
 import { api } from '../Functions/apiClient';
 import { ROUTES } from '../app/routes';
 
 export default function Services({ initialData = null, index = null, generalServices = [], onSaveService, onUpdateService, onCancel, generalDepartments = [] }) {
   const [hideService, setHideService] = useState(false);
-  const [pendingSave, setPendingSave] = useState(false); // NEU
-  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false); // NEU
-  const [pendingDelete, setPendingDelete] = useState(false); // NEU
-  const [showDeleteError, setShowDeleteError] = useState(null); // NEU
+  const [pendingSave, setPendingSave] = useState(false);
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState(false);
+  const [showDeleteError, setShowDeleteError] = useState(null);
+
+  // Dropdowns
   const [showDeptDropdown, setShowDeptDropdown] = useState(false);
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
-  const [showPaymentDropdown, setShowPaymentDropdown] = useState(false);
-  const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [showQualificationDropdown, setShowQualificationDropdown] = useState(false);
+
+  // Listen
+  const [departments, setDepartments] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [qualifications, setQualifications] = useState([]);
+  const [documents, setDocuments] = useState([]);
 
   const deptRef = useRef();
   const notifRef = useRef();
-  const paymentRef = useRef();
+  const qualificationRef = useRef();
 
-  const deptOptions = ['Bauamt', 'Sozial & Familienamt', 'Finanzabteilung', 'Personal'];
-  const notifOptions = ['Team A', 'Team B', 'Team C'];
-  const paymentOptions = ['Kreditkarte', 'PayPal', 'Rechnung'];
+  // Optionen für Dropdowns
+  const notifOptions = ['Team A', 'Team B', 'Team C', 'Alle Mitarbeiter'];
+  const qualificationOptions = ['Führerschein', 'Erste Hilfe', 'Sprachzertifikat', 'IT-Kenntnisse'];
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -33,23 +46,24 @@ export default function Services({ initialData = null, index = null, generalServ
       if (notifRef.current && !notifRef.current.contains(e.target)) {
         setShowNotifDropdown(false);
       }
-      if (paymentRef.current && !paymentRef.current.contains(e.target)) {
-        setShowPaymentDropdown(false);
+      if (qualificationRef.current && !qualificationRef.current.contains(e.target)) {
+        setShowQualificationDropdown(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Form state (verwende initialData falls vorhanden)
+  // Form state
   const [form, setForm] = useState({
-    name: initialData?.name || '',
     type: initialData?.type || '',
+    parallelBookings: initialData?.parallelBookings || '',
+    title: initialData?.title || initialData?.name || '',
     duration: initialData?.duration || '',
-    price: initialData?.price || '',
-    description: initialData?.description || '',
-    booking_notification: initialData?.booking_notification || '',
-    payment_method: initialData?.payment_method || '',
+    buffer: initialData?.buffer || '',
+    fee: initialData?.fee || initialData?.price || '',
+    maxPersons: initialData?.maxPersons || '',
+    note: initialData?.note || initialData?.description || '',
     is_active: initialData?.is_active ?? true
   });
 
@@ -70,52 +84,105 @@ export default function Services({ initialData = null, index = null, generalServ
     }
   }, [initialData]);
 
-  // initialData.department (falls vorhanden) übernehmen
-  useEffect(() => {
-    if (initialData?.department != null) {
-      const found = (Array.isArray(generalDepartments) ? generalDepartments : []).find(d => String(d.id) === String(initialData.department));
-      setSelectedDepartment(found ?? { id: initialData.department, name: `Abteilung ${initialData.department}` });
-    } else {
-      setSelectedDepartment(null);
-    }
-  }, [initialData, generalDepartments]);
-
   const setFieldOption = (key, value) => {
     setFieldOptions(prev => ({ ...prev, [key]: value }));
   };
 
+  // Initialisierung mit vorhandenen Daten
+  useEffect(() => {
+    if (initialData?.departments) {
+      setDepartments(Array.isArray(initialData.departments) ? initialData.departments : []);
+    }
+    if (initialData?.notifications) {
+      setNotifications(Array.isArray(initialData.notifications) ? initialData.notifications : []);
+    }
+    if (initialData?.qualifications) {
+      setQualifications(Array.isArray(initialData.qualifications) ? initialData.qualifications : []);
+    }
+    if (initialData?.documents) {
+      setDocuments(Array.isArray(initialData.documents) ? initialData.documents : []);
+    }
+  }, [initialData]);
+
   const backToOverview = () => {
     if (typeof onCancel === 'function') {
       onCancel();
-      return;
     }
-    // no onCancel provided — nothing we can reliably do here
   };
 
   const handleChange = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
-  const addDepartment = (dept) => {
+  // Auto-resize textarea
+  const handleTextareaChange = (e) => {
+    const textarea = e.target;
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+    handleChange('note', e.target.value);
+  };
+
+  // Abteilungen
+  const addDepartmentFromDropdown = (dept) => {
     const deptObj = typeof dept === 'object' ? dept : { id: dept, name: String(dept) };
-    setSelectedDepartment(deptObj);
+    if (!departments.some(d => d.id === deptObj.id)) {
+      setDepartments(list => [...list, deptObj]);
+    }
     setShowDeptDropdown(false);
   };
-  const removeDepartment = () => setSelectedDepartment(null);
+  const removeDepartment = (i) => setDepartments(list => list.filter((_, idx) => idx !== i));
 
-  // Save (update only, bleibt im Editor) — ruft onUpdateService
+  // Buchungsbenachrichtigungen
+  const addNotificationFromDropdown = (notif) => {
+    const notifObj = typeof notif === 'object' ? notif : { id: `notif-${Date.now()}`, name: String(notif) };
+    if (!notifications.some(n => n.name === notifObj.name)) {
+      setNotifications(list => [...list, notifObj]);
+    }
+    setShowNotifDropdown(false);
+  };
+  const removeNotification = (i) => setNotifications(list => list.filter((_, idx) => idx !== i));
+
+  // Qualifikationen
+  const addQualificationFromDropdown = (qual) => {
+    const qualObj = typeof qual === 'object' ? qual : { id: `qual-${Date.now()}`, name: String(qual) };
+    if (!qualifications.some(q => q.name === qualObj.name)) {
+      setQualifications(list => [...list, qualObj]);
+    }
+    setShowQualificationDropdown(false);
+  };
+  const removeQualification = (i) => setQualifications(list => list.filter((_, idx) => idx !== i));
+
+  // Dokumente hochladen
+  const handleFileUpload = (e) => {
+    const files = Array.from(e.target.files);
+    const newDocs = files.map(file => ({
+      id: `doc-${Date.now()}-${file.name}`,
+      name: file.name,
+      file: file
+    }));
+    setDocuments(list => [...list, ...newDocs]);
+  };
+  const removeDocument = (i) => setDocuments(list => list.filter((_, idx) => idx !== i));
+
+  // Save (update only, bleibt im Editor)
   const handleSave = async () => {
     const svcObj = {
       id: initialData?.id ?? (index == null ? `local-svc-${Date.now()}` : undefined),
-      name: form.name,
       type: form.type,
+      parallelBookings: form.parallelBookings,
+      title: form.title,
+      name: form.title, // für Kompatibilität
       duration: Number(form.duration) || form.duration,
-      price: form.price != null ? String(form.price) : '0.00',
-      description: form.description || '',
-      booking_notification: form.booking_notification || '',
-      payment_method: form.payment_method || '',
+      buffer: Number(form.buffer) || form.buffer,
+      fee: form.fee != null ? String(form.fee) : '0.00',
+      price: form.fee, // für Kompatibilität
+      maxPersons: Number(form.maxPersons) || form.maxPersons,
+      note: form.note || '',
+      description: form.note, // für Kompatibilität
       is_active: form.is_active ?? true,
-      status: hideService ? 'disabled' : ((form.name && form.duration) ? 'active' : 'draft'),
-      department: selectedDepartment ? (selectedDepartment.id ?? selectedDepartment) : null,
-      // Neue Feldkonfigurationen mitschicken
+      status: hideService ? 'disabled' : ((form.title && form.duration) ? 'active' : 'draft'),
+      departments,
+      notifications,
+      qualifications,
+      documents,
       fields: fieldOptions
     };
     setPendingSave(true);
@@ -132,7 +199,6 @@ export default function Services({ initialData = null, index = null, generalServ
       if (typeof onUpdateService === 'function') {
         onUpdateService(result, index);
       }
-      // bleibt im Editor (kein backToOverview)
     } catch (err) {
       alert('Fehler beim Speichern des Dienstes: ' + (err.message || err));
     } finally {
@@ -140,21 +206,27 @@ export default function Services({ initialData = null, index = null, generalServ
     }
   };
 
-  // Save & Close — ruft onSaveService und kehrt zur Übersicht zurück
+  // Save & Close
   const handleSaveAndClose = async () => {
     const svcObj = {
       id: initialData?.id ?? (index == null ? `local-svc-${Date.now()}` : undefined),
-      name: form.name,
       type: form.type,
+      parallelBookings: form.parallelBookings,
+      title: form.title,
+      name: form.title, // für Kompatibilität
       duration: Number(form.duration) || form.duration,
-      price: form.price != null ? String(form.price) : '0.00',
-      description: form.description || '',
-      booking_notification: form.booking_notification || '',
-      payment_method: form.payment_method || '',
+      buffer: Number(form.buffer) || form.buffer,
+      fee: form.fee != null ? String(form.fee) : '0.00',
+      price: form.fee, // für Kompatibilität
+      maxPersons: Number(form.maxPersons) || form.maxPersons,
+      note: form.note || '',
+      description: form.note, // für Kompatibilität
       is_active: form.is_active ?? true,
-      status: hideService ? 'disabled' : ((form.name && form.duration) ? 'active' : 'draft'),
-      department: selectedDepartment ? (selectedDepartment.id ?? selectedDepartment) : null,
-      // Neue Feldkonfigurationen mitschicken
+      status: hideService ? 'disabled' : ((form.title && form.duration) ? 'active' : 'draft'),
+      departments,
+      notifications,
+      qualifications,
+      documents,
       fields: fieldOptions
     };
     setPendingSave(true);
@@ -181,7 +253,6 @@ export default function Services({ initialData = null, index = null, generalServ
     }
   };
 
-  // Löschen: öffnet Bestätigungsmodal
   const handleDelete = () => {
     setShowConfirmDeleteModal(true);
   };
@@ -192,7 +263,7 @@ export default function Services({ initialData = null, index = null, generalServ
     try {
       await api.delete(`/services/${initialData.id}/`);
       if (typeof onUpdateService === 'function') {
-        onUpdateService(null, index); // entferne aus globaler Liste
+        onUpdateService(null, index);
       }
       if (typeof onCancel === 'function') onCancel();
     } catch (err) {
@@ -210,11 +281,16 @@ export default function Services({ initialData = null, index = null, generalServ
           {initialData?.id && (
             <button className="btn save" onClick={handleDelete}>Löschen</button>
           )}
-          <button className="btn cancel" type="button" onClick={backToOverview}>Abbrechen</button>
-          <button className="btn save" onClick={handleSave} disabled={pendingSave}>
+          <button className="btn cancel" type="button" onClick={backToOverview}>
+            <img src={abordIcon} width={18} height={18} alt="" />
+            Abbrechen
+          </button>
+          <button className="btn save-draft" onClick={handleSave} disabled={pendingSave}>
+            <img src={saveMultipleIcon} width={18} height={18} alt="" />
             {pendingSave ? 'Speichern…' : 'Speichern'}
           </button>
           <button className="btn save" onClick={handleSaveAndClose} disabled={pendingSave}>
+            <img src={saveIcon} width={18} height={18} alt="" />
             {pendingSave ? 'Speichern…' : 'Speichern &amp; schließen'}
           </button>
         </div>
@@ -223,36 +299,26 @@ export default function Services({ initialData = null, index = null, generalServ
       <div className="department-body">
         <div className="left-column">
           <div className="page-container">
-            <h2>Informationen</h2>
-            <div className="form-grid two-col">
-              <div className="form-item">
-                <label>Art
-                  <input value={form.type} onChange={e => handleChange('type', e.target.value)} />
-                </label>
-              </div>
-              <div className="form-item">
-                <label>Name *
-                  <input value={form.name} onChange={e => handleChange('name', e.target.value)} />
-                </label>
-              </div>
-              <div className="form-item">
-                <label>Dauer *
-                  <input value={form.duration} onChange={e => handleChange('duration', e.target.value)} />
-                </label>
-              </div>
-              <div className="form-item">
-                <label>Preis
-                  <input value={form.price} onChange={e => handleChange('price', e.target.value)} />
-                </label>
-              </div>
-              <div className="form-item full-width">
-                <label>Hinweis
-                  <textarea value={form.description} onChange={e => handleChange('description', e.target.value)} />
-                </label>
+            <div className="section">
+              <h2>Informationen</h2>
+              <div className="form-grid labeled-inputs">
+                <div className="form-grid two-col labeled-inputs">
+                  <label>Art<input name="type" value={form.type} onChange={e => handleChange('type', e.target.value)} /></label>
+                  <label>Parallelbuchungen<input name="parallelBookings" value={form.parallelBookings} onChange={e => handleChange('parallelBookings', e.target.value)} /></label>
+                </div>
+                <label className="full-width">Titel*<input name="title" value={form.title} onChange={e => handleChange('title', e.target.value)} /></label>
+                <div className="form-grid two-col labeled-inputs">
+                  <label>Dauer (Minuten)*<input name="duration" value={form.duration} onChange={e => handleChange('duration', e.target.value)} /></label>
+                  <label>Puffer (Minuten)<input name="buffer" value={form.buffer} onChange={e => handleChange('buffer', e.target.value)} /></label>
+                  <label>Gebühr<input name="fee" value={form.fee} onChange={e => handleChange('fee', e.target.value)} /></label>
+                  <label>Max. Personen<input name="maxPersons" value={form.maxPersons} onChange={e => handleChange('maxPersons', e.target.value)} /></label>
+                </div>
+                <label className="full-width">Hinweis<textarea name="note" value={form.note} onChange={handleTextareaChange} rows={4} /></label>
               </div>
             </div>
           </div>
-          {/* Neue weiße Box "Felder" mit Radio-Optionen */}
+
+          {/* Felder - Radio Buttons für Feldkonfiguration */}
           <div className="page-container">
             <h2>Felder</h2>
             <div className="fields-grid">
@@ -266,19 +332,21 @@ export default function Services({ initialData = null, index = null, generalServ
               ].map(f => (
                 <div className="field-box" key={f.key}>
                   <div className="field-title">{f.label}</div>
-                  <div className="radio-group">
-                    <label className="radio-option">
-                      <input type="radio" name={f.key} value="disabled" checked={fieldOptions[f.key] === 'disabled'} onChange={() => setFieldOption(f.key, 'disabled')} />
-                      <span>deaktiviert</span>
-                    </label>
-                    <label className="radio-option">
-                      <input type="radio" name={f.key} value="optional" checked={fieldOptions[f.key] === 'optional'} onChange={() => setFieldOption(f.key, 'optional')} />
-                      <span>optional</span>
-                    </label>
-                    <label className="radio-option">
-                      <input type="radio" name={f.key} value="required" checked={fieldOptions[f.key] === 'required'} onChange={() => setFieldOption(f.key, 'required')} />
-                      <span>pflicht</span>
-                    </label>
+                  <div className="field-box-content">
+                    <div className="radio-group">
+                      <label className="radio-option">
+                        <input type="radio" name={f.key} value="disabled" checked={fieldOptions[f.key] === 'disabled'} onChange={() => setFieldOption(f.key, 'disabled')} />
+                        <span>deaktiviert</span>
+                      </label>
+                      <label className="radio-option">
+                        <input type="radio" name={f.key} value="optional" checked={fieldOptions[f.key] === 'optional'} onChange={() => setFieldOption(f.key, 'optional')} />
+                        <span>optional</span>
+                      </label>
+                      <label className="radio-option">
+                        <input type="radio" name={f.key} value="required" checked={fieldOptions[f.key] === 'required'} onChange={() => setFieldOption(f.key, 'required')} />
+                        <span>pflicht</span>
+                      </label>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -288,89 +356,200 @@ export default function Services({ initialData = null, index = null, generalServ
 
         <aside className="right-sidebar">
           <div className="page-container">
-            <div className="toggle-box">
+            <div className="section toggle-box">
               <span>Dienst ausblenden</span>
               <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={hideService}
-                  onChange={() => setHideService(s => !s)}
-                />
+                <input type="checkbox" checked={hideService} onChange={() => setHideService(h => !h)} />
                 <span className="slider" />
               </label>
             </div>
           </div>
 
-          <div className="page-container" ref={deptRef}>
-            <h2>Abteilung</h2>
-            <div className="list-box">
-              {selectedDepartment && (
-                <div className="list-item">
-                  <span>{selectedDepartment.name ?? selectedDepartment}</span>
-                  <button className="btn overflow" onClick={removeDepartment}>✕</button>
-                </div>
-              )}
-            </div>
-            <div
-              className={`service-box dashed${showDeptDropdown ? ' open' : ''}`}
-              role="button"
-              tabIndex={0}
-              onClick={() => setShowDeptDropdown(d => !d)}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowDeptDropdown(d => !d); } }}
-            >
-              <div className="service-box__label">Abteilung auswählen</div>
-              {showDeptDropdown && (
-                <ul className="dropdown-list">
-                  {(Array.isArray(generalDepartments) && generalDepartments.length > 0 ? generalDepartments : deptOptions).map((opt, i) => {
-                    const label = typeof opt === 'string' ? opt : (opt.name ?? opt);
-                    return <li key={i} onClick={() => addDepartment(opt)}>{label}</li>;
-                  })}
-                </ul>
-              )}
+          {/* Abteilungen */}
+          <div className="page-container">
+            <div className="section">
+              <h2>Abteilungen</h2>
+
+              <div className="employee-dropdown-wrapper" ref={deptRef}>
+                <button
+                  type="button"
+                  className={`employee-trigger ${showDeptDropdown ? 'open' : ''}`}
+                  onClick={() => setShowDeptDropdown(v => !v)}
+                  aria-haspopup="listbox"
+                  aria-expanded={showDeptDropdown}
+                >
+                  <span className="employee-trigger__chevron" aria-hidden="true">
+                    <img src={arrowIcon} width={18} height={9} alt="" />
+                  </span>
+                  Abteilungen hinzufügen
+                </button>
+                {showDeptDropdown && (
+                  <ul className="dropdown-list" role="listbox">
+                    {(Array.isArray(generalDepartments) && generalDepartments.length > 0 ? generalDepartments : []).map((opt, i) => (
+                      <li
+                        key={i}
+                        role="option"
+                        tabIndex={0}
+                        onClick={() => addDepartmentFromDropdown(opt)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            addDepartmentFromDropdown(opt);
+                          }
+                        }}
+                      >
+                        {opt.name || opt}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="employee-list-box">
+                {departments.map((d, i) => (
+                  <div key={i} className="employee-list-item">
+                    <button className="employee-delete-btn" onClick={() => removeDepartment(i)} aria-label="Abteilung entfernen">
+                      <img src={trashIcon} width={16} height={16} alt="" />
+                    </button>
+                    <span>{d.name || d}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="page-container" ref={notifRef}>
-            <h2>Buchungs-Benachrichtigung</h2>
-            <div
-              className={`service-box dashed${showNotifDropdown ? ' open' : ''}`}
-              role="button"
-              tabIndex={0}
-              onClick={() => setShowNotifDropdown(n => !n)}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowNotifDropdown(n => !n); } }}
-            >
-              <div className="service-box__label">Empfänger hinzufügen</div>
-              {showNotifDropdown && (
-                <ul className="dropdown-list">
-                  {notifOptions.map((opt, i) => (
-                    <li key={i} onClick={() => setShowNotifDropdown(false)}>
-                      {opt}
-                    </li>
-                  ))}
-                </ul>
-              )}
+          {/* Buchungsbenachrichtigungen */}
+          <div className="page-container">
+            <div className="section">
+              <h2>Buchungsbenachrichtigungen</h2>
+
+              <div className="employee-dropdown-wrapper" ref={notifRef}>
+                <button
+                  type="button"
+                  className={`employee-trigger ${showNotifDropdown ? 'open' : ''}`}
+                  onClick={() => setShowNotifDropdown(v => !v)}
+                  aria-haspopup="listbox"
+                  aria-expanded={showNotifDropdown}
+                >
+                  <span className="employee-trigger__chevron" aria-hidden="true">
+                    <img src={arrowIcon} width={18} height={9} alt="" />
+                  </span>
+                  Empfänger hinzufügen
+                </button>
+                {showNotifDropdown && (
+                  <ul className="dropdown-list" role="listbox">
+                    {notifOptions.map((opt, i) => (
+                      <li
+                        key={i}
+                        role="option"
+                        tabIndex={0}
+                        onClick={() => addNotificationFromDropdown(opt)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            addNotificationFromDropdown(opt);
+                          }
+                        }}
+                      >
+                        {opt}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="employee-list-box">
+                {notifications.map((n, i) => (
+                  <div key={i} className="employee-list-item">
+                    <button className="employee-delete-btn" onClick={() => removeNotification(i)} aria-label="Empfänger entfernen">
+                      <img src={trashIcon} width={16} height={16} alt="" />
+                    </button>
+                    <span>{n.name || n}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="page-container" ref={paymentRef}>
-            <h2>Bezahlungs-Art</h2>
-            <div
-              className={`service-box dashed${showPaymentDropdown ? ' open' : ''}`}
-              role="button"
-              tabIndex={0}
-              onClick={() => setShowPaymentDropdown(p => !p)}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowPaymentDropdown(p => !p); } }}
-            >
-              <div className="service-box__label">Bezahlungsart hinzufügen</div>
-              {showPaymentDropdown && (
-                <ul className="dropdown-list">
-                  {paymentOptions.map((opt, i) => (
-                    <li key={i} onClick={() => setShowPaymentDropdown(false)}>
-                      {opt}
-                    </li>
-                  ))}
-                </ul>
-              )}
+          {/* Dokumente */}
+          <div className="page-container">
+            <div className="section">
+              <h2>Dokumente</h2>
+
+              <label className="file-upload-btn">
+                <input
+                  type="file"
+                  multiple
+                  onChange={handleFileUpload}
+                  style={{ display: 'none' }}
+                />
+                <img src={uploadIcon} width={20} height={20} alt="" className="upload-icon" />
+                Dokumente hochladen
+              </label>
+
+              <div className="employee-list-box">
+                {documents.map((doc, i) => (
+                  <div key={i} className="employee-list-item">
+                    <button className="employee-delete-btn" onClick={() => removeDocument(i)} aria-label="Dokument entfernen">
+                      <img src={trashIcon} width={16} height={16} alt="" />
+                    </button>
+                    <span>{doc.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Qualifikationen */}
+          <div className="page-container">
+            <div className="section">
+              <h2>Qualifikationen</h2>
+
+              <div className="employee-dropdown-wrapper" ref={qualificationRef}>
+                <button
+                  type="button"
+                  className={`employee-trigger ${showQualificationDropdown ? 'open' : ''}`}
+                  onClick={() => setShowQualificationDropdown(v => !v)}
+                  aria-haspopup="listbox"
+                  aria-expanded={showQualificationDropdown}
+                >
+                  <span className="employee-trigger__chevron" aria-hidden="true">
+                    <img src={arrowIcon} width={18} height={9} alt="" />
+                  </span>
+                  Qualifikationen hinzufügen
+                </button>
+                {showQualificationDropdown && (
+                  <ul className="dropdown-list" role="listbox">
+                    {qualificationOptions.map((opt, i) => (
+                      <li
+                        key={i}
+                        role="option"
+                        tabIndex={0}
+                        onClick={() => addQualificationFromDropdown(opt)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            addQualificationFromDropdown(opt);
+                          }
+                        }}
+                      >
+                        {opt}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="employee-list-box">
+                {qualifications.map((q, i) => (
+                  <div key={i} className="employee-list-item">
+                    <button className="employee-delete-btn" onClick={() => removeQualification(i)} aria-label="Qualifikation entfernen">
+                      <img src={trashIcon} width={16} height={16} alt="" />
+                    </button>
+                    <span>{q.name || q}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </aside>
@@ -400,7 +579,7 @@ export default function Services({ initialData = null, index = null, generalServ
             <p className="modal-subheading" style={{ marginTop: 12 }}>
               Diese Aktion kann nicht rückgängig gemacht werden.
             </p>
-            <p>Möchtest du den Dienst <strong>„{form.name}“</strong> wirklich löschen?</p>
+            <p>Möchtest du den Dienst <strong>„{form.title}"</strong> wirklich löschen?</p>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '32px' }}>
               <button className="btn cancel" onClick={() => setShowConfirmDeleteModal(false)}>Abbrechen</button>
               <button className="btn save" onClick={handleConfirmDelete} disabled={pendingDelete}>

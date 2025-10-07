@@ -1,5 +1,18 @@
 /* src/Department.css */
 
+/* Save Draft Button - gleicher Stil wie Cancel Button */
+.btn.save-draft {
+  background: #e5e7eb;
+  color: #000;
+  border: 2px solid transparent;
+}
+
+.btn.save-draft:hover {
+  background: #fff;
+  color: #000;
+  border-color: var(--color-primary);
+}
+
 .department-page {
   /* Dann wie gehabt dein bestehendes Layout: */
   display: flex;
@@ -217,6 +230,8 @@
 .opening-hours-day-tag img {
   display: block;
   flex-shrink: 0;
+  width: 15px;
+  height: 15px;
 }
 
 /* Weekday Buttons */
@@ -315,7 +330,7 @@
 .opening-hours-add-btn {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 8px;
   width: 100%;
   padding: 10px 16px;

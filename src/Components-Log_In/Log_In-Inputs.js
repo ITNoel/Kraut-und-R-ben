@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import './Log_In-Inputs.css';
+import personIcon from '../assets/fonts/person-icon.svg';
+import lockIcon from '../assets/fonts/lock-icon.svg';
 
 export default function Log_InInputs({ onLogin, onForgot, loading, error }) {
   const [username, setUsername] = useState('');
@@ -24,29 +26,33 @@ export default function Log_InInputs({ onLogin, onForgot, loading, error }) {
 
       <form className="log-in-form" onSubmit={handleSubmit}>
         <div className="input-group">
-          <input
-            className="input"
-            type="text"
-            placeholder="Benutzername"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            disabled={loading}
-            required
-          />
-          <span className="input-icon">👤</span>
+          <label className="input-label">Benutzername</label>
+          <div className="input-wrapper">
+            <img src={personIcon} alt="" className="input-icon-left" width="17" height="17" />
+            <input
+              className="input"
+              type="text"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              disabled={loading}
+              required
+            />
+          </div>
         </div>
 
         <div className="input-group">
-          <input
-            className="input"
-            type="password"
-            placeholder="Passwort"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            disabled={loading}
-            required
-          />
-          <span className="input-icon">🔒</span>
+          <label className="input-label">Passwort</label>
+          <div className="input-wrapper">
+            <img src={lockIcon} alt="" className="input-icon-left" width="18" height="18" />
+            <input
+              className="input"
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              disabled={loading}
+              required
+            />
+          </div>
         </div>
 
         <button

@@ -34,25 +34,31 @@
 
 /* Jede einzelne Feld-Box: weiße Box, Abrundung, graue Umrandung */
 .field-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  /* make boxes a bit more compact when in two-column layout */
+  position: relative;
+  margin-top: 12px; /* Platz für den Titel oben */
+}
+
+/* Container für die Radio-Buttons (mit Rahmen) */
+.field-box-content {
   background: #fff;
   border: 1px solid #d0d0d0;
   border-radius: 16px;
   padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  /* make boxes a bit more compact when in two-column layout */
   min-height: 68px;
 }
 
-/* Titel des Felds */
+/* Titel des Felds - über dem Rahmen */
 .field-box .field-title {
-  /* gleiche Größe wie Eingabefelder */
   font-size: 14px;
   line-height: 1.4;
   font-weight: 400;
-  color: var(--label-color); /* graue Schrift */
-  opacity: var(--label-opacity); /* gleiche Opazität wie andere Labels */
+  color: #000;
+  margin-bottom: 4px; /* Abstand zum Rahmen */
+  padding-left: 4px; /* leichte Einrückung wie bei anderen Labels */
 }
 
 /* Radio-Gruppe: vertikales (untereinander) Layout, Abstand */
@@ -142,6 +148,47 @@
 .radio-option input[type="radio"]:focus {
   outline: none;
   box-shadow: 0 0 0 4px rgba(107,54,198,0.12); /* lila Schimmer */
+}
+
+/* Textarea nicht manuell vergrößerbar */
+.form-grid.labeled-inputs textarea {
+  resize: none;
+  overflow: hidden;
+  min-height: 80px;
+}
+
+/* File Upload Button - sieht aus wie der Dropdown-Button */
+.file-upload-btn {
+  width: 100%;
+  height: 44px;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--border-radius-small);
+  background: #fff;
+  font-size: 14px;
+  font-weight: 400;
+  color: #6b7280;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.2s ease;
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+
+.file-upload-btn:hover {
+  border-color: #d1d5db;
+}
+
+.file-upload-btn .upload-icon {
+  width: 20px;
+  height: 20px;
+  margin-top: 26px;
+  margin-bottom: 26px;
 }
 
 /* Responsive: bei sehr schmalen Bildschirmen stapeln die Optionsgruppen */

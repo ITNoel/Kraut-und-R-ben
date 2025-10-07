@@ -9,6 +9,9 @@ import addIcon from '../assets/Buttons/add-icon.svg';
 import xIcon from '../assets/Buttons/x-icon.svg';
 import clockIcon from '../assets/fonts/clock-icon.svg';
 import plusIcon from '../assets/fonts/plus-icon.svg';
+import abordIcon from '../assets/fonts/abord-icon.svg';
+import saveIcon from '../assets/fonts/save-icon.svg';
+import saveMultipleIcon from '../assets/fonts/save-multiple-icon.svg';
 import '../global.css';
 import './Department.css';
 import { api } from '../Functions/apiClient';
@@ -369,11 +372,16 @@ export default function Department({
           {initialData?.id && (
             <button className="btn save" onClick={handleDelete}>Löschen</button>
           )}
-          <button className="btn cancel" type="button" onClick={handleCancel}>Abbrechen</button>
-          <button className="btn save" onClick={handleSave} disabled={pendingSave}>
+          <button className="btn cancel" type="button" onClick={handleCancel}>
+            <img src={abordIcon} width={18} height={18} alt="" />
+            Abbrechen
+          </button>
+          <button className="btn save-draft" onClick={handleSave} disabled={pendingSave}>
+            <img src={saveMultipleIcon} width={18} height={18} alt="" />
             {pendingSave ? 'Speichern…' : 'Speichern'}
           </button>
           <button className="btn save" onClick={handleSaveAndClose} disabled={pendingSave}>
+            <img src={saveIcon} width={18} height={18} alt="" />
             {pendingSave ? 'Speichern…' : 'Speichern &amp; schließen'}
           </button>
         </div>
