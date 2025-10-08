@@ -275,24 +275,26 @@ export default function Services({ initialData = null, index = null, generalServ
 
   return (
     <div className="department-page services-page">
-      <div className="page-header">
-        <h1 className="page-header__title">Dienste anlegen</h1>
-        <div className="page-header__actions">
-          {initialData?.id && (
-            <button className="btn save" onClick={handleDelete}>Löschen</button>
-          )}
-          <button className="btn cancel" type="button" onClick={backToOverview}>
-            <img src={abordIcon} width={18} height={18} alt="" />
-            Abbrechen
-          </button>
-          <button className="btn save-draft" onClick={handleSave} disabled={pendingSave}>
-            <img src={saveMultipleIcon} width={18} height={18} alt="" />
-            {pendingSave ? 'Speichern…' : 'Speichern'}
-          </button>
-          <button className="btn save" onClick={handleSaveAndClose} disabled={pendingSave}>
-            <img src={saveIcon} width={18} height={18} alt="" />
-            {pendingSave ? 'Speichern…' : 'Speichern &amp; schließen'}
-          </button>
+      <div className="services-header-wrapper">
+        <div className="page-header">
+          <h1 className="page-header__title">Dienste anlegen</h1>
+          <div className="page-header__actions">
+            {initialData?.id && (
+              <button className="btn save" onClick={handleDelete}>Löschen</button>
+            )}
+            <button className="btn cancel" type="button" onClick={backToOverview}>
+              <img src={abordIcon} width={18} height={18} alt="" />
+              Abbrechen
+            </button>
+            <button className="btn save-draft" onClick={handleSave} disabled={pendingSave}>
+              <img src={saveMultipleIcon} width={18} height={18} alt="" />
+              {pendingSave ? 'Speichern…' : 'Speichern'}
+            </button>
+            <button className="btn save" onClick={handleSaveAndClose} disabled={pendingSave}>
+              <img src={saveIcon} width={18} height={18} alt="" />
+              {pendingSave ? 'Speichern…' : 'Speichern &amp; schließen'}
+            </button>
+          </div>
         </div>
       </div>
 

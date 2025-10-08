@@ -1,3 +1,8 @@
+/* Overview header wrapper */
+.overview-header-wrapper {
+  padding-top: var(--page-header-top-spacing);
+}
+
 /* Tabelle über volle Breite */
 .department-overview__table {
   width: 100%;
@@ -25,6 +30,7 @@
 /* Abstand unter der Überschrift (Header) */
 .department-overview .page-header {
   margin-bottom: 32px;
+  margin-top: 0 !important;
 }
 
 /* Innenabstand der weißen Box (Container) */
@@ -583,7 +589,7 @@
 
 
 /* Scroll-responsive top spacing (only Department Overview) */
-.main-content .department-overview { margin-top: 16px; transition: margin-top 120ms ease; }
+.main-content .department-overview { margin-top: 0; transition: margin-top 120ms ease; }
 .main-content.scrolled-under .department-overview { margin-top: 0; }
 
 /* Entferne jeden Top-Gap zwischen Header und Seitenrand */

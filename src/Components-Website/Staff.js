@@ -259,19 +259,21 @@ export default function Staff({
 
   return (
     <div className="department-page staff-page">
-      <div className="page-header">
-        <h1 className="page-header__title">Sachbearbeiter:in anlegen / bearbeiten</h1>
-        <div className="page-header__actions">
-          {initialData?.id && (
-            <button className="btn save" onClick={handleDelete}>Löschen</button>
-          )}
-          <button className="btn cancel" type="button" onClick={handleCancelClick}>Abbrechen</button>
-          <button className="btn save" onClick={handleSave} disabled={pendingSave}>
-            {pendingSave ? 'Speichern…' : 'Speichern'}
-          </button>
-          <button className="btn save" onClick={handleSaveAndClose} disabled={pendingSave}>
-            {pendingSave ? 'Speichern…' : 'Speichern &amp; schließen'}
-          </button>
+      <div className="staff-header-wrapper">
+        <div className="page-header">
+          <h1 className="page-header__title">Sachbearbeiter:in anlegen / bearbeiten</h1>
+          <div className="page-header__actions">
+            {initialData?.id && (
+              <button className="btn save" onClick={handleDelete}>Löschen</button>
+            )}
+            <button className="btn cancel" type="button" onClick={handleCancelClick}>Abbrechen</button>
+            <button className="btn save" onClick={handleSave} disabled={pendingSave}>
+              {pendingSave ? 'Speichern…' : 'Speichern'}
+            </button>
+            <button className="btn save" onClick={handleSaveAndClose} disabled={pendingSave}>
+              {pendingSave ? 'Speichern…' : 'Speichern &amp; schließen'}
+            </button>
+          </div>
         </div>
       </div>
 

@@ -1,5 +1,4 @@
 // src/Sidebar.jsx
-import logo from '../assets/logo.png';
 import React, { useState, useEffect } from 'react';
 import { ROUTES } from '../app/routes';
 import './Sidebar.css';
@@ -25,9 +24,6 @@ export default function Sidebar({ view, onSelect }) {
 
   return (
     <aside className="sidebar">
-      <div className="logo">
-       <img src={logo} alt="Logo" />
-      </div>
       <div className="navTree">
         <nav className="nav">
           {/* Dashboard */}

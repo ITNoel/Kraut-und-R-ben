@@ -87,30 +87,32 @@ export default function ServicesOverview({ onSelect, services = [], onEditServic
 
   return (
     <div className="department-page department-overview services-overview">
-      <div className="page-header">
-        <h1 className="page-header__title">Dienste Übersicht</h1>
-        <div className="page-header__actions">
-          <div className="actions-dropdown-wrapper" ref={actionsRef}>
-            <button
-              className="btn more-actions"
-              onClick={() => setActionsOpen(v => !v)}
-              disabled={selectedRows.length === 0}
-              style={{ opacity: selectedRows.length === 0 ? 0.5 : 1 }}
-            >
-              <img src={settingsIcon} alt="" width="17" height="17" style={{ marginRight: '8px' }} />
-              Weitere Aktionen
+      <div className="overview-header-wrapper">
+        <div className="page-header">
+          <h1 className="page-header__title">Dienste Übersicht</h1>
+          <div className="page-header__actions">
+            <div className="actions-dropdown-wrapper" ref={actionsRef}>
+              <button
+                className="btn more-actions"
+                onClick={() => setActionsOpen(v => !v)}
+                disabled={selectedRows.length === 0}
+                style={{ opacity: selectedRows.length === 0 ? 0.5 : 1 }}
+              >
+                <img src={settingsIcon} alt="" width="17" height="17" style={{ marginRight: '8px' }} />
+                Weitere Aktionen
+              </button>
+              {actionsOpen && (
+                <div className="actions-dropdown">
+                  <button className="actions-dropdown__item" onClick={() => { setActionsOpen(false); setShowDeleteModal(true); }}>
+                    Dienste löschen
+                  </button>
+                </div>
+              )}
+            </div>
+            <button className="btn services-new" onClick={() => onSelect(ROUTES.SERVICES)}>
+              Neue Dienste anlegen
             </button>
-            {actionsOpen && (
-              <div className="actions-dropdown">
-                <button className="actions-dropdown__item" onClick={() => { setActionsOpen(false); setShowDeleteModal(true); }}>
-                  Dienste löschen
-                </button>
-              </div>
-            )}
           </div>
-          <button className="btn services-new" onClick={() => onSelect(ROUTES.SERVICES)}>
-            Neue Dienste anlegen
-          </button>
         </div>
       </div>
 

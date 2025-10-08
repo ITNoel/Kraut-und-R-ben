@@ -22,6 +22,10 @@
   overflow-y: auto;
 }
 
+.department-header-wrapper {
+  padding-top: var(--page-header-top-spacing);
+}
+
 .department-header {
   display: flex;
   justify-content: space-between;

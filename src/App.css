@@ -7,16 +7,13 @@
   overflow: hidden;
 }
 
-.sidebar {
-  flex: 0 0 350px;            /* feste Breite 350px */
-  /* alle anderen .sidebar‐Styles bleiben hier erhalten */
-}
-
-
 .main-content {
+  margin-left: 350px;
+  margin-top: 97px;
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
-  padding: 0 24px;
+  overflow-y: auto;
+  background: var(--color-page-bg);
 }

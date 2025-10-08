@@ -1,5 +1,6 @@
 // src/Header.jsx
 import React, { useState, useEffect } from 'react';
+import logoIcon from '../assets/fonts/logo-icon.svg';
 import './Header.css';
 
 export default function Header({ onLogout }) {
@@ -35,7 +36,9 @@ export default function Header({ onLogout }) {
 
   return (
     <header className="header">
-
+      <div className="header-logo">
+        <img src={logoIcon} alt="Logo" />
+      </div>
       <div className="header-buttons">
         <button className="btn change-password">Passwort ändern</button>
         <button className="btn logout" onClick={onLogout}>Abmelden</button>

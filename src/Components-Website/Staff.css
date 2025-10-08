@@ -1,5 +1,10 @@
 /* src/Staff.css */
 
+/* Staff header wrapper */
+.staff-header-wrapper {
+  padding-top: var(--page-header-top-spacing);
+}
+
 /* ===== Formular-Items ===== */
 .form-item {
   margin-bottom: 16px;

@@ -1,5 +1,10 @@
 /* Staff-Overview - Exact copy of Department-Overview styling */
 
+/* Overview header wrapper */
+.overview-header-wrapper {
+  padding-top: var(--page-header-top-spacing);
+}
+
 /* Tabelle über volle Breite */
 .department-overview__table {
   width: 100%;
@@ -356,7 +361,7 @@
 }
 
 /* Scroll-responsive top spacing */
-.main-content .department-overview { margin-top: 16px; transition: margin-top 120ms ease; }
+.main-content .department-overview { margin-top: 0; transition: margin-top 120ms ease; }
 .main-content.scrolled-under .department-overview { margin-top: 0; }
 
 /* Entferne jeden Top-Gap zwischen Header und Seitenrand */

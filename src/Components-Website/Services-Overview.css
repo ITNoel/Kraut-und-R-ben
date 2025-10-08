@@ -1,5 +1,10 @@
 /* src/Services-Overview.css */
 
+/* Overview header wrapper */
+.overview-header-wrapper {
+  padding-top: var(--page-header-top-spacing);
+}
+
 /* Einheitliche Tabellen-Zeilenhöhe und vertikaler Abstand */
 .department-overview__table {
   border-collapse: separate;

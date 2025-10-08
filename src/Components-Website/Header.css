@@ -1,19 +1,33 @@
 /* Header.css */
 
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  min-height: var(--header-height);     /* z. B. 150px */
+  justify-content: space-between;
+  min-height: var(--header-height);
   font-size: var(--header-font-size);
   background: #1f1f1f;
-  padding: 0 24px;                  /* Abstand links/rechts innerhalb von main-content */
+  padding: 28px 24px 28px 60px;
   margin: 0;
   box-shadow: 0 1px 4px rgba(0,0,0,0.1);
   gap: 16px;
-  z-index: 10;                      /* damit Header über dem Page‐Content liegt */
-  
-  /* KEIN position: fixed / absolute;  falls nicht gewünscht */
+  z-index: 100;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  height: 41px;
+}
+
+.header-logo img {
+  height: 41px;
+  width: auto;
+  object-fit: contain;
 }
 
 .header-buttons {
