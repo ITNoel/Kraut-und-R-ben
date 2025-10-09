@@ -1,10 +1,14 @@
 // src/Staff.jsx
 
 import React, { useState, useRef, useEffect } from 'react';
+import 'react-day-picker/dist/style.css';
 import '../global.css';
 import './Staff.css';
 import { DayPicker } from 'react-day-picker';
-import 'react-day-picker/dist/style.css';
+import { de } from 'date-fns/locale';
+import arrowIcon from '../assets/Buttons/arrow-icon.svg';
+import trashIcon from '../assets/Buttons/trash-icon.svg';
+import calenderIcon from '../assets/fonts/calender-icon.svg';
 import { api } from '../Functions/apiClient';
 import { ROUTES } from '../app/routes';
 
@@ -18,40 +22,32 @@ export default function Staff({
   generalDepartments = []   // NEW: Liste aller Abteilungen (Objekte mit id, name)
 }) {
   const [hideStaff, setHideStaff] = useState(false);
-  const [showDayPicker, setShowDayPicker] = useState(false);
-  const [selectedDays, setSelectedDays] = useState([]);
   // Single department selection (each employee belongs to exactly one department)
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [showDeptDropdown, setShowDeptDropdown] = useState(false);
   const [vacations, setVacations] = useState([]);
+  const [vacationDays, setVacationDays] = useState([]);
   const [vacationRange, setVacationRange] = useState(undefined);
-  const [showVacationPicker, setShowVacationPicker] = useState(false);
 
   const [pendingSave, setPendingSave] = useState(false);
   const [showSaveError, setShowSaveError] = useState(null);
-  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false); // NEU
-  const [pendingDelete, setPendingDelete] = useState(false); // NEU
-  const [showDeleteError, setShowDeleteError] = useState(null); // NEU
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState(false);
+  const [showDeleteError, setShowDeleteError] = useState(null);
 
   const [form, setForm] = useState({
     first_name: '',
     last_name: '',
     email: '',
-    phone: ''
+    phone: '',
+    qualifications: ''
   });
 
-  const weekdays = ['Mo','Di','Mi','Do','Fr','Sa','So'];
-  const availableDepartments = ['Ordnungsamt', 'Sozialwesen', 'Bürgerbüro'];
-
-  const dayRef = useRef();
   const deptRef = useRef();
-  const vacationRef = useRef();
 
   useEffect(() => {
     function handleClickOutside(e) {
-      if (dayRef.current && !dayRef.current.contains(e.target)) setShowDayPicker(false);
       if (deptRef.current && !deptRef.current.contains(e.target)) setShowDeptDropdown(false);
-      if (vacationRef.current && !vacationRef.current.contains(e.target)) setShowVacationPicker(false);
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -64,10 +60,10 @@ export default function Staff({
       first_name: initialData.first_name ?? '',
       last_name: initialData.last_name ?? '',
       email: initialData.email ?? '',
-      phone: initialData.telephone ?? initialData.phone ?? ''
+      phone: initialData.telephone ?? initialData.phone ?? '',
+      qualifications: initialData.qualifications ?? ''
     });
     setHideStaff(initialData?.status === 'disabled');
-    setSelectedDays(Array.isArray(initialData.days) ? initialData.days : []);
     // initialData.department is numeric id -> set selectedDepartment to object if available
     if (initialData?.department != null) {
       const found = (Array.isArray(generalDepartments) ? generalDepartments : []).find(d => String(d.id) === String(initialData.department));
@@ -77,12 +73,6 @@ export default function Staff({
     }
     setVacations(Array.isArray(initialData.vacations) ? initialData.vacations.map(v => ({ from: new Date(v.from), to: new Date(v.to) })) : (initialData.vacations || []));
   }, [initialData, generalDepartments]);
-
-  const toggleDay = day => {
-    setSelectedDays(prev =>
-      prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
-    );
-  };
 
   // Select single department from dropdown
   const addDepartment = (dept) => {
@@ -96,28 +86,43 @@ export default function Staff({
     setSelectedDepartment(null);
   };
 
-  const saveVacation = () => {
-    if (vacationRange?.from && vacationRange?.to) {
-      setVacations(prev => [...prev, vacationRange]);
+  const handleVacationDaysSelect = (days) => {
+    // Erlaube maximal 2 Tage
+    if (!days || days.length === 0) {
+      setVacationDays([]);
       setVacationRange(undefined);
-      setShowVacationPicker(false);
+      return;
+    }
+
+    // Begrenze auf maximal 2 Tage
+    const selectedDays = days.length > 2 ? days.slice(0, 2) : days;
+    setVacationDays(selectedDays);
+
+    // Erstelle Range für die Tage dazwischen
+    if (selectedDays.length === 2) {
+      const sorted = [...selectedDays].sort((a, b) => a.getTime() - b.getTime());
+      setVacationRange({ from: sorted[0], to: sorted[1] });
     } else {
-      alert("Bitte einen vollständigen Zeitraum wählen.");
+      setVacationRange(undefined);
+    }
+  };
+
+  const addVacation = () => {
+    if (vacationDays && vacationDays.length === 2) {
+      const sorted = [...vacationDays].sort((a, b) => a.getTime() - b.getTime());
+      const from = sorted[0];
+      const to = sorted[1];
+      setVacations(prev => [...prev, { from, to }]);
+      setVacationDays([]);
+      setVacationRange(undefined);
+    } else {
+      alert("Bitte genau zwei Tage auswählen.");
     }
   };
 
   const removeVacation = (i) => setVacations(prev => prev.filter((_, idx) => idx !== i));
 
   const areRequiredFieldsFilled = (form.first_name?.trim() || form.last_name?.trim()) !== '' && (form.email?.trim() || form.phone?.trim());
-
-  // Neue State: Schicht- & Pausenzeiten (für Buchbarkeit)
-  const [shiftStart, setShiftStart] = useState('');
-  const [shiftEnd, setShiftEnd] = useState('');
-  const [breakStart, setBreakStart] = useState('');
-  const [breakEnd, setBreakEnd] = useState('');
-
-  // Gespeicherte Buchbarkeits-Einträge (erscheinen über den Inputs)
-  const [savedAvailabilities, setSavedAvailabilities] = useState([]);
 
   const makeStaffObj = () => {
     const name = `${form.first_name || ''}${form.last_name ? ' ' + form.last_name : ''}`.trim();
@@ -135,12 +140,7 @@ export default function Staff({
       department: selectedDepartment ? (selectedDepartment.id ?? selectedDepartment) : null,
       name,
       email: form.email,
-      days: selectedDays,
-      // optional: persistieren der Zeitslots
-      shift_start: shiftStart,
-      shift_end: shiftEnd,
-      break_start: breakStart,
-      break_end: breakEnd,
+      qualifications: form.qualifications,
       vacations: vacations.map(v => ({ from: v.from instanceof Date ? v.from.toISOString() : v.from, to: v.to instanceof Date ? v.to.toISOString() : v.to })),
       status: hideStaff ? 'disabled' : (areRequiredFieldsFilled ? 'active' : 'draft')
     };
@@ -233,30 +233,6 @@ export default function Staff({
     }
   };
 
-  const saveBookability = () => {
-    const entry = {
-      days: Array.isArray(selectedDays) ? selectedDays.slice() : [],
-      shiftStart: shiftStart || null,
-      shiftEnd: shiftEnd || null,
-      breakStart: breakStart || null,
-      breakEnd: breakEnd || null
-    };
-    setSavedAvailabilities(prev => [entry, ...prev]);
-
-    // Nach dem Speichern: Eingabefelder zurücksetzen und DayPicker schließen
-    setSelectedDays([]);
-    setShiftStart('');
-    setShiftEnd('');
-    setBreakStart('');
-    setBreakEnd('');
-    setShowDayPicker(false);
-  };
-
-  const removeSavedAvailability = (idx) =>
-    setSavedAvailabilities(prev => prev.filter((_, i) => i !== idx));
-
-  const renderDay = (day) => selectedDays.includes(day) ? '✓' : '';
-
   return (
     <div className="department-page staff-page">
       <div className="staff-header-wrapper">
@@ -280,99 +256,26 @@ export default function Staff({
       <div className="department-body">
         <div className="left-column">
           <div className="page-container">
-            <h2>Informationen</h2>
-            <div className="form-grid three-col">
-              <label className="form-item">Vorname
-                <input className="input" value={form.first_name} onChange={e => setForm(f => ({ ...f, first_name: e.target.value }))} />
-              </label>
-              <label className="form-item">Nachname
-                <input className="input" value={form.last_name} onChange={e => setForm(f => ({ ...f, last_name: e.target.value }))} />
-              </label>
-              <label className="form-item">E-Mail*
-                <input className="input" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
-              </label>
-              <label className="form-item">Telefonnummer*
-                <input className="input" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
-              </label>
-            </div>
-          </div>
-
-          <div className="page-container">
-            <h2>Buchbarkeit</h2>
-
-            {/* Gespeicherte Buchbarkeiten (erscheinen über den Inputs) */}
-            {savedAvailabilities.length > 0 && (
-              <div className="list-box" style={{ marginBottom: 12 }}>
-                {savedAvailabilities.map((a, i) => {
-                  const daysText = (Array.isArray(a.days) && a.days.length) ? a.days.join(', ') : '—';
-                  const shiftText = a.shiftStart || a.shiftEnd ? `${a.shiftStart || '--'}–${a.shiftEnd || '--'}` : '';
-                  const breakText = a.breakStart || a.breakEnd ? ` (Pause ${a.breakStart || '--'}–${a.breakEnd || '--'})` : '';
-                  return (
-                    <div className="list-item" key={i}>
-                      <span>{daysText}{shiftText ? ` • ${shiftText}${breakText}` : ''}</span>
-                      <button className="btn overflow" onClick={() => removeSavedAvailability(i)}>✕</button>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            <div className="form-grid two-col" ref={dayRef}>
-              <div>
-                <label>Wochentage</label>
-                <div
-                  className={`input date-input-container${showDayPicker ? ' open' : ''}${selectedDays.length > 0 ? ' filled' : ''}`}
-                  onClick={() => setShowDayPicker(v => !v)}
-                >
-                  <div className="date-input-value">
-                    {selectedDays.length > 0 ? selectedDays.join(', ') : 'z.B. Mo, Di, Fr'}
-                  </div>
-                  {showDayPicker && (
-                    <div className="day-picker-dropdown">
-                      {weekdays.map(day => (
-                        <button
-                          key={day}
-                          className={`day-chip${selectedDays.includes(day) ? ' selected' : ''}`}
-                          onClick={e => { e.stopPropagation(); toggleDay(day); }}
-                        >
-                          {day}
-                        </button>
-                      ))}
-                    </div>
-                  )}
+            <div className="section">
+              <h2>Informationen</h2>
+              <div className="form-grid labeled-inputs">
+                <div className="form-grid two-col labeled-inputs">
+                  <label>Vorname
+                    <input value={form.first_name} onChange={e => setForm(f => ({ ...f, first_name: e.target.value }))} />
+                  </label>
+                  <label>Nachname
+                    <input value={form.last_name} onChange={e => setForm(f => ({ ...f, last_name: e.target.value }))} />
+                  </label>
+                  <label>E-Mail*
+                    <input value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
+                  </label>
+                  <label>Telefonnummer*
+                    <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
+                  </label>
                 </div>
-              </div>
-
-              <div>
-                <label className="form-item">Schicht beginn
-                  <input className="input" value={shiftStart} onChange={e => setShiftStart(e.target.value)} placeholder="z.B. 09:00" />
+                <label className="full-width">Qualifikationen
+                  <input value={form.qualifications} onChange={e => setForm(f => ({ ...f, qualifications: e.target.value }))} />
                 </label>
-              </div>
-              <div>
-                <label className="form-item">Schicht ende
-                  <input className="input" value={shiftEnd} onChange={e => setShiftEnd(e.target.value)} placeholder="z.B. 17:00" />
-                </label>
-              </div>
-              <div>
-                <label className="form-item">Pause beginn
-                  <input className="input" value={breakStart} onChange={e => setBreakStart(e.target.value)} placeholder="z.B. 12:00" />
-                </label>
-              </div>
-              <div>
-                <label className="form-item">Pause ende
-                  <input className="input" value={breakEnd} onChange={e => setBreakEnd(e.target.value)} placeholder="z.B. 12:30" />
-                </label>
-              </div>
-              {/* Buchbarkeit speichern Button */}
-              <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
-                <button
-                  type="button"
-                  className="btn save"
-                  onClick={saveBookability}
-                  style={{ width: 'auto', maxWidth: 'none', padding: '8px 12px' }}
-                >
-                  Buchbarkeit speichern
-                </button>
               </div>
             </div>
           </div>
@@ -380,8 +283,8 @@ export default function Staff({
 
         <aside className="right-sidebar">
           <div className="page-container">
-            <div className="toggle-box">
-              <span>Diese Person ausblenden</span>
+            <div className="section toggle-box">
+              <span>Mitarbeiter ausblenden</span>
               <label className="switch">
                 <input type="checkbox" checked={hideStaff} onChange={() => setHideStaff(s => !s)} />
                 <span className="slider" />
@@ -392,24 +295,50 @@ export default function Staff({
           <div className="page-container">
             <div className="section">
               <h2>Abteilung</h2>
-              <div className="list-box">
-                {selectedDepartment && (
-                  <div className="list-item">
-                    <span>{selectedDepartment.name ?? selectedDepartment}</span>
-                    <button className="btn overflow" onClick={removeDepartment}>✕</button>
-                  </div>
-                )}
-              </div>
-              <div className={`service-box dashed${showDeptDropdown ? ' open' : ''}`} onClick={() => setShowDeptDropdown(p => !p)} ref={deptRef}>
-                <div>Abteilung auswählen</div>
+
+              <div className="employee-dropdown-wrapper" ref={deptRef}>
+                <button
+                  type="button"
+                  className={`employee-trigger ${showDeptDropdown ? 'open' : ''}`}
+                  onClick={() => setShowDeptDropdown(v => !v)}
+                  aria-haspopup="listbox"
+                  aria-expanded={showDeptDropdown}
+                >
+                  <span className="employee-trigger__chevron" aria-hidden="true">
+                    <img src={arrowIcon} width={18} height={9} alt="" />
+                  </span>
+                  Abteilung hinzufügen
+                </button>
                 {showDeptDropdown && (
-                  <ul className="dropdown-list">
+                  <ul className="dropdown-list" role="listbox">
                     {(Array.isArray(generalDepartments) ? generalDepartments : []).map((dept, i) => (
-                      <li key={i} onClick={() => addDepartment(dept)}>
+                      <li
+                        key={i}
+                        role="option"
+                        tabIndex={0}
+                        onClick={() => addDepartment(dept)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            addDepartment(dept);
+                          }
+                        }}
+                      >
                         {dept.name ?? dept}
                       </li>
                     ))}
                   </ul>
+                )}
+              </div>
+
+              <div className="employee-list-box">
+                {selectedDepartment && (
+                  <div className="employee-list-item">
+                    <button className="employee-delete-btn" onClick={removeDepartment} aria-label="Abteilung entfernen">
+                      <img src={trashIcon} width={16} height={16} alt="" />
+                    </button>
+                    <span>{selectedDepartment.name ?? selectedDepartment}</span>
+                  </div>
                 )}
               </div>
             </div>
@@ -418,33 +347,58 @@ export default function Staff({
           <div className="page-container">
             <div className="section">
               <h2>Urlaub</h2>
-              <div className="list-box">
-                {vacations.map((v, i) => (
-                  <div key={i} className="list-item">
-                    <span>Von {v.from.toLocaleDateString()} bis {v.to.toLocaleDateString()}</span>
-                    <button className="btn overflow" onClick={() => removeVacation(i)}>✕</button>
-                  </div>
-                ))}
+
+              <button
+                type="button"
+                className="vacation-add-btn"
+                onClick={addVacation}
+              >
+                <img src={calenderIcon} width={18} height={18} alt="" />
+                Hinzufügen
+              </button>
+
+              <div className="vacation-calendar-container">
+                <DayPicker
+                  mode="multiple"
+                  selected={vacationDays}
+                  onSelect={handleVacationDaysSelect}
+                  numberOfMonths={1}
+                  showOutsideDays
+                  locale={de}
+                  modifiers={{
+                    range_middle: (day) => {
+                      if (!vacationRange?.from || !vacationRange?.to) return false;
+                      const time = day.getTime();
+                      const fromTime = vacationRange.from.getTime();
+                      const toTime = vacationRange.to.getTime();
+                      return time > fromTime && time < toTime;
+                    },
+                    range_start: (day) => {
+                      if (!vacationRange?.from) return false;
+                      return day.getTime() === vacationRange.from.getTime();
+                    },
+                    range_end: (day) => {
+                      if (!vacationRange?.to) return false;
+                      return day.getTime() === vacationRange.to.getTime();
+                    }
+                  }}
+                  modifiersClassNames={{
+                    range_middle: 'range_middle',
+                    range_start: 'range_start',
+                    range_end: 'range_end'
+                  }}
+                />
               </div>
 
-              <div
-                className={`service-box dashed${showVacationPicker ? ' open' : ''}`}
-                ref={vacationRef}
-                role="button"
-                tabIndex={0}
-                onClick={(e) => { if (e.target.closest('.calendar-dropdown')) return; setShowVacationPicker(v => !v); }}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowVacationPicker(v => !v); } }}
-              >
-                <div className="service-box__label">Urlaub hinzufügen</div>
-                {showVacationPicker && (
-                  <div className="calendar-dropdown">
-                    <p style={{ fontWeight: 600, marginBottom: '8px' }}>Zeitraum wählen</p>
-                    <DayPicker mode="range" selected={vacationRange} onSelect={setVacationRange} numberOfMonths={1} />
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
-                      <button className="btn save" onClick={saveVacation}>Speichern</button>
-                    </div>
+              <div className="employee-list-box">
+                {vacations.map((v, i) => (
+                  <div key={i} className="employee-list-item">
+                    <button className="employee-delete-btn" onClick={() => removeVacation(i)} aria-label="Urlaub entfernen">
+                      <img src={trashIcon} width={16} height={16} alt="" />
+                    </button>
+                    <span>Von {v.from.toLocaleDateString()} bis {v.to.toLocaleDateString()}</span>
                   </div>
-                )}
+                ))}
               </div>
             </div>
           </div>

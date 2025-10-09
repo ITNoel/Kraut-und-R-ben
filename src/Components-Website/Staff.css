@@ -91,3 +91,280 @@
 }
 
 /* ===== Sidebar-Komponenten ziehen ihr Styling aus global.css ===== */
+
+/* ===== Urlaub / Vacation Section ===== */
+.vacation-add-btn {
+  width: 100%;
+  height: 44px;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--border-radius-small);
+  background: #fff;
+  font-size: 14px;
+  font-weight: 400;
+  color: #6b7280;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 16px 0 48px;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.2s ease;
+  margin-bottom: 12px;
+}
+
+.vacation-add-btn:hover {
+  border-color: #d1d5db;
+}
+
+.vacation-add-btn img {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  flex-shrink: 0;
+}
+
+.vacation-calendar-container {
+  margin-bottom: 16px;
+  background: #fff;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.vacation-calendar-container .rdp {
+  margin: 0;
+}
+
+.vacation-calendar-container .rdp-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.vacation-calendar-container .rdp-caption_label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #111827;
+  text-align: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.vacation-calendar-container .rdp-nav {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.vacation-calendar-container .rdp-nav_button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  color: #000 !important;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vacation-calendar-container .rdp-nav_button:hover {
+  opacity: 0.6;
+}
+
+.vacation-calendar-container .rdp-nav_button svg {
+  width: 16px;
+  height: 16px;
+  color: #000 !important;
+  fill: #000 !important;
+  stroke: #000 !important;
+}
+
+.vacation-calendar-container .rdp-nav_button svg path,
+.vacation-calendar-container .rdp-nav_button svg polyline,
+.vacation-calendar-container .rdp-nav_button svg line,
+.vacation-calendar-container .rdp-nav_button svg * {
+  fill: #000 !important;
+  stroke: #000 !important;
+  color: #000 !important;
+}
+
+
+.vacation-calendar-container .rdp-head_cell {
+  font-weight: 600;
+  font-size: 12px;
+  color: #6b7280;
+  text-align: center;
+  padding: 8px 0;
+}
+
+.vacation-calendar-container .rdp-cell {
+  text-align: center;
+  padding: 2px 0;
+}
+
+.vacation-calendar-container .rdp-day {
+  width: 36px;
+  height: 32px;
+  border-radius: 6px;
+  border: none !important;
+  outline: none !important;
+  background: none;
+  font-size: 14px;
+  color: #111827;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+/* Entfernt alle Borders bei Focus/Active States */
+.vacation-calendar-container .rdp-day:focus,
+.vacation-calendar-container .rdp-day:active,
+.vacation-calendar-container button.rdp-day:focus,
+.vacation-calendar-container button.rdp-day:active {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.vacation-calendar-container .rdp-day:hover:not(.rdp-day_selected):not(.rdp-day_outside) {
+  background: #f3f4f6;
+}
+
+/* Überschreibt ALLE möglichen Border-Styles vom DayPicker */
+.vacation-calendar-container * {
+  outline: none !important;
+  outline-width: 0 !important;
+  outline-offset: 0 !important;
+}
+
+/* Entfernt Focus-Ring und andere visuelle Effekte */
+.vacation-calendar-container .rdp-day:focus-visible,
+.vacation-calendar-container button:focus-visible,
+.vacation-calendar-container .rdp-day_selected:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Tailwind-artige Ring-Utilities entfernen */
+.vacation-calendar-container [class*="ring"],
+.vacation-calendar-container [class*="border"] {
+  --tw-ring-shadow: none !important;
+  --tw-ring-offset-shadow: none !important;
+  box-shadow: none !important;
+}
+
+/* Überschreibt alle DayPicker-Standard-Styles für ausgewählte Tage */
+.vacation-calendar-container .rdp-day_selected,
+.vacation-calendar-container button.rdp-day_selected,
+.vacation-calendar-container .rdp-day_selected:not([disabled]),
+.vacation-calendar-container button.rdp-day_selected:not([disabled]) {
+  background: #3b82f6 !important;
+  background-color: #3b82f6 !important;
+  color: #fff !important;
+  font-weight: 600;
+  z-index: 2;
+  position: relative;
+  border: 0 !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  border-color: transparent !important;
+  outline: 0 !important;
+  outline-width: 0 !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
+/* Verhindert Border beim Focus-State */
+.vacation-calendar-container .rdp-day_selected:focus,
+.vacation-calendar-container .rdp-day_selected:active,
+.vacation-calendar-container button.rdp-day_selected:focus,
+.vacation-calendar-container button.rdp-day_selected:active {
+  border: 0 !important;
+  border-width: 0 !important;
+  outline: 0 !important;
+  outline-width: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Entfernt mögliche Pseudo-Element-Borders */
+.vacation-calendar-container .rdp-day_selected::before,
+.vacation-calendar-container .rdp-day_selected::after,
+.vacation-calendar-container button.rdp-day_selected::before,
+.vacation-calendar-container button.rdp-day_selected::after {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Möglicherweise verwendet DayPicker eine Box-Shadow für den "Rahmen" */
+.vacation-calendar-container .rdp-day_selected {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+}
+
+/* Tage zwischen den beiden ausgewählten Tagen (Range) */
+.vacation-calendar-container .rdp-day.range_middle,
+.vacation-calendar-container button.rdp-day.range_middle {
+  background: #e5e7eb !important;
+  background-color: #e5e7eb !important;
+  color: #000 !important;
+  font-weight: normal;
+  border-radius: 0 !important;
+}
+
+/* Ausgewählte Tage sollen über dem Range liegen und blau bleiben */
+.vacation-calendar-container .rdp-day_selected.range_middle,
+.vacation-calendar-container button.rdp-day_selected.range_middle {
+  background: #3b82f6 !important;
+  background-color: #3b82f6 !important;
+  color: #fff !important;
+  font-weight: 600;
+  z-index: 3;
+  border: none !important;
+}
+
+/* Startdatum: kein Border-Radius rechts + blauer Hintergrund */
+.vacation-calendar-container .rdp-day.range_start,
+.vacation-calendar-container button.rdp-day.range_start,
+.vacation-calendar-container .rdp-day_selected.range_start,
+.vacation-calendar-container button.rdp-day_selected.range_start {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  background: #3b82f6 !important;
+  background-color: #3b82f6 !important;
+  color: #fff !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Enddatum: kein Border-Radius links + blauer Hintergrund */
+.vacation-calendar-container .rdp-day.range_end,
+.vacation-calendar-container button.rdp-day.range_end,
+.vacation-calendar-container .rdp-day_selected.range_end,
+.vacation-calendar-container button.rdp-day_selected.range_end {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  background: #3b82f6 !important;
+  background-color: #3b82f6 !important;
+  color: #fff !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.vacation-calendar-container .rdp-day_outside {
+  color: #d1d5db;
+}
+
