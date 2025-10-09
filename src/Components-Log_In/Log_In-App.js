@@ -8,7 +8,7 @@ import ColorAnimation from './Color-Animation';
 import { api } from '../Functions/apiClient';
 
 // Toggle: offline login helper. Set to false to use real API.
-const OFFLINE_LOGIN = true;
+const OFFLINE_LOGIN = false;
 
 // Mock-Daten für Offline-Login (nur Test)
 const MOCK_DEPARTMENTS = [
@@ -68,10 +68,14 @@ export default function Log_InApp({ onLogin }) {
 
       // 1) Authentifizieren
       const loginResp = await api.post('/users/login/', { username, password });
+      console.log(loginResp);
       // Token aus der Antwort auslesen und global setzen
-      const token = loginResp?.token ?? loginResp?.access ?? loginResp?.auth_token ?? null;
+      const token = loginResp?.token ?? null;
       if (token) {
         api.setToken(token);
+        console.log('[Login] Token erfolgreich gesetzt');
+      } else {
+        console.error('[Login] Kein Token in der Antwort gefunden');
       }
 
       // 2) Abteilungen laden

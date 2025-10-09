@@ -21,8 +21,10 @@ async function request(method, path, body = null) {
   const finalBody = isBodyMethod ? body : null;
 
   const headers = { 'Content-Type': 'application/json' };
-  // Optional auch per Header mitsenden (falls Backend dies bevorzugt)
-  if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+  // Token als X-Session-Token Header mitsenden (aber nicht beim Login-Endpoint)
+  if (authToken && !path.includes('/users/login')) {
+    headers['X-Session-Token'] = authToken;
+  }
 
   const res = await fetch(`${API_BASE}${finalPath}`, {
     method: upper,
