@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import 'react-day-picker/dist/style.css';
 import '../global.css';
-import './Staff.css';
+import './Staff.css'; // Staff.css kommt nach react-day-picker, um deren Styles zu überschreiben
 import { DayPicker } from 'react-day-picker';
 import { de } from 'date-fns/locale';
 import arrowIcon from '../assets/Buttons/arrow-icon.svg';
@@ -48,6 +48,15 @@ export default function Staff({
   useEffect(() => {
     function handleClickOutside(e) {
       if (deptRef.current && !deptRef.current.contains(e.target)) setShowDeptDropdown(false);
+
+      // Entferne Fokus von Kalendertagen wenn außerhalb geklickt wird
+      const vacationContainer = document.querySelector('.vacation-calendar-container');
+      if (vacationContainer && !vacationContainer.contains(e.target)) {
+        const focusedDay = document.querySelector('.rdp-day:focus');
+        if (focusedDay) {
+          focusedDay.blur();
+        }
+      }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -105,6 +114,14 @@ export default function Staff({
     } else {
       setVacationRange(undefined);
     }
+
+    // Entferne Fokus von allen Kalendertagen um Rahmen zu vermeiden
+    setTimeout(() => {
+      const focusedElement = document.activeElement;
+      if (focusedElement && focusedElement.classList && focusedElement.classList.contains('rdp-day')) {
+        focusedElement.blur();
+      }
+    }, 0);
   };
 
   const addVacation = () => {
@@ -357,7 +374,17 @@ export default function Staff({
                 Hinzufügen
               </button>
 
-              <div className="vacation-calendar-container">
+              <div className="vacation-calendar-container"
+                onClick={(e) => {
+                  // Entferne Fokus sofort nach Klick auf einen Tag
+                  setTimeout(() => {
+                    const focusedDay = document.querySelector('.rdp-day:focus');
+                    if (focusedDay) {
+                      focusedDay.blur();
+                    }
+                  }, 0);
+                }}
+              >
                 <DayPicker
                   mode="multiple"
                   selected={vacationDays}

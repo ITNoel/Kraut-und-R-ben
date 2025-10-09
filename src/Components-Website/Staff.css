@@ -1,5 +1,22 @@
 /* src/Staff.css */
 
+/* ULTIMATIVE LÖSUNG: Überschreibt react-day-picker selected border */
+.rdp-selected .rdp-day_button {
+  border: none !important;
+  border: 2px solid transparent !important;
+}
+
+.vacation-calendar-container .rdp-selected .rdp-day_button,
+.vacation-calendar-container .rdp-day.rdp-selected .rdp-day_button,
+.vacation-calendar-container .rdp .rdp-selected .rdp-day_button {
+  border: none !important;
+  outline: none !important;
+  background: #3b82f6 !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+}
+
 /* Staff header wrapper */
 .staff-header-wrapper {
   padding-top: var(--page-header-top-spacing);
@@ -93,6 +110,34 @@
 /* ===== Sidebar-Komponenten ziehen ihr Styling aus global.css ===== */
 
 /* ===== Urlaub / Vacation Section ===== */
+
+/* KRITISCH: Entfernt ALLE Outlines und Borders im Kalender */
+.vacation-calendar-container *:focus,
+.vacation-calendar-container *:focus-visible,
+.vacation-calendar-container *:focus-within,
+.vacation-calendar-container *:active,
+.vacation-calendar-container button:focus,
+.vacation-calendar-container button:focus-visible,
+.vacation-calendar-container button:active {
+  outline: 0 !important;
+  outline: none !important;
+  outline-width: 0 !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  outline-offset: 0 !important;
+  border: 0 !important;
+  border: none !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
 .vacation-add-btn {
   width: 100%;
   height: 44px;
@@ -241,6 +286,15 @@
   outline-offset: 0 !important;
 }
 
+/* KRITISCH: Überschreibt die .rdp-selected Border-Regel aus react-day-picker/dist/style.css */
+.vacation-calendar-container .rdp-selected .rdp-day_button,
+.vacation-calendar-container .rdp-selected button.rdp-day_button,
+.vacation-calendar-container .rdp .rdp-selected .rdp-day_button {
+  border: 2px solid transparent !important;
+  border-width: 0 !important;
+  border-style: none !important;
+}
+
 /* Entfernt Focus-Ring und andere visuelle Effekte */
 .vacation-calendar-container .rdp-day:focus-visible,
 .vacation-calendar-container button:focus-visible,
@@ -248,6 +302,21 @@
   outline: none !important;
   box-shadow: none !important;
   border: none !important;
+}
+
+/* Zusätzliche Regel um wirklich ALLE Fokus-Styles zu überschreiben */
+.vacation-calendar-container button.rdp-day:focus {
+  outline: none !important;
+  outline-width: 0 !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Überschreibt DayPicker's Standard-Focus-Styles */
+.vacation-calendar-container .rdp-day_selected:focus {
+  outline: 2px solid transparent !important;
+  outline-offset: 2px !important;
 }
 
 /* Tailwind-artige Ring-Utilities entfernen */
@@ -262,7 +331,9 @@
 .vacation-calendar-container .rdp-day_selected,
 .vacation-calendar-container button.rdp-day_selected,
 .vacation-calendar-container .rdp-day_selected:not([disabled]),
-.vacation-calendar-container button.rdp-day_selected:not([disabled]) {
+.vacation-calendar-container button.rdp-day_selected:not([disabled]),
+.vacation-calendar-container .rdp-selected,
+.vacation-calendar-container .rdp-day.rdp-selected {
   background: #3b82f6 !important;
   background-color: #3b82f6 !important;
   color: #fff !important;
@@ -282,6 +353,7 @@
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
+  border-radius: 6px !important; /* Runde Ecken für einzelne Tage */
 }
 
 /* Verhindert Border beim Focus-State */
@@ -321,6 +393,9 @@
   color: #000 !important;
   font-weight: normal;
   border-radius: 0 !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 /* Ausgewählte Tage sollen über dem Range liegen und blau bleiben */
@@ -332,6 +407,8 @@
   font-weight: 600;
   z-index: 3;
   border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 /* Startdatum: kein Border-Radius rechts + blauer Hintergrund */
@@ -364,7 +441,165 @@
   box-shadow: none !important;
 }
 
+/* WICHTIG: Entfernt Fokus-Styles speziell bei Range-Selection */
+.vacation-calendar-container .rdp-day.range_start:focus,
+.vacation-calendar-container .rdp-day.range_end:focus,
+.vacation-calendar-container .rdp-day.range_middle:focus,
+.vacation-calendar-container button.rdp-day.range_start:focus,
+.vacation-calendar-container button.rdp-day.range_end:focus,
+.vacation-calendar-container button.rdp-day.range_middle:focus,
+.vacation-calendar-container .rdp-day_selected.range_start:focus,
+.vacation-calendar-container .rdp-day_selected.range_end:focus,
+.vacation-calendar-container .rdp-day_selected.range_middle:focus {
+  outline: none !important;
+  outline-width: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 .vacation-calendar-container .rdp-day_outside {
   color: #d1d5db;
+}
+
+/* AGGRESSIVE ENTFERNUNG ALLER RAHMEN UND OUTLINES */
+/* Überschreibt absolut ALLE Focus/Border States für DatePicker */
+.vacation-calendar-container .rdp-day,
+.vacation-calendar-container .rdp-day:hover,
+.vacation-calendar-container .rdp-day:focus,
+.vacation-calendar-container .rdp-day:focus-visible,
+.vacation-calendar-container .rdp-day:focus-within,
+.vacation-calendar-container .rdp-day:active,
+.vacation-calendar-container button.rdp-day,
+.vacation-calendar-container button.rdp-day:hover,
+.vacation-calendar-container button.rdp-day:focus,
+.vacation-calendar-container button.rdp-day:focus-visible,
+.vacation-calendar-container button.rdp-day:focus-within,
+.vacation-calendar-container button.rdp-day:active,
+.vacation-calendar-container .rdp-day_selected,
+.vacation-calendar-container .rdp-day_selected:hover,
+.vacation-calendar-container .rdp-day_selected:focus,
+.vacation-calendar-container .rdp-day_selected:focus-visible,
+.vacation-calendar-container .rdp-day_selected:focus-within,
+.vacation-calendar-container .rdp-day_selected:active {
+  outline: none !important;
+  outline-color: transparent !important;
+  outline-style: none !important;
+  outline-width: 0 !important;
+  outline-offset: 0 !important;
+  border: none !important;
+  border-color: transparent !important;
+  border-style: none !important;
+  border-width: 0 !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  text-decoration: none !important;
+}
+
+/* Entfernt auch mögliche Webkit-spezifische Focus-Styles */
+.vacation-calendar-container button::-moz-focus-inner {
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+/* Globale Überschreibung für alle DayPicker Focus-States */
+.rdp-day:where(:not([disabled])):focus-visible,
+.rdp-day:focus-visible,
+.rdp button:focus-visible,
+.rdp .rdp-day_selected:focus-visible {
+  outline: none !important;
+  outline-offset: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Überschreibt die Standard react-day-picker Focus-Styles */
+.rdp .rdp-day:focus,
+.rdp .rdp-day:focus-visible,
+.rdp .rdp-day_selected:focus,
+.rdp .rdp-day_selected:focus-visible,
+.rdp button.rdp-day:focus,
+.rdp button.rdp-day:focus-visible {
+  outline: 2px solid transparent !important;
+  outline-offset: 2px !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Entfernt den Standard-Focus-Ring komplett */
+.rdp-root:focus-visible .rdp-day,
+.rdp-day:focus:not(:focus-visible) {
+  outline: none !important;
+}
+
+/* Extra-Spezifisch für ausgewählte Tage */
+.vacation-calendar-container .rdp-day[aria-selected="true"],
+.vacation-calendar-container button[aria-selected="true"].rdp-day {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Override für mögliche CSS-Variablen die von react-day-picker gesetzt werden */
+.vacation-calendar-container,
+.vacation-calendar-container .rdp-root,
+.vacation-calendar-container .rdp {
+  --rdp-outline: none !important;
+  --rdp-outline-selected: none !important;
+  --rdp-accent-color: #3b82f6 !important;
+  --rdp-accent-color-dark: #3b82f6 !important;
+  --rdp-selected-color: #3b82f6 !important;
+  --rdp-outline-width: 0 !important;
+  --rdp-selected-border: 2px solid transparent !important; /* DAS IST DER SCHLÜSSEL! */
+  --rdp-day_button-border: 2px solid transparent !important; /* Auch das überschreiben */
+}
+
+/* Speziell für Multiple-Selection Mode - verhindert Fokus beim zweiten Klick */
+.vacation-calendar-container .rdp-day[aria-selected="true"]:focus,
+.vacation-calendar-container .rdp-day[aria-selected="false"]:focus,
+.vacation-calendar-container button[aria-selected="true"]:focus,
+.vacation-calendar-container button[aria-selected="false"]:focus,
+.vacation-calendar-container .rdp-day_today:focus,
+.vacation-calendar-container .rdp-day:not(.rdp-day_selected):focus {
+  outline: none !important;
+  outline-width: 0 !important;
+  outline-offset: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Entfernt Fokus-Indikator bei bereits ausgewählten Tagen */
+.vacation-calendar-container .rdp-multiple .rdp-day_selected:focus,
+.vacation-calendar-container .rdp-multiple .rdp-day:focus {
+  outline: none !important;
+  border: none !important;
+}
+
+/* Falls der dunkelblaue Rahmen von einer Ring/Shadow kommt */
+.vacation-calendar-container .rdp-day_selected,
+.vacation-calendar-container button.rdp-day_selected {
+  --tw-ring-shadow: 0 0 transparent !important;
+  --tw-ring-offset-shadow: 0 0 transparent !important;
+  --tw-shadow: 0 0 transparent !important;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 transparent), var(--tw-ring-shadow, 0 0 transparent), var(--tw-shadow) !important;
+}
+
+/* Entfernt möglicherweise den Fokus-Indikator durch Filter oder Transform */
+.vacation-calendar-container .rdp-day:focus,
+.vacation-calendar-container .rdp-day_selected:focus {
+  filter: none !important;
+  transform: none !important;
+}
+
+/* Wenn der dunkelblaue Rahmen ein Pseudo-Element ist */
+.vacation-calendar-container .rdp-day::before,
+.vacation-calendar-container .rdp-day::after,
+.vacation-calendar-container .rdp-day_selected::before,
+.vacation-calendar-container .rdp-day_selected::after {
+  content: none !important;
+  display: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
