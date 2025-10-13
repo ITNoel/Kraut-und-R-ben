@@ -2,160 +2,160 @@
 import React, { useState, useEffect } from 'react';
 import { ROUTES } from '../app/routes';
 import './Sidebar.css';
+import dashboardIcon from '../assets/Sidebar/dashboard-icon.svg';
+import buchungenIcon from '../assets/Sidebar/buchungen-icon.svg';
+import locationsIcon from '../assets/Sidebar/locations-icon.svg';
+import verwaltungIcon from '../assets/Sidebar/verwaltung-icon.svg';
+import supportIcon from '../assets/Sidebar/support-icon.svg';
+import settingsIcon from '../assets/Sidebar/settings-icon.svg';
 
-export default function Sidebar({ view, onSelect }) {
-  const [navState, setNavState] = useState({
-    bookings: false,
-    resources: false,
-    usersAndRoles: false,
-    finances: false,
-  });
+export default function Sidebar({ view, onSelect, expanded, onExpandChange }) {
+  const [isExpanded, setIsExpanded] = useState(false);
 
+  // Sync internal state with parent's expanded prop
   useEffect(() => {
-    // Klappe Nutzer & Rollen auf, wenn eine der Ansichten aktiv ist
-    if (['department-overview', 'staff', 'services-overview'].includes(view)) {
-      setNavState(s => ({ ...s, usersAndRoles: true }));
-    }
-  }, [view]);
+    setIsExpanded(expanded || false);
+  }, [expanded]);
 
-  const toggleNavSection = section => {
-    setNavState(s => ({ ...s, [section]: !s[section] }));
+  const menuItems = [
+    {
+      id: 'dashboard',
+      label: 'Dashboard',
+      icon: dashboardIcon,
+      iconSize: 20,
+      route: ROUTES.DASHBOARD,
+    },
+    {
+      id: 'buchungen',
+      label: 'Buchungen',
+      icon: buchungenIcon,
+      iconSize: 20,
+      route: ROUTES.BOOKINGS,
+    },
+    {
+      id: 'locations',
+      label: 'Locations',
+      icon: locationsIcon,
+      iconSize: 20,
+      route: ROUTES.LOCATIONS,
+    },
+    {
+      id: 'verwaltung',
+      label: 'Verwaltung',
+      icon: verwaltungIcon,
+      iconSize: 20,
+      route: ROUTES.ADMIN,
+      // Verwaltung enthält die Untermenüs
+      subItems: [
+        { id: 'department', label: 'Abteilungen', route: ROUTES.DEPARTMENT_OVERVIEW },
+        { id: 'services', label: 'Dienste', route: ROUTES.SERVICES_OVERVIEW },
+        { id: 'staff', label: 'Personal', route: ROUTES.STAFF_OVERVIEW },
+      ],
+      subRoutes: [ROUTES.DEPARTMENT_OVERVIEW, ROUTES.SERVICES_OVERVIEW, ROUTES.STAFF_OVERVIEW],
+    },
+  ];
+
+  const bottomItems = [
+    {
+      id: 'support',
+      label: 'Support',
+      icon: supportIcon,
+      iconSize: 20,
+      route: null, // Will handle differently
+    },
+    {
+      id: 'einstellungen',
+      label: 'Einstellungen',
+      icon: settingsIcon,
+      iconSize: 20,
+      route: null, // Will handle differently
+    },
+  ];
+
+  const handleItemClick = (item) => {
+    if (item.id === 'verwaltung') {
+      const newExpandedState = !isExpanded;
+      setIsExpanded(newExpandedState);
+      onExpandChange?.(newExpandedState);
+      // Nur expandieren/kollabieren, nicht navigieren
+    } else if (item.route) {
+      onSelect(item.route);
+      if (!item.isSubItem) {
+        setIsExpanded(false);
+        onExpandChange?.(false);
+      }
+    }
+  };
+
+  const isActive = (item) => {
+    if (item.subRoutes) {
+      return item.subRoutes.includes(view);
+    }
+    return view === item.route;
   };
 
   return (
-    <aside className="sidebar">
-      <div className="navTree">
-        <nav className="nav">
-          {/* Dashboard */}
-          <a
-            href="#"
-            className="dashboard-link"
-            onClick={e => e.preventDefault()}
-          >
-            Zum Dashboard
-            <span className="dashboard-icon">{/* icon */}</span>
-          </a>
-          <hr className="section-divider" />
-
-          {/* Buchungen */}
-          <div className={`nav-section ${navState.bookings ? 'open' : ''}`}>
-            <div
-              className="nav-section-header"
-              onClick={() => toggleNavSection('bookings')}
-            >
-              <span>Buchungen</span>
-              <span className="toggle-icon">
-                {navState.bookings ? '−' : '+'}
-              </span>
+    <aside
+      className={`sidebar-slim ${isExpanded ? 'expanded' : ''}`}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <nav className="sidebar-nav">
+        <div className="sidebar-main-items">
+          {menuItems.map((item) => (
+            <div key={item.id}>
+              <button
+                className="sidebar-item"
+                onClick={() => handleItemClick(item)}
+                title={item.label}
+              >
+                <img
+                  src={item.icon}
+                  alt={item.label}
+                  className="sidebar-icon"
+                  style={{ width: item.iconSize, height: item.iconSize }}
+                />
+                <span className="sidebar-label">{item.label}</span>
+              </button>
+              {item.id === 'verwaltung' && isExpanded && (
+                <div className="sidebar-subitems">
+                  {item.subItems.map((subItem) => (
+                    <button
+                      key={subItem.id}
+                      className="sidebar-subitem"
+                      onClick={() => {
+                        onSelect(subItem.route);
+                      }}
+                    >
+                      <span className="sidebar-subitem-label">{subItem.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-            {navState.bookings && (
-              <div className="nav-section-items">
-                <a href="#">Alle Buchungen</a>
-                <a href="#">Neue Buchung</a>
-              </div>
-            )}
-            <hr className="section-divider" />
-          </div>
-
-          {/* Ressourcen */}
-          <div className={`nav-section ${navState.resources ? 'open' : ''}`}>
-            <div
-              className="nav-section-header"
-              onClick={() => toggleNavSection('resources')}
-            >
-              <span>Ressourcen / Locations</span>
-              <span className="toggle-icon">
-                {navState.resources ? '−' : '+'}
-              </span>
-            </div>
-            {navState.resources && (
-              <div className="nav-section-items">
-                <a href="#">Studio 1</a>
-                <a href="#">Studio 2</a>
-                <a href="#">Equipment</a>
-              </div>
-            )}
-            <hr className="section-divider" />
-          </div>
-
-          {/* Nutzer & Rollen */}
-          <div className={`nav-section ${navState.usersAndRoles ? 'open' : ''}`}>
-            <div
-              className="nav-section-header"
-              onClick={() => toggleNavSection('usersAndRoles')}
-            >
-              <span>Nutzer &amp; Rollen</span>
-              <span className="toggle-icon">
-                {navState.usersAndRoles ? '−' : '+'}
-              </span>
-            </div>
-            {navState.usersAndRoles && (
-              <div className="nav-section-items">
-                <a
-                  href="#"
-                  className={view === ROUTES.DEPARTMENT_OVERVIEW ? 'active' : ''}
-                  onClick={e => {
-                    e.preventDefault();
-                    onSelect(ROUTES.DEPARTMENT_OVERVIEW);
-                  }}
-                >
-                  Abteilung
-                </a>
-                <a
-                  href="#"
-                  className={view === ROUTES.SERVICES_OVERVIEW ? 'active' : ''}
-                  onClick={e => {
-                    e.preventDefault();
-                    onSelect(ROUTES.SERVICES_OVERVIEW);
-                  }}
-                >
-                  Dienste
-                </a>
-                <a
-                  href="#"
-                  className={view === ROUTES.STAFF_OVERVIEW ? 'active' : ''}
-                  onClick={e => {
-                    e.preventDefault();
-                    onSelect(ROUTES.STAFF_OVERVIEW);
-                  }}
-                >
-                  Sachbearbeiter:innen
-                </a>
-              </div>
-            )}
-            <hr className="section-divider" />
-          </div>
-
-          {/* Finanzen */}
-          <div className={`nav-section ${navState.finances ? 'open' : ''}`}>
-            <div
-              className="nav-section-header"
-              onClick={() => toggleNavSection('finances')}
-            >
-              <span>Finanzen</span>
-              <span className="toggle-icon">
-                {navState.finances ? '−' : '+'}
-              </span>
-            </div>
-            {navState.finances && (
-              <div className="nav-section-items">
-                <a href="#">Rechnungen</a>
-                <a href="#">Zahlungen</a>
-              </div>
-            )}
-            <hr className="section-divider" />
-          </div>
-        </nav>
-
-        <div className="bottom-links">
-          <a href="#">
-            <span className="bottom-icon">❓</span> Support
-          </a>
-          <a href="#">
-            <span className="bottom-icon">⚙️</span> Einstellungen
-          </a>
+          ))}
         </div>
-      </div>
+        <div className="sidebar-bottom-items">
+          {bottomItems.map((item) => (
+            <button
+              key={item.id}
+              className="sidebar-item"
+              onClick={() => {
+                // Handle support and settings clicks here
+                console.log(`${item.label} clicked`);
+              }}
+              title={item.label}
+            >
+              <img
+                src={item.icon}
+                alt={item.label}
+                className="sidebar-icon"
+                style={{ width: item.iconSize, height: item.iconSize }}
+              />
+              <span className="sidebar-label">{item.label}</span>
+            </button>
+          ))}
+        </div>
+      </nav>
     </aside>
   );
 }

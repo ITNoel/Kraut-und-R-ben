@@ -1,5 +1,18 @@
 /* src/Services.css */
 
+/* Toggle Box für "Dienst ausblenden" */
+.services-page .toggle-box,
+.right-sidebar .toggle-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px;
+  gap: 12px;
+  min-height: auto;
+  margin-top: calc(20px - var(--box-padding)); /* Dynamische Berechnung: gewünschter Abstand - Box-Padding */
+  margin-bottom: 0;
+}
+
 /* Entfernt: .services-page, .services-header, .services-body, .left-column, .right-sidebar */
 /* Layout wird jetzt komplett über die globalen Klassen aus global.css gesteuert. */
 

@@ -4,11 +4,16 @@ import React, { useState, useRef, useEffect } from 'react';
 import 'react-day-picker/dist/style.css';
 import '../global.css';
 import './Staff.css'; // Staff.css kommt nach react-day-picker, um deren Styles zu überschreiben
+import './Staff-opening-hours.css'; // Styles für Sonderzeiten
 import { DayPicker } from 'react-day-picker';
 import { de } from 'date-fns/locale';
 import arrowIcon from '../assets/Buttons/arrow-icon.svg';
 import trashIcon from '../assets/Buttons/trash-icon.svg';
 import calenderIcon from '../assets/fonts/calender-icon.svg';
+import addIcon from '../assets/Buttons/add-icon.svg';
+import xIcon from '../assets/Buttons/x-icon.svg';
+import clockIcon from '../assets/fonts/clock-icon.svg';
+import plusIcon from '../assets/fonts/plus-icon.svg';
 import { api } from '../Functions/apiClient';
 import { ROUTES } from '../app/routes';
 
@@ -28,6 +33,19 @@ export default function Staff({
   const [vacations, setVacations] = useState([]);
   const [vacationDays, setVacationDays] = useState([]);
   const [vacationRange, setVacationRange] = useState(undefined);
+
+  // Sonderzeiten state (analog zu Öffnungszeiten in Department.js)
+  const [useSonderzeiten, setUseSonderzeiten] = useState(false);
+  const [timeBlocks, setTimeBlocks] = useState([
+    {
+      id: 1,
+      selectedDays: [],
+      timeStart: '',
+      timeEnd: '',
+      breakStart: '',
+      breakEnd: ''
+    }
+  ]);
 
   const [pendingSave, setPendingSave] = useState(false);
   const [showSaveError, setShowSaveError] = useState(null);
@@ -81,6 +99,12 @@ export default function Staff({
       setSelectedDepartment(null);
     }
     setVacations(Array.isArray(initialData.vacations) ? initialData.vacations.map(v => ({ from: new Date(v.from), to: new Date(v.to) })) : (initialData.vacations || []));
+
+    // Sonderzeiten initialisieren
+    if (initialData?.sonderzeiten) {
+      setTimeBlocks(initialData.sonderzeiten);
+      setUseSonderzeiten(initialData.useSonderzeiten ?? false);
+    }
   }, [initialData, generalDepartments]);
 
   // Select single department from dropdown
@@ -139,6 +163,47 @@ export default function Staff({
 
   const removeVacation = (i) => setVacations(prev => prev.filter((_, idx) => idx !== i));
 
+  // Sonderzeiten-Funktionen (analog zu Department.js)
+  const addTimeBlock = () => {
+    const allSelectedDays = timeBlocks.flatMap(b => b.selectedDays);
+    const allDays = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
+    const availableDays = allDays.filter(day => !allSelectedDays.includes(day));
+
+    if (availableDays.length === 0) {
+      return;
+    }
+
+    setTimeBlocks(prev => [
+      ...prev,
+      {
+        id: Date.now(),
+        selectedDays: [],
+        timeStart: '',
+        timeEnd: '',
+        breakStart: '',
+        breakEnd: ''
+      }
+    ]);
+  };
+
+  const updateTimeBlock = (id, field, value) => {
+    setTimeBlocks(prev => prev.map(block =>
+      block.id === id ? { ...block, [field]: value } : block
+    ));
+  };
+
+  const toggleDayInBlock = (blockId, day) => {
+    setTimeBlocks(prev => prev.map(block => {
+      if (block.id === blockId) {
+        const days = block.selectedDays.includes(day)
+          ? block.selectedDays.filter(d => d !== day)
+          : [...block.selectedDays, day];
+        return { ...block, selectedDays: days };
+      }
+      return block;
+    }));
+  };
+
   const areRequiredFieldsFilled = (form.first_name?.trim() || form.last_name?.trim()) !== '' && (form.email?.trim() || form.phone?.trim());
 
   const makeStaffObj = () => {
@@ -159,7 +224,10 @@ export default function Staff({
       email: form.email,
       qualifications: form.qualifications,
       vacations: vacations.map(v => ({ from: v.from instanceof Date ? v.from.toISOString() : v.from, to: v.to instanceof Date ? v.to.toISOString() : v.to })),
-      status: hideStaff ? 'disabled' : (areRequiredFieldsFilled ? 'active' : 'draft')
+      status: hideStaff ? 'disabled' : (areRequiredFieldsFilled ? 'active' : 'draft'),
+      // Sonderzeiten hinzufügen
+      useSonderzeiten,
+      sonderzeiten: timeBlocks
     };
   };
 
@@ -294,6 +362,134 @@ export default function Staff({
                   <input value={form.qualifications} onChange={e => setForm(f => ({ ...f, qualifications: e.target.value }))} />
                 </label>
               </div>
+            </div>
+          </div>
+
+          <div className="page-container">
+            <div className="section">
+              <h2>Sonderzeiten</h2>
+              <div className="opening-hours-toggle">
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={useSonderzeiten}
+                    onChange={() => setUseSonderzeiten(h => !h)}
+                  />
+                  <span className="slider" />
+                </label>
+                <span>Sonderzeiten übernehmen</span>
+              </div>
+
+              {/* Render all time blocks */}
+              {timeBlocks.map((block, blockIndex) => {
+                // Sammle alle bereits ausgewählten Tage aus ALLEN Blöcken
+                const allSelectedDays = timeBlocks.flatMap(b => b.selectedDays);
+                // Verfügbare Tage: Alle Tage minus die bereits in IRGENDEINEM Block ausgewählten
+                const availableDays = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag']
+                  .filter(day => !allSelectedDays.includes(day) || block.selectedDays.includes(day));
+
+                return (
+                  <div key={block.id} className="opening-hours-block">
+                    {/* Selected Days Display Box */}
+                    <h3 className="opening-hours-label">Wochentage</h3>
+                    <div className="opening-hours-box">
+                      {block.selectedDays.length === 0 ? (
+                        <span className="opening-hours-placeholder">Keine Tage ausgewählt</span>
+                      ) : (
+                        (() => {
+                          const dayOrder = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
+                          const sortedDays = [...block.selectedDays].sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b));
+                          return sortedDays.map((day) => (
+                            <button
+                              key={day}
+                              type="button"
+                              className="opening-hours-day-tag"
+                              onClick={() => toggleDayInBlock(block.id, day)}
+                            >
+                              <img src={xIcon} width={10} height={10} alt="" />
+                              <span>{day}</span>
+                            </button>
+                          ));
+                        })()
+                      )}
+                    </div>
+
+                    {/* Weekday Buttons - nur noch nicht global ausgewählte Tage zeigen */}
+                    <div className="opening-hours-days">
+                      {availableDays
+                        .filter(day => !block.selectedDays.includes(day))
+                        .map((day) => (
+                          <button
+                            key={day}
+                            type="button"
+                            className="opening-hours-day-btn"
+                            onClick={() => toggleDayInBlock(block.id, day)}
+                          >
+                            <img src={addIcon} width={14} height={14} alt="" />
+                            <span>{day}</span>
+                          </button>
+                        ))}
+                    </div>
+
+                    {/* Time Input Fields */}
+                    <div className="opening-hours-times">
+                      <label className="time-input-label">
+                        <div className="time-input-header">
+                          <img src={clockIcon} width={18} height={18} alt="" />
+                          <span>Uhrzeit Beginn*</span>
+                        </div>
+                        <input
+                          type="time"
+                          value={block.timeStart}
+                          onChange={(e) => updateTimeBlock(block.id, 'timeStart', e.target.value)}
+                        />
+                      </label>
+                      <label className="time-input-label">
+                        <div className="time-input-header">
+                          <img src={clockIcon} width={18} height={18} alt="" />
+                          <span>Uhrzeit Ende*</span>
+                        </div>
+                        <input
+                          type="time"
+                          value={block.timeEnd}
+                          onChange={(e) => updateTimeBlock(block.id, 'timeEnd', e.target.value)}
+                        />
+                      </label>
+                      <label className="time-input-label">
+                        <div className="time-input-header">
+                          <img src={clockIcon} width={18} height={18} alt="" />
+                          <span>Pause Beginn</span>
+                        </div>
+                        <input
+                          type="time"
+                          value={block.breakStart}
+                          onChange={(e) => updateTimeBlock(block.id, 'breakStart', e.target.value)}
+                        />
+                      </label>
+                      <label className="time-input-label">
+                        <div className="time-input-header">
+                          <img src={clockIcon} width={18} height={18} alt="" />
+                          <span>Pause Ende</span>
+                        </div>
+                        <input
+                          type="time"
+                          value={block.breakEnd}
+                          onChange={(e) => updateTimeBlock(block.id, 'breakEnd', e.target.value)}
+                        />
+                      </label>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Divider */}
+              <hr className="opening-hours-divider" />
+
+              {/* Add More Button */}
+              <button type="button" className="opening-hours-add-btn" onClick={addTimeBlock}>
+                <img src={plusIcon} width={13} height={13} alt="" />
+                <span>Mehr hinzufügen</span>
+              </button>
             </div>
           </div>
         </div>

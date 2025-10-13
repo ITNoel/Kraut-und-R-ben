@@ -1,5 +1,18 @@
 /* src/Staff.css */
 
+/* Toggle Box für "Mitarbeiter ausblenden" */
+.staff-page .toggle-box,
+.right-sidebar .toggle-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px;
+  gap: 12px;
+  min-height: auto;
+  margin-top: calc(20px - var(--box-padding)); /* Dynamische Berechnung: gewünschter Abstand - Box-Padding */
+  margin-bottom: 0;
+}
+
 /* ULTIMATIVE LÖSUNG: Überschreibt react-day-picker selected border */
 .rdp-selected .rdp-day_button {
   border: none !important;

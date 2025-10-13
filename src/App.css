@@ -5,10 +5,11 @@
   display: flex;
   height: 100vh;
   overflow: hidden;
+  position: relative;
 }
 
 .main-content {
-  margin-left: 350px;
+  margin-left: 100px;
   margin-top: 97px;
   flex: 1;
   display: flex;
@@ -16,4 +17,25 @@
   overflow-x: hidden;
   overflow-y: auto;
   background: var(--color-page-bg);
+  position: relative;
+  transition: filter 0.3s ease;
+}
+
+/* Blur effect when sidebar is expanded */
+.app-container.sidebar-expanded .main-content {
+  filter: blur(3px);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Overlay to prevent interaction with blurred content */
+.app-container.sidebar-expanded .main-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 1;
 }

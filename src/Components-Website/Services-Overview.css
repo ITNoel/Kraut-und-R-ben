@@ -233,7 +233,7 @@
 /* --- Name-Spalte (2. Spalte) Breiten & Abstand wie Department-Overview --- */
 .services-overview__table th:nth-child(2),
 .services-overview__table td:nth-child(2) {
-  min-width: 240px;
+  min-width: 20px;
   max-width: 340px;
   width: 30vw;
   text-align: left;
@@ -257,8 +257,8 @@
 .services-overview__table th:not(:first-child):not(:nth-child(2)),
 .services-overview__table td:not(:first-child):not(:nth-child(2)) {
   text-align: center !important;
-  padding-left: 2rem !important;
-  padding-right: 2rem !important;
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
 }
 
 /* Ensure Name column remains left-aligned */
@@ -373,7 +373,7 @@
 .services-overview__table td:nth-child(2) {
   padding-left: 0.5rem !important;
   text-align: left;
-  min-width: 220px;
+  min-width: 20px;
 }
 
 /* Checkbox: Angleichen an Department-Overview - kompakteres Aussehen, dezenter Rand, weißes Häkchen bei checked */
@@ -546,8 +546,8 @@
 .services-overview .department-overview__table th:not(:first-child):not(:nth-child(2)):not(:last-child),
 .services-overview .department-overview__table td:not(:first-child):not(:nth-child(2)):not(:last-child) {
   text-align: center !important;
-  padding-left: 2rem !important;
-  padding-right: 2rem !important;
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
 }
 
 /* Checkbox column - left aligned */
@@ -571,7 +571,7 @@
 .services-overview .department-overview__table td:last-child {
   text-align: right !important;
   padding-right: 3rem !important;
-  padding-left: 2rem !important;
+  padding-left: 0.5rem !important;
 }
 
 /* Department cell styling */

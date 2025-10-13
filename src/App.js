@@ -33,6 +33,7 @@ export default function App() {
   const [currentServiceIndex, setCurrentServiceIndex] = useState(null); // NEW
   const [currentStaff, setCurrentStaff] = useState(null);          // NEW
   const [currentStaffIndex, setCurrentStaffIndex] = useState(null); // NEW
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);   // NEW - Track sidebar state
 
   const handleLogin = (deptList, empList, servicesList = []) => {
     setDepartments(deptList);
@@ -277,10 +278,22 @@ export default function App() {
   }
 
   return (
-    <div className="app-container">
-      <Sidebar view={view} onSelect={selectView} />
+    <div
+      className={`app-container ${sidebarExpanded ? 'sidebar-expanded' : ''}`}
+      onClick={() => {
+        if (sidebarExpanded) {
+          setSidebarExpanded(false);
+        }
+      }}
+    >
+      <Sidebar
+        view={view}
+        onSelect={selectView}
+        expanded={sidebarExpanded}
+        onExpandChange={setSidebarExpanded}
+      />
+      <Header onLogout={handleLogout} />
       <main className="main-content">
-        <Header onLogout={handleLogout} />
 
         {view === ROUTES.DEPARTMENT_OVERVIEW && (
           <DepartmentOverview

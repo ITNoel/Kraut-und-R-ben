@@ -477,7 +477,7 @@
 /* Make Name column wider and prevent forced wraps; keep ellipsis on overflow */
 .department-overview__table th:nth-child(2),
 .department-overview__table td:nth-child(2) {
-  min-width: 320px !important;
+  min-width: 20px !important;
   max-width: 900px !important;
   width: 40vw !important; /* belassen, aber min/max via global bevorzugen */
   white-space: nowrap !important;
@@ -519,8 +519,8 @@
 .department-overview__table th:not(:first-child):not(:nth-child(2)),
 .department-overview__table td:not(:first-child):not(:nth-child(2)) {
   text-align: center !important;
-  padding-left: 2rem !important;
-  padding-right: 2rem !important;
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
 }
 
 /* Ensure Name column remains left-aligned */
@@ -542,8 +542,8 @@
 .department-overview__table th.persons,
 .department-overview__table td.persons {
   text-align: center !important;
-  padding-left: 2rem !important;
-  padding-right: 2rem !important;
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
 }
 
 

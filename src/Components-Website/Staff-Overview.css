@@ -248,7 +248,7 @@
 .department-overview__table td:nth-child(2) {
   padding-left: 3rem !important;
   text-align: left;
-  min-width: 320px !important;
+  min-width: 20px !important;
   max-width: 900px !important;
   width: 40vw !important;
   white-space: nowrap !important;
@@ -260,24 +260,24 @@
 .department-overview__table th:not(:first-child):not(:nth-child(2)),
 .department-overview__table td:not(:first-child):not(:nth-child(2)) {
   text-align: center !important;
-  padding-left: 2rem !important;
-  padding-right: 2rem !important;
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
 }
 
 /* Match Services-Overview styling exactly: center all middle columns with equal padding */
 .staff-overview .department-overview__table th:not(:first-child):not(:nth-child(2)):not(:last-child),
 .staff-overview .department-overview__table td:not(:first-child):not(:nth-child(2)):not(:last-child) {
   text-align: center !important;
-  padding-left: 2rem !important;
-  padding-right: 2rem !important;
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
   white-space: nowrap !important;
 }
 
 /* Status column: same padding as other middle columns for consistent spacing */
 .staff-overview .department-overview__table th.status,
 .staff-overview .department-overview__table td.status {
-  padding-left: 2rem !important;
-  padding-right: 2rem !important;
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
 }
 
 /* Fix Status header alignment - add wrapper span styling */

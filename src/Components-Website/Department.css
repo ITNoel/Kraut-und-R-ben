@@ -59,7 +59,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--page-gap);
-  padding-right: var(--column-gap);
   padding-bottom: 100px; /* Zusätzlicher Platz am unteren Rand für Dropdowns */
 }
 
@@ -73,9 +72,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 22px 24px;
+  padding: 10px 24px;
   gap: 12px;
   min-height: auto;
+  margin-top: calc(20px - var(--box-padding)); /* Dynamische Berechnung: gewünschter Abstand - Box-Padding */
+  margin-bottom: 0;
 }
 
 .right-sidebar .toggle-box span {
@@ -185,11 +186,20 @@
   border-top: 1px solid #e5e7eb;
 }
 
+/* Opening Hours Label */
+.opening-hours-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+  margin: 0 0 8px 0;
+}
+
 /* Opening Hours Display Box */
 .opening-hours-box {
-  margin-top: 16px;
+  margin-top: 0;
   padding: 6px 16px;
-  min-height: 60px;
+  min-height: 48px;
+  height: 48px;
   border: 1px solid #e5e7eb;
   border-radius: var(--border-radius-small);
   background: #fff;
@@ -206,18 +216,20 @@
 
 .opening-hours-placeholder {
   color: #9ca3af;
-  font-size: 14px;
+  font-size: 13px;
   font-style: italic;
+  line-height: 36px;
 }
 
 .opening-hours-day-tag {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 12px;
+  padding: 6px 10px;
+  height: 32px;
   background: #e0f2fe;
   color: #0369a1;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   border-radius: var(--border-radius-small);
   white-space: nowrap;
@@ -234,8 +246,8 @@
 .opening-hours-day-tag img {
   display: block;
   flex-shrink: 0;
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
 }
 
 /* Weekday Buttons */
@@ -278,7 +290,7 @@
 
 /* Opening Hours Time Inputs */
 .opening-hours-times {
-  margin-top: 16px;
+  margin-top: 33px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;

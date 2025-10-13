@@ -434,6 +434,7 @@ export default function Department({
                 return (
                   <div key={block.id} className="opening-hours-block">
                     {/* Selected Days Display Box */}
+                    <h3 className="opening-hours-label">Wochentage</h3>
                     <div className="opening-hours-box">
                       {block.selectedDays.length === 0 ? (
                         <span className="opening-hours-placeholder">Keine Tage ausgewählt</span>
