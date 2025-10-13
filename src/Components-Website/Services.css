@@ -209,6 +209,83 @@
   margin-bottom: 26px;
 }
 
+/* Input mit Arrow-Button */
+.input-with-arrow {
+  position: relative;
+  width: 100%;
+  display: flex;
+}
+
+.input-with-arrow input {
+  width: 100%;
+  padding-right: 35px !important; /* Platz für den Button rechts */
+}
+
+/* Gemeinsame Basis-Styles für Service Time Arrow Buttons */
+button.service-time-arrow-btn,
+.service-time-arrow-btn {
+  position: absolute !important;
+  right: 0 !important;
+  height: 50% !important; /* Jeder Button nimmt 50% der Höhe ein */
+  width: 30px !important;
+  border: none !important;
+  background-color: transparent !important; /* Kein Hintergrund */
+  border-radius: 0 !important; /* Alle Ecken erstmal eckig */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s ease !important;
+  z-index: 2 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Oberer Button - Pfeil nach oben */
+button.service-time-arrow-btn.arrow-up,
+.service-time-arrow-btn.arrow-up {
+  top: 0 !important;
+  border-top-right-radius: 6px !important; /* Oben rechts abgerundet */
+  border-left: 1px solid #ddd !important; /* Linke Border */
+  border-bottom: 1px solid #ddd !important; /* Untere Border wo sich die Buttons treffen */
+}
+
+/* Unterer Button - Pfeil nach unten */
+button.service-time-arrow-btn.arrow-down,
+.service-time-arrow-btn.arrow-down {
+  top: 50% !important; /* Startet bei 50%, trifft sich in der Mitte mit dem oberen */
+  border-bottom-right-radius: 6px !important; /* Unten rechts abgerundet */
+  border-left: 1px solid #ddd !important; /* Linke Border */
+  border-top: 1px solid #ddd !important; /* Obere Border wo sich die Buttons treffen */
+}
+
+/* Pfeil im oberen Button um 180° drehen (zeigt nach oben) */
+.service-time-arrow-btn.arrow-up img {
+  transform: rotate(180deg) !important;
+}
+
+button.service-time-arrow-btn:hover,
+.service-time-arrow-btn:hover {
+  background-color: rgba(124, 58, 237, 0.1) !important; /* Leichter violetter Hintergrund beim Hover */
+}
+
+.service-time-arrow-btn img {
+  width: 10px !important;
+  height: 6px !important;
+  filter: none !important; /* Icon bleibt schwarz */
+  opacity: 0.6 !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.service-time-arrow-btn:hover img {
+  opacity: 1 !important; /* Volle Deckkraft beim Hover */
+}
+
+/* Fokus-Stil anpassen */
+.input-with-arrow input:focus ~ .service-time-arrow-btn {
+  background-color: transparent !important;
+}
+
 /* Responsive: bei sehr schmalen Bildschirmen stapeln die Optionsgruppen */
 @media (max-width: 520px) {
   .fields-grid {

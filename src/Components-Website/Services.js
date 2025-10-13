@@ -310,8 +310,58 @@ export default function Services({ initialData = null, index = null, generalServ
                 </div>
                 <label className="full-width">Titel*<input name="title" value={form.title} onChange={e => handleChange('title', e.target.value)} /></label>
                 <div className="form-grid two-col labeled-inputs">
-                  <label>Dauer (Minuten)*<input name="duration" value={form.duration} onChange={e => handleChange('duration', e.target.value)} /></label>
-                  <label>Puffer (Minuten)<input name="buffer" value={form.buffer} onChange={e => handleChange('buffer', e.target.value)} /></label>
+                  <label>
+                    Dauer (Minuten)*
+                    <div className="input-with-arrow">
+                      <input
+                        name="duration"
+                        value={form.duration}
+                        onChange={e => handleChange('duration', e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        className="service-time-arrow-btn arrow-up"
+                        onClick={() => console.log('Duration up clicked')}
+                        aria-label="Dauer erhöhen"
+                      >
+                        <img src={arrowIcon} alt="" />
+                      </button>
+                      <button
+                        type="button"
+                        className="service-time-arrow-btn arrow-down"
+                        onClick={() => console.log('Duration down clicked')}
+                        aria-label="Dauer verringern"
+                      >
+                        <img src={arrowIcon} alt="" />
+                      </button>
+                    </div>
+                  </label>
+                  <label>
+                    Puffer (Minuten)
+                    <div className="input-with-arrow">
+                      <input
+                        name="buffer"
+                        value={form.buffer}
+                        onChange={e => handleChange('buffer', e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        className="service-time-arrow-btn arrow-up"
+                        onClick={() => console.log('Buffer up clicked')}
+                        aria-label="Puffer erhöhen"
+                      >
+                        <img src={arrowIcon} alt="" />
+                      </button>
+                      <button
+                        type="button"
+                        className="service-time-arrow-btn arrow-down"
+                        onClick={() => console.log('Buffer down clicked')}
+                        aria-label="Puffer verringern"
+                      >
+                        <img src={arrowIcon} alt="" />
+                      </button>
+                    </div>
+                  </label>
                   <label>Gebühr<input name="fee" value={form.fee} onChange={e => handleChange('fee', e.target.value)} /></label>
                   <label>Max. Personen<input name="maxPersons" value={form.maxPersons} onChange={e => handleChange('maxPersons', e.target.value)} /></label>
                 </div>
@@ -381,7 +431,7 @@ export default function Services({ initialData = null, index = null, generalServ
                   aria-expanded={showDeptDropdown}
                 >
                   <span className="employee-trigger__chevron" aria-hidden="true">
-                    <img src={arrowIcon} width={18} height={9} alt="" />
+                    <img src={arrowIcon} width={15} height={9} alt="" />
                   </span>
                   Abteilungen hinzufügen
                 </button>
@@ -434,7 +484,7 @@ export default function Services({ initialData = null, index = null, generalServ
                   aria-expanded={showNotifDropdown}
                 >
                   <span className="employee-trigger__chevron" aria-hidden="true">
-                    <img src={arrowIcon} width={18} height={9} alt="" />
+                    <img src={arrowIcon} width={15} height={9} alt="" />
                   </span>
                   Empfänger hinzufügen
                 </button>
@@ -516,7 +566,7 @@ export default function Services({ initialData = null, index = null, generalServ
                   aria-expanded={showQualificationDropdown}
                 >
                   <span className="employee-trigger__chevron" aria-hidden="true">
-                    <img src={arrowIcon} width={18} height={9} alt="" />
+                    <img src={arrowIcon} width={15} height={9} alt="" />
                   </span>
                   Qualifikationen hinzufügen
                 </button>

@@ -76,7 +76,7 @@ export default function SearchBar({
                 aria-haspopup="listbox"
                 aria-expanded={statusOpen}
               >
-                <span className="status-trigger__chevron" aria-hidden="true"><img src={arrowSvg} width={18} height={9} alt="" /></span>
+                <span className="status-trigger__chevron" aria-hidden="true"><img src={arrowSvg} width={15} height={9} alt="" /></span>
                 {(() => {
                   const val = status ?? '';
                   const options = Array.isArray(statusOptions) ? statusOptions : [];
@@ -119,7 +119,7 @@ export default function SearchBar({
                 aria-haspopup="listbox"
                 aria-expanded={departmentOpen}
               >
-                <span className="status-trigger__chevron" aria-hidden="true"><img src={arrowSvg} width={18} height={9} alt="" /></span>
+                <span className="status-trigger__chevron" aria-hidden="true"><img src={arrowSvg} width={15} height={9} alt="" /></span>
                 {(() => {
                   const val = department ?? '';
                   const options = Array.isArray(departmentOptions) ? departmentOptions : [];

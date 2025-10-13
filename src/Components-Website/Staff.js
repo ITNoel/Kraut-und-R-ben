@@ -518,7 +518,7 @@ export default function Staff({
                   aria-expanded={showDeptDropdown}
                 >
                   <span className="employee-trigger__chevron" aria-hidden="true">
-                    <img src={arrowIcon} width={18} height={9} alt="" />
+                    <img src={arrowIcon} width={15} height={9} alt="" />
                   </span>
                   Abteilung hinzufügen
                 </button>
